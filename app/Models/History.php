@@ -31,4 +31,9 @@ class History extends Model
     {
         return $this->hasMany(Player::class);
     }
+
+
+    public function firstChapter() {
+        return $this->chapters()->one()->ofMany('id', 'min');
+    }
 }
