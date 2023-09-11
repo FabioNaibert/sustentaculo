@@ -12,6 +12,9 @@ class History extends Model
 {
     use HasFactory;
 
+    protected $table = 'histories';
+    protected $guarded = [];
+
     public function chapters(): HasMany
     {
         return $this->hasMany(Chapter::class);

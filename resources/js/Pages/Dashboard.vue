@@ -5,6 +5,10 @@
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
         </template>
+        <div class="c-button">
+            <!-- <AddButton :route="route('profile.edit')" :tooltip="addTooltip" /> -->
+            <NewHistory />
+        </div>
 
         <div class="py-12">
             <div v-if="histories.length > 0" class="c-cards max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -21,6 +25,8 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Card from '@/Molecules/Card.vue';
 import { Head } from '@inertiajs/vue3';
+import AddButton from '@/Atoms/AddButton.vue';
+import NewHistory from '@/Molecules/NewHistory.vue';
 
 export default {
     name: 'Dashboard',
@@ -31,27 +37,26 @@ export default {
         AuthenticatedLayout,
         Card,
         Head,
+        AddButton,
+        NewHistory
     },
 
-    created() {
-        console.log(this.histories);
+    data() {
+        return {
+            addTooltip: 'Criar nova história'
+        }
     },
-
-    // methods: {
-    //     getHistories: function() {
-    //         axios.get('/api/histories')
-    //             .then(response => {
-    //                 this.histories = response.data;
-    //             })
-    //             .catch(error => {
-    //                 console.log(error);
-    //             });
-    //     }
-    // }
 }
 </script>
 
 <style scoped>
+.c-button {
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    padding: 0.5rem;
+}
+
 .c-cards {
     display: flex;
     gap: 1rem;
