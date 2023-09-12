@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -38,6 +39,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::post('/history', [HistoryController::class, 'store'])->name('history.store');
+
+    Route::post('/chapter', [ChapterController::class, 'store'])->name('chapter.store');
 });
 
 require __DIR__.'/auth.php';

@@ -1,5 +1,5 @@
 <template>
-    <div class="card bg-white shadow-sm sm:rounded-lg">
+    <div @click="newChapter" class="card bg-white shadow-sm sm:rounded-lg">
         <div class="c-text p-6 text-gray-900">
             <h3>{{ history.title }}</h3>
             <p>{{ firstChapter }}</p>
@@ -8,10 +8,17 @@
 </template>
 
 <script>
+import { Link } from '@inertiajs/vue3';
+import { useForm } from '@inertiajs/vue3';
+
 export default {
     name: 'Card',
 
     props: ['history'],
+
+    components: {
+        Link,
+    },
 
     computed: {
         firstChapter: function() {
@@ -22,6 +29,21 @@ export default {
             return 'Este mundo ainda está em construção...'
         }
     },
+
+    methods: {
+        newChapter: function() {
+            console.log(this.history.id)
+            const form = useForm({
+                historyId: this.history.id,
+            });
+
+            form.post(route('chapter.store'), {
+                // onSuccess: () => closeModal(),
+                onError: (error) => console.error(error),
+                onFinish: () => form.reset(),
+            });
+        }
+    }
 }
 </script>
 
@@ -36,6 +58,7 @@ h3 {
     max-width: 22rem;
     height: 16rem;
     overflow: hidden;
+    cursor: pointer;
 }
 
 .c-text {

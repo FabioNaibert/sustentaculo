@@ -39,4 +39,8 @@ class History extends Model
     public function firstChapter() {
         return $this->chapters()->one()->ofMany('id', 'min');
     }
+
+    public function lastChapter() {
+        return $this->chapters()->one()->ofMany('id', 'max');
+    }
 }
