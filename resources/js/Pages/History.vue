@@ -4,7 +4,13 @@
     <AuthenticatedLayout>
         <div class="container__history">
             <div class="c-esquerda">
-                <div class="esquerda__1"><Player /></div>
+                <div class="esquerda__1">
+                    <div v-for="player in storePlayers"
+                        :key="player.id"
+                    >
+                        <Player :player="player" />
+                    </div>
+                </div>
                 <hr>
                 <div class="esquerda__2"></div>
             </div>
@@ -17,19 +23,6 @@
                 <div class="direita__2"></div>
             </div>
         </div>
-
-        <!-- <div class="c-button">
-            <NewHistory />
-        </div>
-
-        <div class="py-12">
-            <div v-if="histories.length > 0" class="c-cards max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <Card v-for="history in histories" :key="history.id" :history="history" />
-            </div>
-            <div v-else class="c-cards max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="p-6 text-gray-900">Mestre, crie seu primeiro mundo!</div>
-            </div>
-        </div> -->
     </AuthenticatedLayout>
 </template>
 
@@ -44,7 +37,7 @@ import Player from '@/Molecules/Player.vue';
 export default {
     name: 'History',
 
-    props: ['histories'],
+    props: ['response'],
 
     components: {
         AuthenticatedLayout,
@@ -60,6 +53,16 @@ export default {
             addTooltip: 'Criar nova história'
         }
     },
+
+    created() {
+        console.log(this.response.history)
+    },
+
+    computed: {
+        storePlayers: function() {
+            return this.response.history.players
+        }
+    }
 }
 </script>
 

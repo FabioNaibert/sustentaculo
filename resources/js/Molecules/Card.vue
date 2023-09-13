@@ -1,5 +1,5 @@
 <template>
-    <div @click="newChapter" class="card bg-white shadow-sm sm:rounded-lg">
+    <div @click="enterHistory" class="card bg-white shadow-sm sm:rounded-lg">
         <div class="c-text p-6 text-gray-900">
             <h3>{{ history.title }}</h3>
             <p>{{ firstChapter }}</p>
@@ -31,13 +31,11 @@ export default {
     },
 
     methods: {
-        newChapter: function() {
+        enterHistory: function() {
             console.log(this.history.id)
-            const form = useForm({
-                historyId: this.history.id,
-            });
+            const form = useForm({});
 
-            form.post(route('chapter.store'), {
+            form.get(route('history.get') + '/' + this.history.id, { id: this.history.id }, {
                 // onSuccess: () => closeModal(),
                 onError: (error) => console.error(error),
                 onFinish: () => form.reset(),
