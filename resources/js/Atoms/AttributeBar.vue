@@ -46,5 +46,6 @@ export default {
     font-weight: bold;
     left: 50%;
     transform: translateX(-50%);
+    color: white;
 }
 </style>

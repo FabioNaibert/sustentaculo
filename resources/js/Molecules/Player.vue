@@ -52,6 +52,10 @@ h3 {
     text-align: center;
 }
 
+.card {
+    width: 100%;
+}
+
 .attribute {
     display: flex;
     justify-content: space-between;

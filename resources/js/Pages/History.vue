@@ -5,10 +5,15 @@
         <div class="container__history">
             <div class="c-esquerda">
                 <div class="esquerda__1">
-                    <div v-for="player in storePlayers"
-                        :key="player.id"
+                    <div v-for="enemy in storeEnemies"
+                        :key="enemy.id"
+                        class="c-player"
                     >
-                        <Player :player="player" />
+                        <Player :player="enemy" />
+                    </div>
+
+                    <div>
+                        <NewPlayer />
                     </div>
                 </div>
                 <hr>
@@ -18,7 +23,26 @@
             <div class="c-meio"></div>
 
             <div class="c-direita">
-                <div class="direita__1"></div>
+                <div class="direita__1">
+                    <div class="players">
+                        <div v-for="player in storePlayers"
+                            :key="player.id"
+                            class="c-player"
+                        >
+                            <Player :player="player" />
+                            <Player :player="player" />
+                            <Player :player="player" />
+                            <Player :player="player" />
+                            <Player :player="player" />
+                            <Player :player="player" />
+                            <Player :player="player" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <NewPlayer />
+                    </div>
+                </div>
                 <hr>
                 <div class="direita__2"></div>
             </div>
@@ -33,6 +57,7 @@ import { Head } from '@inertiajs/vue3';
 import AddButton from '@/Atoms/AddButton.vue';
 import NewHistory from '@/Molecules/NewHistory.vue';
 import Player from '@/Molecules/Player.vue';
+import NewPlayer from '@/Molecules/NewPlayer.vue';
 
 export default {
     name: 'History',
@@ -45,7 +70,8 @@ export default {
         Head,
         AddButton,
         NewHistory,
-        Player
+        Player,
+        NewPlayer
     },
 
     data() {
@@ -61,6 +87,10 @@ export default {
     computed: {
         storePlayers: function() {
             return this.response.history.players
+        },
+
+        storeEnemies: function() {
+            return this.response.history.enemies
         }
     }
 }
@@ -104,5 +134,25 @@ hr {
     width: 100%;
     height: 50%;
     padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.players {
+    overflow-y: auto;
+    width: 100%;
+    height: 100%;
+}
+
+.c-player {
+    width: 100%;
+    gap: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* overflow-y: auto; */
 }
 </style>

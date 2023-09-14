@@ -27,27 +27,54 @@ class HistoryController extends Controller
     {
         $history = History::find($id);
         $chapters = Chapter::where('history_id', $id)->get();
-        $players = Player::where('history_id', $id)->get()->map(fn ($player) => [
-            'id' => $player->id,
-            'name' => $player->name,
-            'attributes' => $player->attributesPoints->map(function ($attributesPoints) {
-                $attribute = $attributesPoints->attribute;
-                return [
-                    'totalPoints' => $attributesPoints->total_points,
-                    'currentPoints' => $attributesPoints->current_points,
-                    'id' => $attribute->id,
-                    'name' => $attribute->name,
-                    'representationColor' => $attribute->representation_color,
-                ];
-            })
-        ]);
+        $players = Player::where([
+                ['history_id', $id],
+                ['user_id', '!=', $history->master_id]
+            ])
+            ->get()
+            ->map(fn ($player) => [
+                'id' => $player->id,
+                'name' => $player->name,
+                'attributes' => $player->attributesPoints->map(function ($attributesPoints) {
+                    $attribute = $attributesPoints->attribute;
+                    return [
+                        'totalPoints' => $attributesPoints->total_points,
+                        'currentPoints' => $attributesPoints->current_points,
+                        'id' => $attribute->id,
+                        'name' => $attribute->name,
+                        'representationColor' => $attribute->representation_color,
+                    ];
+                })
+            ]);
+
+        $enemies = Player::where([
+                ['history_id', $id],
+                ['user_id', $history->master_id]
+            ])
+            ->get()
+            ->map(fn ($enemy) => [
+                'id' => $enemy->id,
+                'name' => $enemy->name,
+                'attributes' => $enemy->attributesPoints->map(function ($attributesPoints) {
+                    $attribute = $attributesPoints->attribute;
+                    return [
+                        'totalPoints' => $attributesPoints->total_points,
+                        'currentPoints' => $attributesPoints->current_points,
+                        'id' => $attribute->id,
+                        'name' => $attribute->name,
+                        'representationColor' => $attribute->representation_color,
+                    ];
+                })
+            ]);
 
         $allHistory = [
             'history' => [
                 'id' => $history->id,
                 'title' => $history->title,
+                'masterId' => $history->master_id,
                 'chapters' => $chapters,
-                'players' => $players
+                'players' => $players,
+                'enemies' => $enemies
             ]
         ];
 
