@@ -24,6 +24,18 @@
 
             <div class="c-direita">
                 <div class="direita__1">
+                    <div class="input__default">
+                        <label class="label__default">PONTOS INICIAIS:</label>
+                        <IntInput tooltip="Valor padrão: 5"
+                            ref="intInput"
+                            type="number"
+                            class="mt-1 block"
+                            placeholder="Valor padrão: 5"
+                            v-model="defaultPoints"
+                            minValue="1"
+                            @change="setValue"
+                        />
+                    </div>
                     <div class="players">
                         <div v-for="player in storePlayers"
                             :key="player.id"
@@ -40,7 +52,8 @@
                     </div>
 
                     <div>
-                        <NewPlayer :history_id="storeHistory.id" />
+                        <NewPlayer :history_id="storeHistory.id"
+                            :default_points="defaultPoints" />
                     </div>
                 </div>
                 <hr>
@@ -58,6 +71,7 @@ import AddButton from '@/Atoms/AddButton.vue';
 import NewHistory from '@/Molecules/NewHistory.vue';
 import Player from '@/Molecules/Player.vue';
 import NewPlayer from '@/Molecules/NewPlayer.vue';
+import IntInput from '@/Atoms/IntInput.vue';
 
 export default {
     name: 'History',
@@ -71,17 +85,19 @@ export default {
         AddButton,
         NewHistory,
         Player,
-        NewPlayer
+        NewPlayer,
+        IntInput
     },
 
     data() {
         return {
-            addTooltip: 'Criar nova história'
+            addTooltip: 'Criar nova história',
+            defaultPoints: 5
         }
     },
 
     created() {
-        console.log(this.response.history)
+        // console.log(this.response.history)
     },
 
     computed: {
@@ -95,6 +111,16 @@ export default {
 
         storeEnemies: function() {
             return this.response.history.enemies
+        }
+    },
+
+    methods: {
+        setValue: function() {
+            if (this.defaultPoints < 1){
+                return this.defaultPoints = 5
+            }
+
+            return this.defaultPoints = parseInt(this.defaultPoints)
         }
     }
 }
@@ -158,5 +184,17 @@ hr {
     justify-content: center;
     align-items: center;
     /* overflow-y: auto; */
+}
+
+.input__default {
+    display: flex;
+    align-content: center;
+    gap: 0.5rem;
+}
+
+.label__default {
+    white-space: nowrap;
+    display: flex;
+    align-self: center;
 }
 </style>

@@ -42,7 +42,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/history', [HistoryController::class, 'store'])->name('history.store');
     Route::get('/history/{id?}', [HistoryController::class, 'getHistory'])->name('history.get');
 
-    Route::get('players/{name?}', [PlayerController::class, 'getPlayers'])->name('player.search');
+    Route::post('players', [PlayerController::class, 'getPlayers'])->name('player.search');
+    Route::post('add-player', [PlayerController::class, 'addPlayer'])->name('player.add');
 });
 
 require __DIR__.'/auth.php';
