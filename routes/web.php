@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -40,6 +41,8 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/history', [HistoryController::class, 'store'])->name('history.store');
     Route::get('/history/{id?}', [HistoryController::class, 'getHistory'])->name('history.get');
+
+    Route::get('players/{name?}', [PlayerController::class, 'getPlayers'])->name('player.search');
 });
 
 require __DIR__.'/auth.php';

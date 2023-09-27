@@ -1,54 +1,3 @@
-<script setup>
-import DangerButton from '@/Components/DangerButton.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import Modal from '@/Components/Modal.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import AddButton from '@/Atoms/AddButton.vue';
-import { useForm } from '@inertiajs/vue3';
-import { nextTick, ref } from 'vue';
-
-const showModal = ref(false);
-const titleInput = ref(null);
-
-const form = useForm({
-    name: '',
-});
-
-const openModal = () => {
-    showModal.value = true;
-
-    nextTick(() => titleInput.value.focus());
-};
-
-const data = () => {
-    console.log('teste')
-    // form.post(route('history.store'), {
-    //     preserveScroll: true,
-    //     onSuccess: () => closeModal(),
-    //     onError: () => titleInput.value.focus(),
-    //     onFinish: () => form.reset(),
-    // });
-};
-
-// import { router } from '@inertiajs/vue3'
-
-// router.post('/users', data, {
-//   onCancelToken: (cancelToken) => (this.cancelToken = cancelToken),
-// })
-
-// // Cancel the visit...
-// this.cancelToken.cancel()
-
-const closeModal = () => {
-    showModal.value = false;
-
-    form.reset();
-};
-</script>
-
 <template>
     <AddButton @click="openModal" />
 
@@ -66,15 +15,23 @@ const closeModal = () => {
                 <InputLabel for="title" value="Título" class="sr-only" />
 
                 <TextInput
-                    id="title"
-                    ref="titleInput"
+                    ref="nameInput"
                     v-model="form.name"
                     type="text"
                     class="mt-1 block w-3/4"
-                    placeholder="Usuário"
-                    @keyup.enter="data"
-                    @keyup="data"
+                    placeholder="Nome do usuário"
+                    @keyup.enter="search"
+                    @keyup="search"
                 />
+
+                <div v-if="users != null">
+                    <div v-for="user in users" :key="user.id">
+                        {{ user.name }}
+                    </div>
+                    <div v-if="users.length == 0">
+                        Nenhum usuário encontrado
+                    </div>
+                </div>
 
                 <!-- <InputError :message="form.errors.password" class="mt-2" /> -->
             </div>
@@ -94,3 +51,81 @@ const closeModal = () => {
         </div>
     </Modal>
 </template>
+
+<script>
+import DangerButton from '@/Components/DangerButton.vue';
+import InputError from '@/Components/InputError.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import Modal from '@/Components/Modal.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import TextInput from '@/Components/TextInput.vue';
+import AddButton from '@/Atoms/AddButton.vue';
+import { useForm } from '@inertiajs/vue3';
+import { nextTick, ref } from 'vue';
+import axios from 'axios';
+
+
+export default {
+    name: 'NewPlayer',
+
+    components: {
+        DangerButton,
+        InputError,
+        InputLabel,
+        Modal,
+        SecondaryButton,
+        PrimaryButton,
+        TextInput,
+        AddButton,
+    },
+
+    props: [
+        'history_id'
+    ],
+
+    data() {
+        return {
+            showModal: false,
+            timer: null,
+            form: useForm({name: ''}),
+            users: null,
+        }
+    },
+
+    methods: {
+        openModal: function() {
+            this.showModal = true;
+
+            nextTick(() => this.$refs["nameInput"].focus());
+        },
+
+        search: function() {
+            if (this.form.name == '') {
+                this.users = null
+                return
+            }
+
+            if (this.timer) {
+                clearTimeout(this.timer);
+                this.timer = null;
+            }
+
+            this.timer = setTimeout(() => {
+                axios.get(route('player.search') + '/' + this.form.name)
+                    .then((response) => {
+                        console.log(response.data)
+                        this.users = response.data
+                    })
+            }, 800);
+        },
+
+        closeModal: function() {
+            this.showModal = false;
+
+            this.form.reset();
+        }
+    }
+}
+</script>
+

@@ -13,7 +13,7 @@
                     </div>
 
                     <div>
-                        <NewPlayer />
+                        <NewPlayer :history_id="storeHistory.id" />
                     </div>
                 </div>
                 <hr>
@@ -40,7 +40,7 @@
                     </div>
 
                     <div>
-                        <NewPlayer />
+                        <NewPlayer :history_id="storeHistory.id" />
                     </div>
                 </div>
                 <hr>
@@ -85,6 +85,10 @@ export default {
     },
 
     computed: {
+        storeHistory: function() {
+            return this.response.history
+        },
+
         storePlayers: function() {
             return this.response.history.players
         },

@@ -32,7 +32,6 @@ export default {
 
     methods: {
         enterHistory: function() {
-            console.log(this.history.id)
             const form = useForm({});
 
             form.get(route('history.get') + '/' + this.history.id, { id: this.history.id }, {
