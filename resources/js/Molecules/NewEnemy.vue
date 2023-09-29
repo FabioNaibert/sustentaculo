@@ -12,60 +12,44 @@
             </p> -->
 
             <div class="mt-6 c-new__player">
-                <div class="input__default">
-                    <label class="label__default">PONTOS INICIAIS:</label>
-                    <IntInput tooltip="Valor padrão: 5"
-                        ref="intInput"
-                        type="number"
-                        class="mt-1 block"
-                        :placeholder="placeHolder"
-                        v-model="defaultPoints"
-                        :minValue="1"
-                        @change="setValue"
-                    />
-                </div>
-
                 <div>
                     <TextInput
                         ref="nameInput"
                         v-model="form.name"
                         type="text"
                         class="mt-1 block input__name"
-                        placeholder="Nome do usuário"
+                        placeholder="Nome do inimigo"
                         @keyup.enter="search"
                         @keyup="search"
                     />
 
-                    <div v-if="users != null" class="c-users">
-                        <div v-for="user in users" :key="user.id" class="option">
-                            {{ user.name }}
-                            <button class="add__user"
-                                title="Adicionar jogador"
-                                @click="addUser(user.id)"
-                            >
-                                <img src="../../svg/plus-lg.svg" />
-                            </button>
-                        </div>
-                        <div v-if="users.length == 0" class="option--empty">
-                            Nenhum usuário encontrado
-                        </div>
-                    </div>
+
                 </div>
 
-                <!-- <InputError :message="form.errors.password" class="mt-2" /> -->
+                <div v-for="attribute in allAttributes" :key="attribute.id" class="input__default">
+                    <label class="label__default">{{ attribute.name }}:</label>
+                    <IntInput :tooltip="placeHolder"
+                        ref="intInput"
+                        type="number"
+                        class="mt-1 block"
+                        :placeholder="placeHolder"
+                        v-model="attribute.totalPoints"
+                        :minValue="minValue"
+                        @change="setValue"
+                    />
+                </div>
             </div>
 
             <div class="mt-6 flex justify-end">
                 <SecondaryButton @click="closeModal"> FECHAR </SecondaryButton>
 
-                <!-- <PrimaryButton
+                <PrimaryButton
                     class="ml-3"
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
-                    @click="newHistory"
                 >
                     SALVAR
-                </PrimaryButton> -->
+                </PrimaryButton>
             </div>
         </div>
     </Modal>
@@ -87,7 +71,7 @@ import axios from 'axios';
 
 
 export default {
-    name: 'NewPlayer',
+    name: 'NewEnemy',
 
     components: {
         DangerButton,
@@ -103,7 +87,7 @@ export default {
 
     props: [
         'history_id',
-        'default_points'
+        'allAttributes',
     ],
 
     data() {
@@ -111,17 +95,15 @@ export default {
             showModal: false,
             timer: null,
             form: useForm({name: ''}),
-            users: null,
-            defaultPoints: this.default_points,
-            placeHolder: `Valor padrão: ${this.default_points}`
+            minValue: 0,
+            defaultPoints: null,
+            placeHolder: null
         }
     },
 
-    watch: {
-        default_points(newValue) {
-            this.defaultPoints = newValue
-            this.placeHolder = `Valor padrão: ${newValue}`
-        }
+    created() {
+        this.defaultPoints = this.minValue
+        this.placeHolder = `Valor padrão: ${this.minValue}`
     },
 
     methods: {
@@ -163,22 +145,33 @@ export default {
             .then((response) => {
                 this.users = null
                 this.form.name = ''
-                nextTick(() => this.$refs["nameInput"].focus());
+                nextTick(() => this.$refs["nameInput"].focus())
             })
         },
 
         setValue: function() {
-            if (this.defaultPoints < 1){
-                return this.defaultPoints = this.default_points
+            if (this.defaultPoints < this.minValue){
+                return this.defaultPoints = this.minValue
+            }
+
+            if (isNaN(parseInt(this.defaultPoints))) {
+                return this.defaultPoints = this.minValue
             }
 
             return this.defaultPoints = parseInt(this.defaultPoints)
         },
 
         closeModal: function() {
-            this.showModal = false;
+            this.showModal = false
 
-            this.form.reset();
+            this.resetPoints()
+            this.form.reset()
+        },
+
+        resetPoints: function() {
+            this.allAttributes.forEach(element => {
+                element.totalPoints = null
+            });
         }
     }
 }

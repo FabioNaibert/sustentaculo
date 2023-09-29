@@ -13,7 +13,7 @@
                     </div>
 
                     <div>
-                        <NewPlayer :history_id="storeHistory.id" />
+                        <NewEnemy :history_id="storeHistory.id" :allAttributes="storeAllAttributes" />
                     </div>
                 </div>
                 <hr>
@@ -32,21 +32,15 @@
                             class="mt-1 block"
                             placeholder="Valor padrão: 5"
                             v-model="defaultPoints"
-                            minValue="1"
+                            :minValue="1"
                             @change="setValue"
                         />
                     </div>
                     <div class="players">
                         <div v-for="player in storePlayers"
                             :key="player.id"
-                            class="c-player"
+                            class="player"
                         >
-                            <Player :player="player" />
-                            <Player :player="player" />
-                            <Player :player="player" />
-                            <Player :player="player" />
-                            <Player :player="player" />
-                            <Player :player="player" />
                             <Player :player="player" />
                         </div>
                     </div>
@@ -72,6 +66,7 @@ import NewHistory from '@/Molecules/NewHistory.vue';
 import Player from '@/Molecules/Player.vue';
 import NewPlayer from '@/Molecules/NewPlayer.vue';
 import IntInput from '@/Atoms/IntInput.vue';
+import NewEnemy from '@/Molecules/NewEnemy.vue';
 
 export default {
     name: 'History',
@@ -86,7 +81,8 @@ export default {
         NewHistory,
         Player,
         NewPlayer,
-        IntInput
+        IntInput,
+        NewEnemy
     },
 
     data() {
@@ -111,7 +107,11 @@ export default {
 
         storeEnemies: function() {
             return this.response.history.enemies
-        }
+        },
+
+        storeAllAttributes: function() {
+            return this.response.allAttributes
+        },
     },
 
     methods: {
@@ -174,16 +174,16 @@ hr {
     overflow-y: auto;
     width: 100%;
     height: 100%;
-}
 
-.c-player {
-    width: 100%;
     gap: 0.6rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    /* overflow-y: auto; */
+}
+
+.player {
+    width: 100%;
 }
 
 .input__default {

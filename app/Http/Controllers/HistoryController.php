@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attribute;
 use App\Models\Chapter;
 use App\Models\History;
 use App\Models\Player;
@@ -75,7 +76,12 @@ class HistoryController extends Controller
                 'chapters' => $chapters,
                 'players' => $players,
                 'enemies' => $enemies
-            ]
+            ],
+            'allAttributes' => Attribute::all(['id', 'name'])->map(fn ($attribute) => [
+                'id' => $attribute->id,
+                'name' => $attribute->name,
+                'totalPoints' => null
+            ])
         ];
 
         return Inertia::render('History', [

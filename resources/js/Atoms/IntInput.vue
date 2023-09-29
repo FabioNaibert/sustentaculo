@@ -3,7 +3,6 @@ import { onMounted, ref } from 'vue';
 
 defineProps({
     modelValue: {
-        type: Number,
         required: true,
     },
     tooltip: {
