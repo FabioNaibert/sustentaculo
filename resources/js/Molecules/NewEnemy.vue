@@ -15,15 +15,11 @@
                 <div>
                     <TextInput
                         ref="nameInput"
-                        v-model="form.name"
+                        v-model="name"
                         type="text"
                         class="mt-1 block input__name"
                         placeholder="Nome do inimigo"
-                        @keyup.enter="search"
-                        @keyup="search"
                     />
-
-
                 </div>
 
                 <div v-for="attribute in allAttributes" :key="attribute.id" class="input__default">
@@ -47,6 +43,7 @@
                     class="ml-3"
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
+                    @click="addEnemy"
                 >
                     SALVAR
                 </PrimaryButton>
@@ -94,6 +91,7 @@ export default {
         return {
             showModal: false,
             timer: null,
+            name: '',
             form: useForm({name: ''}),
             minValue: 0,
             defaultPoints: null,
@@ -113,42 +111,6 @@ export default {
             nextTick(() => this.$refs["nameInput"].focus());
         },
 
-        search: function() {
-            if (this.form.name == '') {
-                this.users = null
-                return
-            }
-
-            if (this.timer) {
-                clearTimeout(this.timer);
-                this.timer = null;
-            }
-
-            this.timer = setTimeout(() => {
-                axios.post(route('player.search'), {
-                    name: this.form.name,
-                    history_id: this.history_id
-                })
-                .then((response) => {
-                    console.log(response.data)
-                    this.users = response.data
-                })
-            }, 800);
-        },
-
-        addUser: function(userId) {
-            axios.post(route('player.add'), {
-                user_id: userId,
-                history_id: this.history_id,
-                points: this.defaultPoints,
-            })
-            .then((response) => {
-                this.users = null
-                this.form.name = ''
-                nextTick(() => this.$refs["nameInput"].focus())
-            })
-        },
-
         setValue: function() {
             if (this.defaultPoints < this.minValue){
                 return this.defaultPoints = this.minValue
@@ -161,11 +123,26 @@ export default {
             return this.defaultPoints = parseInt(this.defaultPoints)
         },
 
+        addEnemy: function() {
+            const data = {
+                name: this.name,
+                all_attributes: this.allAttributes,
+                history_id: this.history_id,
+            }
+
+            axios.post(route('enemy.add'), data)
+            .then((response) => {
+                this.name = ''
+                this.closeModal()
+            })
+        },
+
         closeModal: function() {
             this.showModal = false
 
             this.resetPoints()
             this.form.reset()
+            this.name = ''
         },
 
         resetPoints: function() {

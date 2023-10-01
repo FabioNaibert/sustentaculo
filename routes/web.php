@@ -44,6 +44,8 @@ Route::middleware('auth')->group(function () {
 
     Route::post('players', [PlayerController::class, 'getPlayers'])->name('player.search');
     Route::post('add-player', [PlayerController::class, 'addPlayer'])->name('player.add');
+
+    Route::post('add-enemy', [PlayerController::class, 'addEnemy'])->name('enemy.add');
 });
 
 require __DIR__.'/auth.php';

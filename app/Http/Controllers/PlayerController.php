@@ -59,4 +59,31 @@ class PlayerController extends Controller
 
         return null;
     }
+
+
+    public function addEnemy(Request $request)
+    {
+        $historyId = $request->input('history_id');
+        $allAttributes = $request->input('all_attributes');
+        $name = $request->input('name');
+        $masterId = auth()->user()->id;
+
+        $enemy = Player::create([
+            'name' => $name,
+            'user_id' => $masterId,
+            'history_id' => $historyId,
+        ]);
+
+        $mapAttributes = collect($allAttributes)->mapWithKeys(function ($attribute) {
+            return [
+                $attribute['id'] => [
+                    'total_points' => $attribute['totalPoints']
+                ]
+            ];
+        });
+
+        $enemy->attributes()->attach($mapAttributes);
+
+        return null;
+    }
 }
