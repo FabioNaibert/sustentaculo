@@ -5,11 +5,13 @@
         <div class="container__history">
             <div class="c-esquerda">
                 <div class="esquerda__1">
-                    <div v-for="enemy in storeEnemies"
-                        :key="enemy.id"
-                        class="c-player"
-                    >
-                        <Player :player="enemy" />
+                    <div class="players">
+                        <div v-for="enemy in storeEnemies"
+                            :key="enemy.id"
+                            class="player"
+                        >
+                            <Player :player="enemy" />
+                        </div>
                     </div>
 
                     <div>
@@ -178,7 +180,6 @@ hr {
     gap: 0.6rem;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
 }
 

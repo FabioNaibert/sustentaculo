@@ -14,6 +14,9 @@ class Attribute extends Model
     protected $table = 'attributes';
     protected $guarded = [];
 
+    const VIDA = 1;
+    const MANA = 2;
+
     public function attributesPoints(): HasMany
     {
         return $this->hasMany(AttributePoint::class);
@@ -23,5 +26,10 @@ class Attribute extends Model
     {
         // return $this->belongsToMany(Attribute::class)->using(AttributePoint::class);
         return $this->belongsToMany(Player::class, 'attribute_points', 'attribute_id', 'player_id');
+    }
+
+    public static function hasCurrentPoints($attributeId)
+    {
+        return in_array($attributeId, [self::VIDA, self::MANA]);
     }
 }

@@ -10,16 +10,16 @@ use Illuminate\Support\Facades\Log;
 
 class PlayerController extends Controller
 {
-    public function getPlayers(Request $request)
+    public function getUsersToPlay(Request $request)
     {
         $name = $request->input('name');
         $historyId = $request->input('history_id');
 
-        return $this->queryPlayers($name, $historyId);
+        return $this->getUsers($name, $historyId);
     }
 
 
-    public function queryPlayers($name, $historyId)
+    public function getUsers($name, $historyId)
     {
         if (!$name) return [];
 
@@ -75,15 +75,61 @@ class PlayerController extends Controller
         ]);
 
         $mapAttributes = collect($allAttributes)->mapWithKeys(function ($attribute) {
-            return [
-                $attribute['id'] => [
+            if (Attribute::hasCurrentPoints($attribute['id'])) {
+                $data = [
+                    'total_points' => $attribute['totalPoints'],
+                    'current_points' => $attribute['totalPoints']
+                ];
+            } else {
+                $data = [
                     'total_points' => $attribute['totalPoints']
-                ]
+                ];
+            }
+
+            return [
+                $attribute['id'] => $data
             ];
         });
 
         $enemy->attributes()->attach($mapAttributes);
 
         return null;
+    }
+
+
+    public function getPlayers($historyId, $masterId)
+    {
+        $userIsNotMaster = '!=';
+        return $this->mapPlayers($historyId, $masterId, $userIsNotMaster);
+    }
+
+    public function getEnemies($historyId, $masterId)
+    {
+        $userIsMaster = '=';
+        return $this->mapPlayers($historyId, $masterId, $userIsMaster);
+    }
+
+
+    public function mapPlayers($historyId, $masterId, $condition)
+    {
+        return Player::where([
+                ['history_id', $historyId],
+                ['user_id', $condition, $masterId]
+            ])
+            ->get()
+            ->map(fn ($player) => [
+                'id' => $player->id,
+                'name' => $player->name,
+                'attributes' => $player->attributesPoints->map(function ($attributesPoints) {
+                    $attribute = $attributesPoints->attribute;
+                    return [
+                        'totalPoints' => $attributesPoints->total_points,
+                        'currentPoints' => $attributesPoints->current_points,
+                        'id' => $attribute->id,
+                        'name' => $attribute->name,
+                        'representationColor' => $attribute->representation_color,
+                    ];
+                })
+            ]);
     }
 }

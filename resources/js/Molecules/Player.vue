@@ -7,6 +7,7 @@
                 :key="attribute.id"
             >
                 {{ attribute.name }}
+                <!-- {{ attribute }} -->
                 <AttributeBar v-if="showAttributeBar(attribute.currentPoints)"
                     :totalPoints="attribute.totalPoints"
                     :currentPoints="attribute.currentPoints"
