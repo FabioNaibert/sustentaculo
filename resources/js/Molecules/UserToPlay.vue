@@ -1,44 +1,34 @@
 <template>
     <div class="card bg-white shadow-sm sm:rounded-lg">
-        <div class="c-text p-6 text-gray-900">
             <h3>{{ player.name }}</h3>
-            <div class="attribute"
-                v-for="attribute in storeAttributes"
-                :key="attribute.id"
-            >
-                {{ attribute.name }}
-                <!-- {{ attribute }} -->
-                <AttributeBar v-if="showAttributeBar(attribute.currentPoints)"
-                    :totalPoints="attribute.totalPoints"
-                    :currentPoints="attribute.currentPoints"
-                    :color="attribute.representationColor"
-                />
-                <div v-else>{{attribute.totalPoints}}</div>
-            </div>
             <RemoveButton @click="removePlayer"
                 :tooltip="tooltip"
             />
-        </div>
     </div>
 </template>
 
 <script>
-import AttributeBar from "@/Atoms/AttributeBar.vue";
+import RemoveButton from "@/Atoms/RemoveButton.vue";
 
 export default {
-    name: 'Player',
+    name: 'UserToPlay',
 
     components: {
-        AttributeBar
+        RemoveButton
     },
 
     props: [
-        'player'
+        'player',
+        'history_id'
+    ],
+
+    emits: [
+        'upPlayers'
     ],
 
     data() {
         return {
-            tooltip: 'Excluir inimigo'
+            tooltip: 'Excluir jogador'
         }
     },
 
@@ -49,10 +39,6 @@ export default {
     },
 
     methods: {
-        showAttributeBar: function(current) {
-            return current !== null || current !== undefined
-        },
-
         removePlayer:function() {
             axios.post(route('player.remove'), {
                 player_id: this.player.id,
@@ -74,6 +60,11 @@ h3 {
 
 .card {
     width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 3rem;
+    padding: 0.8rem;
 }
 
 .attribute {

@@ -106,6 +106,10 @@ export default {
         'default_points'
     ],
 
+    emits: [
+        "newPlayers"
+    ],
+
     data() {
         return {
             showModal: false,
@@ -163,6 +167,7 @@ export default {
             .then((response) => {
                 this.users = null
                 this.form.name = ''
+                this.$emit('newPlayers', response.data)
                 nextTick(() => this.$refs["nameInput"].focus());
             })
         },

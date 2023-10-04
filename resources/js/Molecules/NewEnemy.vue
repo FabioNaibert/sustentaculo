@@ -87,6 +87,10 @@ export default {
         'allAttributes',
     ],
 
+    emits: [
+        "newEnemies"
+    ],
+
     data() {
         return {
             showModal: false,
@@ -133,6 +137,7 @@ export default {
             axios.post(route('enemy.add'), data)
             .then((response) => {
                 this.name = ''
+                this.$emit('newEnemies', response.data)
                 this.closeModal()
             })
         },

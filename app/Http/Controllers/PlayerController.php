@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attribute;
+use App\Models\History;
 use App\Models\Player;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -45,6 +46,7 @@ class PlayerController extends Controller
         $points = $request->input('points');
 
         $user = User::find($userId);
+        $history = History::find($historyId);
 
         $player = Player::create([
             'name' => $user->name,
@@ -57,7 +59,7 @@ class PlayerController extends Controller
 
         $player->attributes()->attach($attributes);
 
-        return null;
+        return $this->getPlayers($history->id, $history->master_id);
     }
 
 
@@ -93,7 +95,7 @@ class PlayerController extends Controller
 
         $enemy->attributes()->attach($mapAttributes);
 
-        return null;
+        return $this->getEnemies($historyId, $masterId);
     }
 
 
@@ -131,5 +133,36 @@ class PlayerController extends Controller
                     ];
                 })
             ]);
+    }
+
+
+    public function removePlayer(Request $request)
+    {
+        $playerId = $request->input('player_id');
+        $historyId = $request->input('history_id');
+        $history = History::find($historyId);
+
+        $this->removeUser($playerId);
+
+        return $this->getPlayers($history->id, $history->master_id);
+    }
+
+
+    public function removeEnemy(Request $request)
+    {
+        $playerId = $request->input('player_id');
+        $historyId = $request->input('history_id');
+        $history = History::find($historyId);
+
+        $this->removeUser($playerId);
+
+        return $this->getPlayers($history->id, $history->master_id);
+    }
+
+
+    public function removeUser($playerId)
+    {
+        $player = Player::find($playerId);
+        $player->delete();
     }
 }

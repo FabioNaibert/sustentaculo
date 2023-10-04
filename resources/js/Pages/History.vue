@@ -15,7 +15,11 @@
                     </div>
 
                     <div>
-                        <NewEnemy :history_id="storeHistory.id" :allAttributes="storeAllAttributes" />
+                        <NewEnemy
+                            :history_id="storeHistory.id"
+                            :allAttributes="storeAllAttributes"
+                            @newEnemies="(newEnemies) => response.history.enemies = newEnemies"
+                        />
                     </div>
                 </div>
                 <hr>
@@ -43,13 +47,19 @@
                             :key="player.id"
                             class="player"
                         >
-                            <Player :player="player" />
+                            <!-- <Player :player="player" /> -->
+                            <UserToPlay :player="player"
+                                :history_id="storeHistory.id"
+                                @upPlayers="(upPlayers) => response.history.players = upPlayers"
+                            />
                         </div>
                     </div>
 
                     <div>
                         <NewPlayer :history_id="storeHistory.id"
-                            :default_points="defaultPoints" />
+                            :default_points="defaultPoints"
+                            @newPlayers="(newPlayers) => response.history.players = newPlayers"
+                        />
                     </div>
                 </div>
                 <hr>
@@ -69,6 +79,7 @@ import Player from '@/Molecules/Player.vue';
 import NewPlayer from '@/Molecules/NewPlayer.vue';
 import IntInput from '@/Atoms/IntInput.vue';
 import NewEnemy from '@/Molecules/NewEnemy.vue';
+import UserToPlay from '@/Molecules/UserToPlay.vue';
 
 export default {
     name: 'History',
@@ -84,7 +95,8 @@ export default {
         Player,
         NewPlayer,
         IntInput,
-        NewEnemy
+        NewEnemy,
+        UserToPlay
     },
 
     data() {
