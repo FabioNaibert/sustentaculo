@@ -84,7 +84,8 @@ class PlayerController extends Controller
                 ];
             } else {
                 $data = [
-                    'total_points' => $attribute['totalPoints']
+                    'total_points' => $attribute['totalPoints'],
+                    'current_points' => null
                 ];
             }
 
@@ -92,6 +93,8 @@ class PlayerController extends Controller
                 $attribute['id'] => $data
             ];
         });
+
+        Log::info($mapAttributes);
 
         $enemy->attributes()->attach($mapAttributes);
 
@@ -156,7 +159,7 @@ class PlayerController extends Controller
 
         $this->removeUser($playerId);
 
-        return $this->getPlayers($history->id, $history->master_id);
+        return $this->getEnemies($history->id, $history->master_id);
     }
 
 

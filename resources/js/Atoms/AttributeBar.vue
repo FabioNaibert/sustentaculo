@@ -20,7 +20,6 @@ export default {
             return (this.currentPoints / this.totalPoints * 100) + '%';
         }
     }
-
 }
 </script>
 

@@ -1,44 +1,56 @@
 <template>
     <div class="card bg-white shadow-sm sm:rounded-lg">
-        <div class="c-text p-6 text-gray-900">
+        <div class="c-text text-gray-900">
             <h3>{{ player.name }}</h3>
-            <div class="attribute"
-                v-for="attribute in storeAttributes"
-                :key="attribute.id"
-            >
-                {{ attribute.name }}
-                <!-- {{ attribute }} -->
-                <AttributeBar v-if="showAttributeBar(attribute.currentPoints)"
-                    :totalPoints="attribute.totalPoints"
-                    :currentPoints="attribute.currentPoints"
-                    :color="attribute.representationColor"
+            <div class="c-info">
+                <div class="info__attribute">
+                    <div
+                        v-for="attribute in storeAttributes"
+                        :key="attribute.id"
+                    >
+                        <div class="attribute" v-if="showAttributeBar(attribute.currentPoints) || showAll">
+                            <p>{{ attribute.name }}</p>
+                            <AttributeBar v-if="showAttributeBar(attribute.currentPoints)"
+                                :totalPoints="attribute.totalPoints"
+                                :currentPoints="attribute.currentPoints"
+                                :color="attribute.representationColor"
+                            />
+                            <div v-else class="attribute__points">{{attribute.totalPoints}}</div>
+                        </div>
+                    </div>
+                </div>
+                <RemoveButton @click="removePlayer"
+                    :tooltip="tooltip"
                 />
-                <div v-else>{{attribute.totalPoints}}</div>
             </div>
-            <RemoveButton @click="removePlayer"
-                :tooltip="tooltip"
-            />
         </div>
+        <AccordionButton @click="showAllAttributes()" :rotate="showAll" :identifier="player.id"/>
     </div>
 </template>
 
 <script>
 import AttributeBar from "@/Atoms/AttributeBar.vue";
+import RemoveButton from "@/Atoms/RemoveButton.vue";
+import AccordionButton from "@/Atoms/AccordionButton.vue";
 
 export default {
     name: 'Player',
 
     components: {
-        AttributeBar
+        AttributeBar,
+        RemoveButton,
+        AccordionButton
     },
 
     props: [
-        'player'
+        'player',
+        'history_id'
     ],
 
     data() {
         return {
-            tooltip: 'Excluir inimigo'
+            tooltip: 'Excluir inimigo',
+            showAll: false,
         }
     },
 
@@ -50,17 +62,21 @@ export default {
 
     methods: {
         showAttributeBar: function(current) {
-            return current !== null || current !== undefined
+            return current !== null && current !== undefined
         },
 
-        removePlayer:function() {
-            axios.post(route('player.remove'), {
+        removePlayer: function() {
+            axios.post(route('enemy.remove'), {
                 player_id: this.player.id,
                 history_id: this.history_id
             })
             .then((response) => {
                 this.$emit('upPlayers', response.data)
             })
+        },
+
+        showAllAttributes: function() {
+            this.showAll = !this.showAll
         }
     }
 
@@ -72,15 +88,37 @@ h3 {
     text-align: center;
 }
 
+p {
+    min-width: 4.5rem;
+}
+
 .card {
     width: 100%;
+    overflow: hidden;
+}
+
+.c-text {
+    padding: 0.2rem 1.5rem;
 }
 
 .attribute {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     flex-wrap: nowrap;
     gap: 1rem;
+}
+
+.c-info {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.info__attribute {
+    flex-grow: 2;
+}
+
+.attribute__points {
+    text-align: left;
 }
 </style>

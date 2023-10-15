@@ -2,30 +2,14 @@
     <button :title="tooltip">
         <img src="../../svg/plus-lg.svg" />
     </button>
-    <!-- <Link
-        :href="route"
-        as="button"
-        :title="tooltip"
-    >
-        <img src="../../svg/plus-lg.svg" />
-    </Link> -->
 </template>
 
 
 <script>
-import { Link } from '@inertiajs/vue3';
-
 export default {
     name: 'AddButton',
 
     props: ['tooltip'],
-
-    components: {
-        Link
-    },
-
-    methods: {
-    }
 }
 </script>
 

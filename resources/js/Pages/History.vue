@@ -10,7 +10,11 @@
                             :key="enemy.id"
                             class="player"
                         >
-                            <Player :player="enemy" />
+                            <Player
+                                :player="enemy"
+                                :history_id="storeHistory.id"
+                                @upPlayers="(upPlayers) => response.history.enemies = upPlayers"
+                            />
                         </div>
                     </div>
 
