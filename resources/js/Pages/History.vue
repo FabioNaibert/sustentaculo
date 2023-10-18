@@ -27,7 +27,18 @@
                     </div>
                 </div>
                 <hr>
-                <div class="esquerda__2"></div>
+                <div class="esquerda__2">
+                    <div class="players">
+
+                    </div>
+
+                    <div>
+                        <NewResource
+                            :history_id="storeHistory.id"
+                            :allAttributes="storeAllAttributes"
+                        />
+                    </div>
+                </div>
             </div>
 
             <div class="c-meio"></div>
@@ -84,6 +95,7 @@ import NewPlayer from '@/Molecules/NewPlayer.vue';
 import IntInput from '@/Atoms/IntInput.vue';
 import NewEnemy from '@/Molecules/NewEnemy.vue';
 import UserToPlay from '@/Molecules/UserToPlay.vue';
+import NewResource from '@/Molecules/NewResource.vue';
 
 export default {
     name: 'History',
@@ -100,7 +112,8 @@ export default {
         NewPlayer,
         IntInput,
         NewEnemy,
-        UserToPlay
+        UserToPlay,
+        NewResource
     },
 
     data() {
