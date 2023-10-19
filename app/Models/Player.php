@@ -32,7 +32,6 @@ class Player extends Model
 
     public function attributes(): BelongsToMany
     {
-        // return $this->belongsToMany(Attribute::class)->using(AttributePoint::class);
         return $this->belongsToMany(Attribute::class, 'attribute_points', 'player_id', 'attribute_id');
     }
 }

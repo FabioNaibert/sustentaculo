@@ -15,21 +15,31 @@ use Inertia\Inertia;
 
 class HistoryController extends Controller
 {
+    protected PlayerController $playerController;
+
+    public function __construct(PlayerController $playerController)
+    {
+        $this->playerController = $playerController;
+    }
+
+
     public function getHistories()
     {
         $user = Auth::user();
 
         $histories = History::with('firstChapter')->where('master_id', $user->id)->get();
 
-        return $histories;
+        return Inertia::render('Dashboard', [
+            'histories' => $histories
+        ]);
     }
 
     public function getHistory($id)
     {
         $history = History::find($id);
         $chapters = Chapter::where('history_id', $id)->get();
-        $players = (new PlayerController)->getPlayers($history->id, $history->master_id);
-        $enemies = (new PlayerController)->getEnemies($history->id, $history->master_id);
+        $players = $this->playerController->getPlayers($history->id, $history->master_id);
+        $enemies = $this->playerController->getEnemies($history->id, $history->master_id);
 
         $allHistory = [
             'history' => [

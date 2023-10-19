@@ -14,7 +14,7 @@ return new class extends Migration
         if (!Schema::hasColumn('weapons', 'player_id')) {
             Schema::table('weapons', function (Blueprint $table) {
                 $table->unsignedBigInteger('player_id')->nullable();
-                $table->unsignedBigInteger('history_id')->nullable();
+                $table->unsignedBigInteger('history_id');
                 $table->boolean('equiped')->default(false);
 
                 $table->foreign('player_id')->references('id')->on('players')->nullOnDelete();

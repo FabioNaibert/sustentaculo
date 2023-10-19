@@ -24,13 +24,15 @@
                         @change="setValue"
                     />
                 </div>
+                <!-- <input type="file" id="myfile" name="myfile"> -->
                 <ImageInput
-                    :tooltip="'placeHolder'"
-                    ref="imageInput"
-                    type="file"
-                    class="mt-1 block"
                     v-model="image"
+                    tooltip="'placeHolder'"
                 />
+                <!-- :tooltip="'placeHolder'"
+                    ref="imageInput"
+                    class="mt-1 block"
+                    v-model="image" -->
             </div>
 
             <div class="mt-6 flex justify-end">
@@ -40,7 +42,7 @@
                     class="ml-3"
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
-                    @click="addEnemy"
+                    @click="addWeapon"
                 >
                     SALVAR
                 </PrimaryButton>
@@ -115,6 +117,12 @@ export default {
         // this.placeHolder = `Valor padrão: ${this.minValue}`
     },
 
+    watch: {
+        image(newI) {
+            console.log(newI)
+        }
+    },
+
     methods: {
         openModal: function() {
             this.showModal = true;
@@ -132,17 +140,27 @@ export default {
             return this.defaultPoints = parseInt(this.defaultPoints)
         },
 
-        addEnemy: function() {
+        addWeapon: function() {
+            const imageData = new FormData()
+            imageData.append("filename", this.image)
+
             const data = {
-                name: this.name,
                 all_attributes: this.allAttributes,
                 history_id: this.history_id,
+                image: imageData
             }
 
-            axios.post(route('enemy.add'), data)
+            const config = {
+                headers: {
+                    "content-type": "multipart/form-data"
+                }
+            }
+
+            axios.post(route('weapon.add'), data, config)
             .then((response) => {
-                this.name = ''
-                this.$emit('newEnemies', response.data)
+                console.log(response.data)
+                // this.name = ''
+                // this.$emit('newEnemies', response.data)
                 this.closeModal()
             })
         },

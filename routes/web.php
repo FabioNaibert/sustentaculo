@@ -4,6 +4,7 @@ use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\WeaponController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -28,11 +29,7 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard', [
-        'histories' => (new HistoryController)->getHistories()
-    ]);
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [HistoryController::class, 'getHistories'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -48,6 +45,9 @@ Route::middleware('auth')->group(function () {
 
     Route::post('add-enemy', [PlayerController::class, 'addEnemy'])->name('enemy.add');
     Route::post('remove-enemy', [PlayerController::class, 'removeEnemy'])->name('enemy.remove');
+
+    Route::post('add-weapon', [WeaponController::class, 'addWeapon'])->name('weapon.add');
+    Route::post('remove-weapon', [WeaponController::class, 'removeWeapon'])->name('weapon.remove');
 });
 
 require __DIR__.'/auth.php';

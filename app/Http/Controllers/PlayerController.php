@@ -2,15 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\AttributesService;
 use App\Models\Attribute;
 use App\Models\History;
 use App\Models\Player;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class PlayerController extends Controller
 {
+    private AttributesService $attributesService;
+
+    public function __construct(AttributesService $attributesService)
+    {
+        $this->attributesService = $attributesService;
+    }
+
+
     public function getUsersToPlay(Request $request)
     {
         $name = $request->input('name');
@@ -76,26 +84,7 @@ class PlayerController extends Controller
             'history_id' => $historyId,
         ]);
 
-        $mapAttributes = collect($allAttributes)->mapWithKeys(function ($attribute) {
-            if (Attribute::hasCurrentPoints($attribute['id'])) {
-                $data = [
-                    'total_points' => $attribute['totalPoints'],
-                    'current_points' => $attribute['totalPoints']
-                ];
-            } else {
-                $data = [
-                    'total_points' => $attribute['totalPoints'],
-                    'current_points' => null
-                ];
-            }
-
-            return [
-                $attribute['id'] => $data
-            ];
-        });
-
-        Log::info($mapAttributes);
-
+        $mapAttributes = $this->attributesService->mapAttributesPoints($allAttributes);
         $enemy->attributes()->attach($mapAttributes);
 
         return $this->getEnemies($historyId, $masterId);
