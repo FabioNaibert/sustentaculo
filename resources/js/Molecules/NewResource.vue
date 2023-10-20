@@ -25,14 +25,28 @@
                     />
                 </div>
                 <!-- <input type="file" id="myfile" name="myfile"> -->
-                <ImageInput
+                <!-- <ImageInput
                     v-model="image"
                     tooltip="'placeHolder'"
-                />
+                /> -->
                 <!-- :tooltip="'placeHolder'"
                     ref="imageInput"
                     class="mt-1 block"
                     v-model="image" -->
+
+                <div class="c-image">
+                    <label
+                        class="custom-file-upload"
+                        for="input-image"
+                    >
+                        IMAGEM:
+                    </label>
+                    <input
+                        id="input-image"
+                        type="file"
+                        @input="image = $event.target.files[0]"
+                    >
+                </div>
             </div>
 
             <div class="mt-6 flex justify-end">
@@ -147,7 +161,7 @@ export default {
             const data = {
                 all_attributes: this.allAttributes,
                 history_id: this.history_id,
-                image: imageData
+                image: this.image //imageData
             }
 
             const config = {
@@ -241,5 +255,34 @@ export default {
     display: flex;
     flex-direction: column;
     gap:1rem;
+}
+
+
+
+
+
+.c-image {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+input::file-selector-button {
+    --tw-text-opacity: 1;
+    --tw-bg-opacity: 1;
+
+    color: rgb(255 255 255 / var(--tw-text-opacity));
+    letter-spacing: 0.1em;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    background-color: rgb(31 41 55 / var(--tw-bg-opacity));
+    border-width: 1px;
+    border-color: transparent;
+    border-radius: 0.375rem;
+    cursor: pointer;
+}
+
+input:focus {
+    outline: none;
 }
 </style>

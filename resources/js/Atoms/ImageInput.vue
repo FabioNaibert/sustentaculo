@@ -9,7 +9,7 @@
         <input
             id="input-image"
             :value="modelValue"
-            @input="$emit('update:modelValue', $event.target.value)"
+            @input="$emit('update:modelValue', $event.target.files[0])"
             ref="input"
             :title="tooltip"
             type="file"
