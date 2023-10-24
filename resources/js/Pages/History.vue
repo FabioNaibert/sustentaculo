@@ -29,13 +29,24 @@
                 <hr>
                 <div class="esquerda__2">
                     <div class="players">
-
+                        <div v-for="resource in storeWeapons"
+                            :key="resource.id"
+                            class="player"
+                        >
+                            <Resource
+                                :resource="resource"
+                                :history_id="storeHistory.id"
+                                @upResource="(upResource) => response.history.weapons = upResource"
+                            />
+                            <!-- <img src="/images/6/1698097906.png"> -->
+                        </div>
                     </div>
 
                     <div>
                         <NewResource
                             :history_id="storeHistory.id"
                             :allAttributes="storeAllAttributes"
+                            @newResources="(newResources) => response.history.weapons = newResources"
                         />
                     </div>
                 </div>
@@ -96,6 +107,7 @@ import IntInput from '@/Atoms/IntInput.vue';
 import NewEnemy from '@/Molecules/NewEnemy.vue';
 import UserToPlay from '@/Molecules/UserToPlay.vue';
 import NewResource from '@/Molecules/NewResource.vue';
+import Resource from '@/Molecules/Resource.vue';
 
 export default {
     name: 'History',
@@ -113,13 +125,15 @@ export default {
         IntInput,
         NewEnemy,
         UserToPlay,
-        NewResource
+        NewResource,
+        Resource
     },
 
     data() {
         return {
             addTooltip: 'Criar nova história',
-            defaultPoints: 5
+            defaultPoints: 5,
+            teste: null
         }
     },
 
@@ -138,6 +152,10 @@ export default {
 
         storeEnemies: function() {
             return this.response.history.enemies
+        },
+
+        storeWeapons: function() {
+            return this.response.history.weapons
         },
 
         storeAllAttributes: function() {

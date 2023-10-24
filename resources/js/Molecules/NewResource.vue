@@ -106,7 +106,7 @@ export default {
     ],
 
     emits: [
-        "newEnemies"
+        "newResources"
     ],
 
     data() {
@@ -155,13 +155,13 @@ export default {
         },
 
         addWeapon: function() {
-            const imageData = new FormData()
-            imageData.append("filename", this.image)
+            // const formData = new FormData()
+            // formData.append("file", this.image)
 
             const data = {
                 all_attributes: this.allAttributes,
                 history_id: this.history_id,
-                image: this.image //imageData
+                image: this.image
             }
 
             const config = {
@@ -172,9 +172,9 @@ export default {
 
             axios.post(route('weapon.add'), data, config)
             .then((response) => {
-                console.log(response.data)
+                console.log('aquiiiii', response.data)
                 // this.name = ''
-                // this.$emit('newEnemies', response.data)
+                this.$emit('newResources', response.data)
                 this.closeModal()
             })
         },

@@ -10,6 +10,9 @@ class Image extends Model
 {
     use HasFactory;
 
+    protected $table = 'images';
+    protected $guarded = [];
+
     public function weapon(): HasOne
     {
         return $this->hasOne(Weapon::class);

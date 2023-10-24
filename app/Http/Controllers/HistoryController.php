@@ -15,11 +15,14 @@ use Inertia\Inertia;
 
 class HistoryController extends Controller
 {
-    protected PlayerController $playerController;
+    private PlayerController $playerController;
+    private WeaponController $weaponController;
 
-    public function __construct(PlayerController $playerController)
+
+    public function __construct(PlayerController $playerController, WeaponController $weaponController)
     {
         $this->playerController = $playerController;
+        $this->weaponController = $weaponController;
     }
 
 
@@ -40,6 +43,7 @@ class HistoryController extends Controller
         $chapters = Chapter::where('history_id', $id)->get();
         $players = $this->playerController->getPlayers($history->id, $history->master_id);
         $enemies = $this->playerController->getEnemies($history->id, $history->master_id);
+        $weapons = $this->weaponController->getWeapons($history->id);
 
         $allHistory = [
             'history' => [
@@ -48,7 +52,8 @@ class HistoryController extends Controller
                 'masterId' => $history->master_id,
                 'chapters' => $chapters,
                 'players' => $players,
-                'enemies' => $enemies
+                'enemies' => $enemies,
+                'weapons' => $weapons
             ],
             'allAttributes' => Attribute::all(['id', 'name'])->map(fn ($attribute) => [
                 'id' => $attribute->id,
