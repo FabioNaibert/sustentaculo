@@ -25,4 +25,17 @@ class ImageService
 
         return $newImageRegister->id;
     }
+
+
+    public function removeImage($imageId, $historyId)
+    {
+        $image = Image::findOrFail($imageId);
+
+        $url = storage_path('app') . $image->content;
+        unlink($url);
+
+        $image->delete();
+
+        return ;
+    }
 }

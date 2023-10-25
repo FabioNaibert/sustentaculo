@@ -137,10 +137,6 @@ export default {
         }
     },
 
-    created() {
-        // console.log(this.response.history)
-    },
-
     computed: {
         storeHistory: function() {
             return this.response.history

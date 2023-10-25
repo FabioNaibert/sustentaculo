@@ -61,7 +61,7 @@ class WeaponController extends Controller
         $name = $request->input('name');
 
         $weapon = Weapon::create([
-            'name' => 'ARMA_TESTE', //$name,
+            'name' => $name,
             'history_id' => $historyId,
             'image_id' => $imageId
         ]);
@@ -76,11 +76,19 @@ class WeaponController extends Controller
     public function removeWeapon(Request $request)
     {
         $weaponId = $request->input('weapon_id');
-        $historyId = $request->input('history_id');
 
         $weapon = Weapon::find($weaponId);
-        $weapon->delete();
+        $this->deleteWeaponImage($weapon);
 
+        $historyId = $weapon->history_id;
+        $weapon->delete();
         return $this->getWeapons($historyId);
+    }
+
+
+    public function deleteWeaponImage(Weapon $weapon)
+    {
+        if ($weapon->image_id)
+            $this->imageService->removeImage($weapon->image_id, $weapon->history_id);
     }
 }

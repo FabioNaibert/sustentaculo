@@ -1,77 +1,58 @@
 <template>
-    <AddButton @click="openModal" />
-
-    <Modal :show="showModal" @close="closeModal">
-        <div class="p-6">
-            <div class="mt-6 c-new__player">
-                <div class="input__default">
-                    <label class="label__default">TIPO:</label>
-                    <Select
-                        @selectedOption="(option) => selectedComponent = option"
-                        :placeholder="'Selecione um tipo'"
-                        :options="options"
-                    />
-                </div>
-                <!-- selectedComponent = option -->
-                <!-- <div class="input__default">
-                    <label class="label__default">NOME:</label>
-                    <TextInput
-                        ref="nameInput"
-                        v-model="name"
-                        type="text"
-                        class="mt-1 block input__name"
-                        placeholder="Nome do inimigo"
-                    />
-                </div>
-
-                <div v-for="attribute in allAttributes" :key="attribute.id" class="input__default">
-                    <label class="label__default">{{ attribute.name }}:</label>
-                    <IntInput
-                        :tooltip="placeHolder"
-                        ref="intInput"
-                        type="number"
-                        class="mt-1 block"
-                        v-model="attribute.totalPoints"
-                        :minValue="minValue"
-                        @change="setValue"
-                    />
-                </div>
-
-                <div class="c-image">
-                    <label
-                        class="custom-file-upload"
-                        for="input-image"
-                    >
-                        IMAGEM:
-                    </label>
-                    <input
-                        id="input-image"
-                        type="file"
-                        @input="image = $event.target.files[0]"
-                    >
-                </div> -->
+    <div>
+        <div class="mt-6 c-new__player">
+            <div class="input__default">
+                <label class="label__default">NOME:</label>
+                <TextInput
+                    ref="nameInput"
+                    v-model="name"
+                    type="text"
+                    class="mt-1 block input__name"
+                    placeholder="Nome do inimigo"
+                />
             </div>
 
-            <component
-                :is="selectedComponent.component"
-                v-bind="selectedComponent.props"
-                v-if="selectedComponent"
-            ></component>
+            <div v-for="attribute in allAttributes" :key="attribute.id" class="input__default">
+                <label class="label__default">{{ attribute.name }}:</label>
+                <IntInput
+                    :tooltip="placeHolder"
+                    ref="intInput"
+                    type="number"
+                    class="mt-1 block"
+                    v-model="attribute.totalPoints"
+                    :minValue="minValue"
+                    @change="setValue"
+                />
+            </div>
 
-            <!-- <div class="mt-6 flex justify-end">
-                <SecondaryButton @click="closeModal"> FECHAR </SecondaryButton>
-
-                <PrimaryButton
-                    class="ml-3"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
-                    @click="addWeapon"
+            <div class="c-image">
+                <label
+                    class="custom-file-upload"
+                    for="input-image"
                 >
-                    SALVAR
-                </PrimaryButton>
-            </div> -->
+                    IMAGEM:
+                </label>
+                <input
+                    id="input-image"
+                    type="file"
+                    @input="image = $event.target.files[0]"
+                >
+            </div>
         </div>
-    </Modal>
+
+        <div class="mt-6 flex justify-end">
+            <SecondaryButton @click="closeModal"> FECHAR </SecondaryButton>
+
+            <PrimaryButton
+                class="ml-3"
+                :class="{ 'opacity-25': form.processing }"
+                :disabled="form.processing"
+                @click="addWeapon"
+            >
+                SALVAR
+            </PrimaryButton>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -85,16 +66,15 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import AddButton from '@/Atoms/AddButton.vue';
 import Select from '@/Atoms/Select.vue';
+import ImageInput from '@/Atoms/ImageInput.vue';
 import { useForm } from '@inertiajs/vue3';
-import { nextTick, ref, shallowRef } from 'vue';
+import { nextTick, ref } from 'vue';
 import axios from 'axios';
-import NewWeapon from '@/Molecules/NewWeapon.vue';
-import NewImage from '@/Molecules/NewImage.vue';
 
 
 
 export default {
-    name: 'NewResource',
+    name: 'NewWeapon',
 
     components: {
         DangerButton,
@@ -107,8 +87,7 @@ export default {
         AddButton,
         IntInput,
         Select,
-        NewWeapon,
-        NewImage
+        ImageInput
     },
 
     props: [
@@ -130,32 +109,6 @@ export default {
             defaultPoints: null,
             placeHolder: null,
             image: null,
-            selectedComponent: null,
-            // {
-            //     component: shallowRef(NewWeapon),
-            //     name: 'Arma',
-            //     props: {
-            //         history_id: this.history_id,
-            //         allAttributes: this.allAttributes,
-            //     }
-            // },
-            options: [
-                {
-                    component: shallowRef(NewWeapon),
-                    name: 'Arma',
-                    props: {
-                        history_id: this.history_id,
-                        allAttributes: this.allAttributes,
-                    }
-                },
-                {
-                    component: shallowRef(NewImage),
-                    name: 'Imagem',
-                    props: {
-                        history_id: this.history_id,
-                    }
-                }
-            ]
         }
     },
 
@@ -166,10 +119,6 @@ export default {
     },
 
     methods: {
-        teste: function (option) {
-            console.log(option)
-        },
-
         openModal: function() {
             this.showModal = true;
         },

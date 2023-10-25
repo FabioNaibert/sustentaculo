@@ -152,7 +152,6 @@ export default {
                     history_id: this.history_id
                 })
                 .then((response) => {
-                    console.log(response.data)
                     this.users = response.data
                 })
             }, 800);
