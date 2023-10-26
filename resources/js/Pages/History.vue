@@ -10,44 +10,27 @@
                             :key="enemy.id"
                             class="player"
                         >
-                            <Player
-                                :player="enemy"
-                                :history_id="storeHistory.id"
-                                @upPlayers="(upPlayers) => response.history.enemies = upPlayers"
-                            />
+                            <Player :player="enemy" />
                         </div>
                     </div>
 
                     <div>
-                        <NewEnemy
-                            :history_id="storeHistory.id"
-                            :allAttributes="storeAllAttributes"
-                            @newEnemies="(newEnemies) => response.history.enemies = newEnemies"
-                        />
+                        <NewEnemy />
                     </div>
                 </div>
                 <hr>
                 <div class="esquerda__2">
                     <div class="players">
-                        <div v-for="resource in storeWeapons"
+                        <div v-for="resource in storeResources"
                             :key="resource.id"
                             class="player"
                         >
-                            <Resource
-                                :resource="resource"
-                                :history_id="storeHistory.id"
-                                @upResource="(upResource) => response.history.weapons = upResource"
-                            />
-                            <!-- <img src="/images/6/1698097906.png"> -->
+                            <Resource :resource="resource" />
                         </div>
                     </div>
 
                     <div>
-                        <NewResource
-                            :history_id="storeHistory.id"
-                            :allAttributes="storeAllAttributes"
-                            @newResources="(newResources) => response.history.weapons = newResources"
-                        />
+                        <NewResource />
                     </div>
                 </div>
             </div>
@@ -73,19 +56,12 @@
                             :key="player.id"
                             class="player"
                         >
-                            <!-- <Player :player="player" /> -->
-                            <UserToPlay :player="player"
-                                :history_id="storeHistory.id"
-                                @upPlayers="(upPlayers) => response.history.players = upPlayers"
-                            />
+                            <UserToPlay :player="player" />
                         </div>
                     </div>
 
                     <div>
-                        <NewPlayer :history_id="storeHistory.id"
-                            :default_points="defaultPoints"
-                            @newPlayers="(newPlayers) => response.history.players = newPlayers"
-                        />
+                        <NewPlayer :default_points="defaultPoints" />
                     </div>
                 </div>
                 <hr>
@@ -97,9 +73,7 @@
 
 <script>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import Card from '@/Molecules/Card.vue';
 import { Head } from '@inertiajs/vue3';
-import AddButton from '@/Atoms/AddButton.vue';
 import NewHistory from '@/Molecules/NewHistory.vue';
 import Player from '@/Molecules/Player.vue';
 import NewPlayer from '@/Molecules/NewPlayer.vue';
@@ -116,9 +90,7 @@ export default {
 
     components: {
         AuthenticatedLayout,
-        Card,
         Head,
-        AddButton,
         NewHistory,
         Player,
         NewPlayer,
@@ -127,6 +99,11 @@ export default {
         UserToPlay,
         NewResource,
         Resource
+    },
+
+    created() {
+        this.$store.commit('setHistory', this.response.history)
+        this.$store.commit('setAllAttributes', this.response.allAttributes)
     },
 
     data() {
@@ -138,24 +115,28 @@ export default {
     },
 
     computed: {
-        storeHistory: function() {
-            return this.response.history
+        storeHistoryId: function() {
+            return this.$store.getters.historyId
         },
 
         storePlayers: function() {
-            return this.response.history.players
+            return this.$store.getters.players
         },
 
         storeEnemies: function() {
-            return this.response.history.enemies
+            return this.$store.getters.enemies
         },
 
-        storeWeapons: function() {
-            return this.response.history.weapons
+        storeResources: function() {
+            return this.$store.getters.resources
         },
 
         storeAllAttributes: function() {
-            return this.response.allAttributes
+            return this.$store.getters.allAttributes
+        },
+
+        storeCurrentChapter: function() {
+            return this.$store.getters.currentChapter
         },
     },
 

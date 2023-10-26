@@ -6,12 +6,12 @@ use App\Models\Image;
 
 class ImageService
 {
-    public function addImage($image, $historyId)
+    public function addImage($image, $historyId, $name = 'IMAGE_WEAPON')
     {
         $imageName = time().'.'.$image->extension();
 
         $newImageRegister = Image::create([
-            'name' => 'IMAGE_WEAPON',
+            'name' => $name,
             'content' => ''
         ]);
 
@@ -27,15 +27,15 @@ class ImageService
     }
 
 
-    public function removeImage($imageId, $historyId)
+    public function removeImage($imageId)
     {
         $image = Image::findOrFail($imageId);
+        $chapter = $image->chapters()->first();
 
         $url = storage_path('app') . $image->content;
         unlink($url);
-
         $image->delete();
 
-        return ;
+        return $chapter->id;
     }
 }

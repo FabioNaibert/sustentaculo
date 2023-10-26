@@ -44,7 +44,6 @@ export default {
 
     props: [
         'player',
-        'history_id'
     ],
 
     data() {
@@ -57,7 +56,11 @@ export default {
     computed: {
         storeAttributes: function() {
             return this.player.attributes
-        }
+        },
+
+        storeHistoryId: function() {
+            return this.$store.getters.historyId
+        },
     },
 
     methods: {
@@ -68,10 +71,10 @@ export default {
         removePlayer: function() {
             axios.post(route('enemy.remove'), {
                 player_id: this.player.id,
-                history_id: this.history_id
+                history_id: this.storeHistoryId
             })
             .then((response) => {
-                this.$emit('upPlayers', response.data)
+                this.$store.commit('updateEnemies', response.data)
             })
         },
 

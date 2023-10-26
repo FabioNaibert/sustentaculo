@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WeaponController;
@@ -48,6 +49,9 @@ Route::middleware('auth')->group(function () {
 
     Route::post('add-weapon', [WeaponController::class, 'addWeapon'])->name('weapon.add');
     Route::post('remove-weapon', [WeaponController::class, 'removeWeapon'])->name('weapon.remove');
+
+    Route::post('add-image', [ImageController::class, 'addImage'])->name('image.add');
+    Route::post('remove-image', [ImageController::class, 'removeImage'])->name('image.remove');
 });
 
 require __DIR__.'/auth.php';

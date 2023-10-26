@@ -77,13 +77,15 @@ export default {
         ImageInput
     },
 
-    props: [
-        'history_id',
+    emits: [
+        'closeModal'
     ],
 
-    emits: [
-        "newResources"
-    ],
+    computed: {
+        storeCurrentChapter: function() {
+            return this.$store.getters.currentChapter
+        },
+    },
 
     data() {
         return {
@@ -112,7 +114,7 @@ export default {
 
             const data = {
                 name: this.name,
-                history_id: this.history_id,
+                chapter_id: this.storeCurrentChapter.id,
                 image: this.image
             }
 
@@ -124,7 +126,7 @@ export default {
 
             axios.post(route('image.add'), data, config)
             .then((response) => {
-                this.$emit('newResources', response.data)
+                this.$store.commit('updateResources', response.data)
             })
             .catch((error) => {
                 console.error(error)
@@ -135,8 +137,7 @@ export default {
         },
 
         closeModal: function() {
-            this.showModal = false
-
+            this.$emit('closeModal')
             this.name = ''
         },
     }

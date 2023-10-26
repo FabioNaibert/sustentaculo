@@ -3,14 +3,6 @@
 
     <Modal :show="showModal" @close="closeModal">
         <div class="p-6">
-            <!-- <h2 class="text-lg font-medium text-gray-900">
-                Como se chama sua história?
-            </h2>
-
-            <p class="mt-1 text-sm text-gray-600">
-                Defina um nome para sua história. Ele será exibido na sua página inicial e na página inicial dos jogadores escolhidos por você.
-            </p> -->
-
             <div class="mt-6 c-new__player">
                 <div>
                     <TextInput
@@ -22,7 +14,7 @@
                     />
                 </div>
 
-                <div v-for="attribute in allAttributes" :key="attribute.id" class="input__default">
+                <div v-for="attribute in storeAllAttributes" :key="attribute.id" class="input__default">
                     <label class="label__default">{{ attribute.name }}:</label>
                     <IntInput :tooltip="placeHolder"
                         ref="intInput"
@@ -41,8 +33,6 @@
 
                 <PrimaryButton
                     class="ml-3"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
                     @click="addEnemy"
                 >
                     SALVAR
@@ -53,16 +43,12 @@
 </template>
 
 <script>
-import DangerButton from '@/Components/DangerButton.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
 import IntInput from '@/Atoms/IntInput.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import AddButton from '@/Atoms/AddButton.vue';
-import { useForm } from '@inertiajs/vue3';
 import { nextTick, ref } from 'vue';
 import axios from 'axios';
 
@@ -71,9 +57,6 @@ export default {
     name: 'NewEnemy',
 
     components: {
-        DangerButton,
-        InputError,
-        InputLabel,
         Modal,
         SecondaryButton,
         PrimaryButton,
@@ -82,21 +65,11 @@ export default {
         IntInput,
     },
 
-    props: [
-        'history_id',
-        'allAttributes',
-    ],
-
-    emits: [
-        "newEnemies"
-    ],
-
     data() {
         return {
             showModal: false,
             timer: null,
             name: '',
-            form: useForm({name: ''}),
             minValue: 0,
             defaultPoints: null,
             placeHolder: null
@@ -106,6 +79,16 @@ export default {
     created() {
         this.defaultPoints = this.minValue
         this.placeHolder = `Valor padrão: ${this.minValue}`
+    },
+
+    computed: {
+        storeHistoryId: function() {
+            return this.$store.getters.historyId
+        },
+
+        storeAllAttributes: function() {
+            return this.$store.getters.allAttributes
+        },
     },
 
     methods: {
@@ -130,15 +113,15 @@ export default {
         addEnemy: function() {
             const data = {
                 name: this.name,
-                all_attributes: this.allAttributes,
-                history_id: this.history_id,
+                all_attributes: this.storeAllAttributes,
+                history_id: this.storeHistoryId,
             }
 
             axios.post(route('enemy.add'), data)
             .then((response) => {
-                this.name = ''
-                this.$emit('newEnemies', response.data)
                 this.closeModal()
+                this.$store.commit('updateEnemies', response.data)
+
             })
         },
 
@@ -146,12 +129,11 @@ export default {
             this.showModal = false
 
             this.resetPoints()
-            this.form.reset()
             this.name = ''
         },
 
         resetPoints: function() {
-            this.allAttributes.forEach(element => {
+            this.storeAllAttributes.forEach(element => {
                 element.totalPoints = null
             });
         }

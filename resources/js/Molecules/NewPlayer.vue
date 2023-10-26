@@ -3,14 +3,6 @@
 
     <Modal :show="showModal" @close="closeModal">
         <div class="p-6">
-            <!-- <h2 class="text-lg font-medium text-gray-900">
-                Como se chama sua história?
-            </h2>
-
-            <p class="mt-1 text-sm text-gray-600">
-                Defina um nome para sua história. Ele será exibido na sua página inicial e na página inicial dos jogadores escolhidos por você.
-            </p> -->
-
             <div class="mt-6 c-new__player">
                 <div class="input__default">
                     <label class="label__default">PONTOS INICIAIS:</label>
@@ -28,7 +20,7 @@
                 <div>
                     <TextInput
                         ref="nameInput"
-                        v-model="form.name"
+                        v-model="name"
                         type="text"
                         class="mt-1 block input__name"
                         placeholder="Nome do usuário"
@@ -51,37 +43,21 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- <InputError :message="form.errors.password" class="mt-2" /> -->
             </div>
 
             <div class="mt-6 flex justify-end">
                 <SecondaryButton @click="closeModal"> FECHAR </SecondaryButton>
-
-                <!-- <PrimaryButton
-                    class="ml-3"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
-                    @click="newHistory"
-                >
-                    SALVAR
-                </PrimaryButton> -->
             </div>
         </div>
     </Modal>
 </template>
 
 <script>
-import DangerButton from '@/Components/DangerButton.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
 import IntInput from '@/Atoms/IntInput.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import AddButton from '@/Atoms/AddButton.vue';
-import { useForm } from '@inertiajs/vue3';
 import { nextTick, ref } from 'vue';
 import axios from 'axios';
 
@@ -90,31 +66,22 @@ export default {
     name: 'NewPlayer',
 
     components: {
-        DangerButton,
-        InputError,
-        InputLabel,
         Modal,
         SecondaryButton,
-        PrimaryButton,
         TextInput,
         AddButton,
         IntInput,
     },
 
     props: [
-        'history_id',
         'default_points'
-    ],
-
-    emits: [
-        "newPlayers"
     ],
 
     data() {
         return {
             showModal: false,
+            name: '',
             timer: null,
-            form: useForm({name: ''}),
             users: null,
             defaultPoints: this.default_points,
             placeHolder: `Valor padrão: ${this.default_points}`
@@ -128,6 +95,12 @@ export default {
         }
     },
 
+    computed: {
+        storeHistoryId: function() {
+            return this.$store.getters.historyId
+        },
+    },
+
     methods: {
         openModal: function() {
             this.showModal = true;
@@ -136,7 +109,7 @@ export default {
         },
 
         search: function() {
-            if (this.form.name == '') {
+            if (this.name == '') {
                 this.users = null
                 return
             }
@@ -148,8 +121,8 @@ export default {
 
             this.timer = setTimeout(() => {
                 axios.post(route('player.search'), {
-                    name: this.form.name,
-                    history_id: this.history_id
+                    name: this.name,
+                    history_id: this.storeHistoryId
                 })
                 .then((response) => {
                     this.users = response.data
@@ -160,13 +133,12 @@ export default {
         addUser: function(userId) {
             axios.post(route('player.add'), {
                 user_id: userId,
-                history_id: this.history_id,
+                history_id: this.storeHistoryId,
                 points: this.defaultPoints,
             })
             .then((response) => {
                 this.users = null
-                this.form.name = ''
-                this.$emit('newPlayers', response.data)
+                this.$store.commit('updatePlayers', response.data)
                 nextTick(() => this.$refs["nameInput"].focus());
             })
         },
@@ -182,7 +154,7 @@ export default {
         closeModal: function() {
             this.showModal = false;
 
-            this.form.reset();
+            this.name = '';
         }
     }
 }

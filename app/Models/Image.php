@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Image extends Model
@@ -23,8 +24,13 @@ class Image extends Model
         return $this->hasOne(History::class);
     }
 
-    public function chapter(): HasOne
+    // public function chapter(): HasOne
+    // {
+    //     return $this->hasOne(Chapter::class);
+    // }
+
+    public function chapters(): BelongsToMany
     {
-        return $this->hasOne(Chapter::class);
+        return $this->belongsToMany(Chapter::class, 'chapters_images', 'image_id', 'chapter_id');
     }
 }

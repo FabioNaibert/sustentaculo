@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\ResourceService;
 use App\Models\Attribute;
 use App\Models\Chapter;
 use App\Models\History;
@@ -17,12 +18,14 @@ class HistoryController extends Controller
 {
     private PlayerController $playerController;
     private WeaponController $weaponController;
+    private ResourceService $resourceService;
 
 
-    public function __construct(PlayerController $playerController, WeaponController $weaponController)
+    public function __construct(PlayerController $playerController, WeaponController $weaponController, ResourceService $resourceService)
     {
         $this->playerController = $playerController;
         $this->weaponController = $weaponController;
+        $this->resourceService = $resourceService;
     }
 
 
@@ -43,7 +46,8 @@ class HistoryController extends Controller
         $chapters = Chapter::where('history_id', $id)->get();
         $players = $this->playerController->getPlayers($history->id, $history->master_id);
         $enemies = $this->playerController->getEnemies($history->id, $history->master_id);
-        $weapons = $this->weaponController->getWeapons($history->id);
+        // $weapons = $this->weaponController->getWeapons($history->id);
+        $resources = $this->resourceService->getResources($chapters->first()->id);
 
         $allHistory = [
             'history' => [
@@ -53,7 +57,7 @@ class HistoryController extends Controller
                 'chapters' => $chapters,
                 'players' => $players,
                 'enemies' => $enemies,
-                'weapons' => $weapons
+                'resources' => $resources
             ],
             'allAttributes' => Attribute::all(['id', 'name'])->map(fn ($attribute) => [
                 'id' => $attribute->id,

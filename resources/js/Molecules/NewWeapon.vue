@@ -12,7 +12,7 @@
                 />
             </div>
 
-            <div v-for="attribute in allAttributes" :key="attribute.id" class="input__default">
+            <div v-for="attribute in storeAllAttributes" :key="attribute.id" class="input__default">
                 <label class="label__default">{{ attribute.name }}:</label>
                 <IntInput
                     :tooltip="placeHolder"
@@ -90,13 +90,8 @@ export default {
         ImageInput
     },
 
-    props: [
-        'history_id',
-        'allAttributes',
-    ],
-
     emits: [
-        "newResources"
+        'closeModal'
     ],
 
     data() {
@@ -118,13 +113,23 @@ export default {
         this.setValue()
     },
 
+    computed: {
+        storeCurrentChapter: function() {
+            return this.$store.getters.currentChapter
+        },
+
+        storeAllAttributes: function() {
+            return this.$store.getters.allAttributes
+        },
+    },
+
     methods: {
         openModal: function() {
             this.showModal = true;
         },
 
         setValue: function() {
-            this.allAttributes.forEach((attribute) => {
+            this.storeAllAttributes.forEach((attribute) => {
                 if (attribute.totalPoints < this.minValue) {
                     return attribute.totalPoints = this.minValue
                 }
@@ -146,8 +151,8 @@ export default {
 
             const data = {
                 name: this.name,
-                all_attributes: this.allAttributes,
-                history_id: this.history_id,
+                all_attributes: this.storeAllAttributes,
+                chapter_id: this.storeCurrentChapter.id,
                 image: this.image
             }
 
@@ -159,7 +164,7 @@ export default {
 
             axios.post(route('weapon.add'), data, config)
             .then((response) => {
-                this.$emit('newResources', response.data)
+                this.$store.commit('updateResources', response.data)
             })
             .catch((error) => {
                 console.error(error)
@@ -170,14 +175,14 @@ export default {
         },
 
         closeModal: function() {
-            this.showModal = false
+            this.$emit('closeModal')
 
             this.name = ''
             this.resetPoints()
         },
 
         resetPoints: function() {
-            this.allAttributes.forEach(element => {
+            this.storeAllAttributes.forEach(element => {
                 element.totalPoints = this.minValue
             });
         }

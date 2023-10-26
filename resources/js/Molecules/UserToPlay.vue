@@ -19,11 +19,6 @@ export default {
 
     props: [
         'player',
-        'history_id'
-    ],
-
-    emits: [
-        'upPlayers'
     ],
 
     data() {
@@ -35,17 +30,21 @@ export default {
     computed: {
         storeAttributes: function() {
             return this.player.attributes
-        }
+        },
+
+        storeHistoryId: function() {
+            return this.$store.getters.historyId
+        },
     },
 
     methods: {
         removePlayer:function() {
             axios.post(route('player.remove'), {
                 player_id: this.player.id,
-                history_id: this.history_id
+                history_id: this.storeHistoryId
             })
             .then((response) => {
-                this.$emit('upPlayers', response.data)
+                this.$store.commit('updatePlayers', response.data)
             })
         }
     }
@@ -65,13 +64,5 @@ h3 {
     align-items: center;
     height: 3rem;
     padding: 0.8rem;
-}
-
-.attribute {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: nowrap;
-    gap: 1rem;
 }
 </style>

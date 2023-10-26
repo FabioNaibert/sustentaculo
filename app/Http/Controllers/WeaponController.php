@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Services\AttributesService;
 use App\Http\Services\ImageService;
+use App\Http\Services\ResourceService;
+use App\Models\Chapter;
 use App\Models\Image;
 use App\Models\Weapon;
 use Illuminate\Http\Request;
@@ -14,11 +16,14 @@ class WeaponController extends Controller
 {
     private AttributesService $attributesService;
     private ImageService $imageService;
+    private ResourceService $resourceService;
 
-    public function __construct(AttributesService $attributesService, ImageService $imageService)
+
+    public function __construct(AttributesService $attributesService, ImageService $imageService, ResourceService $resourceService)
     {
         $this->attributesService = $attributesService;
         $this->imageService = $imageService;
+        $this->resourceService = $resourceService;
     }
 
 
@@ -49,40 +54,42 @@ class WeaponController extends Controller
 
     public function addWeapon(Request $request)
     {
-        $historyId = $request->input('history_id');
+        $chapterId = $request->input('chapter_id');
         $request->validate([
             'image' => 'required|image|mimes:png,jpg,jpeg'
         ]);
 
-        $imageId = $this->imageService->addImage($request->image, $historyId);
-
+        $chapter = Chapter::findOrFail($chapterId);
+        $imageId = $this->imageService->addImage($request->image, $chapter->history_id);
 
         $allAttributes = $request->input('all_attributes');
         $name = $request->input('name');
 
         $weapon = Weapon::create([
             'name' => $name,
-            'history_id' => $historyId,
+            'history_id' => $chapter->history_id,
             'image_id' => $imageId
         ]);
 
         $mapAttributes = $this->attributesService->mapAttributesPoints($allAttributes);
         $weapon->attributes()->attach($mapAttributes);
 
-        return $this->getWeapons($historyId);
+        // return $this->getWeapons($historyId);
+        return $this->resourceService->getResources($chapterId);
     }
 
 
     public function removeWeapon(Request $request)
     {
         $weaponId = $request->input('weapon_id');
+        $chapterId = $request->input('chapter_id');
 
         $weapon = Weapon::find($weaponId);
         $this->deleteWeaponImage($weapon);
-
-        $historyId = $weapon->history_id;
         $weapon->delete();
-        return $this->getWeapons($historyId);
+
+        // return $this->getWeapons($historyId);
+        return $this->resourceService->getResources($chapterId);
     }
 
 
