@@ -36,6 +36,8 @@ class ImageService
         unlink($url);
         $image->delete();
 
-        return $chapter->id;
+        if ($chapter) {
+            return $chapter->id;
+        }
     }
 }

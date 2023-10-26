@@ -14,7 +14,7 @@ class ResourceService
         $images = $this->getChapterImages($chapter);
         $weapons = $this->getWeapons($chapter->history_id);
 
-        return $images->merge($weapons);
+        return $images->union($weapons);
     }
 
 
