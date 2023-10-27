@@ -35,7 +35,9 @@
                 </div>
             </div>
 
-            <div class="c-meio"></div>
+            <div class="c-meio">
+                <Chapter />
+            </div>
 
             <div class="c-direita">
                 <div class="direita__1">
@@ -82,6 +84,7 @@ import NewEnemy from '@/Molecules/NewEnemy.vue';
 import UserToPlay from '@/Molecules/UserToPlay.vue';
 import NewResource from '@/Molecules/NewResource.vue';
 import Resource from '@/Molecules/Resource.vue';
+import Chapter from '@/Organisms/Chapter.vue';
 
 export default {
     name: 'History',
@@ -98,12 +101,14 @@ export default {
         NewEnemy,
         UserToPlay,
         NewResource,
-        Resource
+        Resource,
+        Chapter
     },
 
     created() {
         this.$store.commit('setHistory', this.response.history)
         this.$store.commit('setAllAttributes', this.response.allAttributes)
+        this.$store.dispatch('defineLastChapter')
     },
 
     data() {
@@ -135,8 +140,12 @@ export default {
             return this.$store.getters.allAttributes
         },
 
-        storeCurrentChapter: function() {
-            return this.$store.getters.currentChapter
+        storeCurrentChapterId: function() {
+            return this.$store.getters.currentChapterId
+        },
+
+        storeChapters: function() {
+            return this.$store.getters.chapters
         },
     },
 

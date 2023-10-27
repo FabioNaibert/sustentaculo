@@ -46,8 +46,8 @@ export default {
             return this.resource.attributes
         },
 
-        storeCurrentChapter: function() {
-            return this.$store.getters.currentChapter
+        storeCurrentChapterId: function() {
+            return this.$store.getters.currentChapterId
         },
     },
 
@@ -55,7 +55,7 @@ export default {
         remove: function() {
             axios.post(route('weapon.remove'), {
                 weapon_id: this.resource.id,
-                chapter_id: this.storeCurrentChapter.id,
+                chapter_id: this.storeCurrentChapterId,
             })
             .then((response) => {
                 this.$store.commit('updateResources', response.data)

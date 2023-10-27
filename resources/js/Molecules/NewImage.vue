@@ -82,8 +82,8 @@ export default {
     ],
 
     computed: {
-        storeCurrentChapter: function() {
-            return this.$store.getters.currentChapter
+        storeCurrentChapterId: function() {
+            return this.$store.getters.currentChapterId
         },
     },
 
@@ -114,7 +114,7 @@ export default {
 
             const data = {
                 name: this.name,
-                chapter_id: this.storeCurrentChapter.id,
+                chapter_id: this.storeCurrentChapterId,
                 image: this.image
             }
 

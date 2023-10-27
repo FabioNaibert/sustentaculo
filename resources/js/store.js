@@ -5,7 +5,8 @@ const store = createStore({
     state: {
         history: [],
         allAttributes: [],
-        currentChapter: null
+        currentChapter: null,
+        currentChapterId: null,
     },
 
     getters: { // this.$store.getters.doneTodosCount
@@ -37,9 +38,13 @@ const store = createStore({
             return state.history.players
         },
 
-        currentChapter (state) {
-            return state.history.chapters[0] //state.currentChapter
+        currentChapterId (state) {
+            return state.currentChapterId //state.currentChapter
         },
+
+        chapters (state) {
+            return state.history.chapters
+        }
     },
 
     mutations:{ // store.commit('increment')
@@ -47,8 +52,12 @@ const store = createStore({
             state.history = payload
         },
 
+        setCurrentChapterId (state, payload) {
+            state.currentChapterId = payload
+        },
+
         setCurrentChapter (state, payload) {
-            state.currentChapter = payload
+            state.history.chapters = payload
         },
 
         setAllAttributes (state, payload) {
@@ -72,9 +81,11 @@ const store = createStore({
         },
     },
 
-    actions: { // store.dispatch('increment')
-        increment ({ commit }) {
-            commit('increment')
+    actions: { // store.dispatch('defineLastChapter')
+        defineLastChapter ({ commit, getters }) {
+            const lastChapter = Math.max(Object.keys(getters.chapters))
+            console.log(lastChapter)
+            commit('setCurrentChapterId', lastChapter)
         }
     }
 })

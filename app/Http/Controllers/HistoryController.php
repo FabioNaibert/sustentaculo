@@ -2,29 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\ChapterService;
 use App\Http\Services\ResourceService;
 use App\Models\Attribute;
-use App\Models\Chapter;
 use App\Models\History;
-use App\Models\Player;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class HistoryController extends Controller
 {
     private PlayerController $playerController;
-    private WeaponController $weaponController;
+    private ChapterService $chapterService;
     private ResourceService $resourceService;
 
 
-    public function __construct(PlayerController $playerController, WeaponController $weaponController, ResourceService $resourceService)
+    public function __construct(PlayerController $playerController, ChapterService $chapterService, ResourceService $resourceService)
     {
         $this->playerController = $playerController;
-        $this->weaponController = $weaponController;
+        $this->chapterService = $chapterService;
         $this->resourceService = $resourceService;
     }
 
@@ -43,11 +39,10 @@ class HistoryController extends Controller
     public function getHistory($id)
     {
         $history = History::find($id);
-        $chapters = Chapter::where('history_id', $id)->get();
+        $chapters = $this->chapterService->getChapters($id);
         $players = $this->playerController->getPlayers($history->id, $history->master_id);
         $enemies = $this->playerController->getEnemies($history->id, $history->master_id);
-        // $weapons = $this->weaponController->getWeapons($history->id);
-        $resources = $this->resourceService->getResources($chapters->first()->id);
+        $resources = $this->resourceService->getResources($chapters->first()['id']);
 
         $allHistory = [
             'history' => [

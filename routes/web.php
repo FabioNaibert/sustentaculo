@@ -52,6 +52,10 @@ Route::middleware('auth')->group(function () {
 
     Route::post('add-image', [ImageController::class, 'addImage'])->name('image.add');
     Route::post('remove-image', [ImageController::class, 'removeImage'])->name('image.remove');
+
+    Route::post('add-chapter', [ChapterController::class, 'addChapter'])->name('chapter.add');
+    Route::post('edit-chapter', [ChapterController::class, 'editChapter'])->name('chapter.edit');
+    Route::post('remove-chapter', [ChapterController::class, 'removeChapter'])->name('chapter.remove');
 });
 
 require __DIR__.'/auth.php';
