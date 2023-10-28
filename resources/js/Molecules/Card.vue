@@ -34,7 +34,7 @@ export default {
         enterHistory: function() {
             const form = useForm({});
 
-            form.get(route('history.get') + '/' + this.history.id, { id: this.history.id }, {
+            form.get(route('history.get') + '/' + this.history.id, /* { id: this.history.id }, */ {
                 // onSuccess: () => closeModal(),
                 onError: (error) => console.error(error),
                 onFinish: () => form.reset(),

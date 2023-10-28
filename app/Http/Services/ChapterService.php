@@ -4,23 +4,35 @@ namespace App\Http\Services;
 
 use App\Models\Attribute;
 use App\Models\Chapter;
+use App\Models\History;
 
 class ChapterService
 {
-    public function getChapters($historyId)
+    public function getChapter($historyId, $chapterId = null)
     {
-        return Chapter::where('history_id', $historyId)
-            ->orderBy('id')
-            ->get()
-            ->mapWithKeys (function ($chapter) {
-                return [
-                    $chapter->id => [
-                        'id' => $chapter->id,
-                        'title' => $chapter->title,
-                        'text' => $chapter->text,
-                        'previous_id' => $chapter->previous_id,
-                    ]
-                ];
-            });
+        if (!$chapterId) {
+            return History::with('lastChapter')->whereId($historyId)->get()->first()->lastChapter;
+        }
+
+        return Chapter::findOrFail($chapterId);
+    }
+
+
+    public function addChapter($newData)
+    {
+        return Chapter::create([
+            'history_id' => $newData['history_id'],
+            'previous_id' => $newData['previous_id'],
+            // 'title' => $newData['title'],
+            // 'text' => $newData['text']
+        ]);
+    }
+
+    public function editChapter($newData)
+    {
+        $chapter = Chapter::findOrFail($newData['id']);
+        $chapter->title = $newData['title'];
+        $chapter->text = $newData['text'];
+        $chapter->save();
     }
 }

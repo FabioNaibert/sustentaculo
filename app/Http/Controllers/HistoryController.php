@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Services\ChapterService;
+use App\Http\Services\HistoryService;
 use App\Http\Services\ResourceService;
 use App\Models\Attribute;
 use App\Models\History;
@@ -15,13 +16,15 @@ class HistoryController extends Controller
     private PlayerController $playerController;
     private ChapterService $chapterService;
     private ResourceService $resourceService;
+    private HistoryService $historyService;
 
 
-    public function __construct(PlayerController $playerController, ChapterService $chapterService, ResourceService $resourceService)
+    public function __construct(PlayerController $playerController, ChapterService $chapterService, ResourceService $resourceService, HistoryService $historyService)
     {
         $this->playerController = $playerController;
         $this->chapterService = $chapterService;
         $this->resourceService = $resourceService;
+        $this->historyService = $historyService;
     }
 
 
@@ -38,28 +41,30 @@ class HistoryController extends Controller
 
     public function getHistory($id)
     {
-        $history = History::find($id);
-        $chapters = $this->chapterService->getChapters($id);
-        $players = $this->playerController->getPlayers($history->id, $history->master_id);
-        $enemies = $this->playerController->getEnemies($history->id, $history->master_id);
-        $resources = $this->resourceService->getResources($chapters->first()['id']);
+        // $history = History::find($id);
+        // $chapter = $this->chapterService->getChapter($id, $chapter_id);
+        // $players = $this->playerController->getPlayers($history->id, $history->master_id);
+        // $enemies = $this->playerController->getEnemies($history->id, $history->master_id);
+        // $resources = $this->resourceService->getResources($chapter->id);
 
-        $allHistory = [
-            'history' => [
-                'id' => $history->id,
-                'title' => $history->title,
-                'masterId' => $history->master_id,
-                'chapters' => $chapters,
-                'players' => $players,
-                'enemies' => $enemies,
-                'resources' => $resources
-            ],
-            'allAttributes' => Attribute::all(['id', 'name'])->map(fn ($attribute) => [
-                'id' => $attribute->id,
-                'name' => $attribute->name,
-                'totalPoints' => null
-            ])
-        ];
+        // $allHistory = [
+        //     'history' => [
+        //         'id' => $history->id,
+        //         'title' => $history->title,
+        //         'masterId' => $history->master_id,
+        //         'chapter' => $chapter,
+        //         'players' => $players,
+        //         'enemies' => $enemies,
+        //         'resources' => $resources
+        //     ],
+        //     'allAttributes' => Attribute::all(['id', 'name'])->map(fn ($attribute) => [
+        //         'id' => $attribute->id,
+        //         'name' => $attribute->name,
+        //         'totalPoints' => null
+        //     ])
+        // ];
+
+        $allHistory = $this->historyService->getHistory($id);
 
         return Inertia::render('History', [
             'response' => $allHistory,

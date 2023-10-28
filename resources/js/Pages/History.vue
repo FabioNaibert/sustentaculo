@@ -108,7 +108,7 @@ export default {
     created() {
         this.$store.commit('setHistory', this.response.history)
         this.$store.commit('setAllAttributes', this.response.allAttributes)
-        this.$store.dispatch('defineLastChapter')
+        // this.$store.dispatch('defineLastChapter')
     },
 
     data() {
@@ -140,12 +140,12 @@ export default {
             return this.$store.getters.allAttributes
         },
 
-        storeCurrentChapterId: function() {
-            return this.$store.getters.currentChapterId
+        storeChapter: function() {
+            return this.$store.getters.chapter.id
         },
 
-        storeChapters: function() {
-            return this.$store.getters.chapters
+        storeChapter: function() {
+            return this.$store.getters.chapter
         },
     },
 

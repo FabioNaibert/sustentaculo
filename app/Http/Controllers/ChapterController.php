@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Services\ChapterService;
+use App\Http\Services\HistoryService;
 use App\Models\Chapter;
 use App\Models\History;
 use Illuminate\Http\Request;
@@ -10,31 +11,25 @@ use Illuminate\Http\Request;
 class ChapterController extends Controller
 {
     private ChapterService $chapterService;
+    private HistoryService $historyService;
 
 
-    public function __construct(ChapterService $chapterService)
+    public function __construct(ChapterService $chapterService, HistoryService $historyService)
     {
         $this->chapterService = $chapterService;
+        $this->historyService = $historyService;
     }
 
 
     public function addChapter(Request $request)
     {
-        $historyId = $request->input('history_id');
-        $previousChapterId = $request->input('previous_chapter_id');
-        $title = $request->input('title');
-        $text = $request->input('text');
+        $currentChapter = $request->input('current');
+        $newData = $request->input('new_data');
 
-        History::findOrFail($historyId);
+        $this->chapterService->editChapter($currentChapter);
+        $chapter = $this->chapterService->addChapter($newData);
 
-        $chapter = Chapter::create([
-            'history_id' => $request->input('historyId'),
-            'previous_id' => $previousChapterId,
-            'title' => $title,
-            'text' => $text
-        ]);
-
-        return $this->chapterService->getChapters($historyId);
+        return $this->historyService->getHistory($chapter->history_id, $chapter->id);
     }
 
 
@@ -51,7 +46,7 @@ class ChapterController extends Controller
         $chapter->previous_id = $previousChapterId;
         $chapter->save();
 
-        return $this->chapterService->getChapters($chapter->history_id);
+        return $this->chapterService->getChapter($chapter->history_id);
     }
 
 
@@ -66,6 +61,6 @@ class ChapterController extends Controller
 
         $currentChapter->delete();
 
-        return $this->chapterService->getChapters($next->history_id);
+        return $this->chapterService->getChapter($next->history_id);
     }
 }
