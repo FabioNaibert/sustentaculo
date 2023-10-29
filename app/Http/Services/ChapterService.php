@@ -30,9 +30,13 @@ class ChapterService
     }
 
 
-    public function getNextChapterId($currentId)
+    public function getNextChapterId($currentId, $nextId)
     {
-        $chapter = Chapter::wherePreviousId($currentId)->first();
+        if ($nextId) {
+            $chapter = Chapter::findOrFail($nextId);
+        } else {
+            $chapter = Chapter::wherePreviousId($currentId)->first();
+        }
 
         if ($chapter) {
             return $chapter->id;

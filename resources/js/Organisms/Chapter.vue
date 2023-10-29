@@ -20,7 +20,7 @@
 
         <div class="c-commands">
             <div class="single__button single__button--left">
-                <CustomButton @click="deleteChapter"><img src="../../svg/trash.svg" /></CustomButton>
+                <CustomButton @click="deleteChapter" :disabled="firstChapter"><img src="../../svg/trash.svg" /></CustomButton>
             </div>
 
             <div class="commands">
@@ -30,9 +30,23 @@
                 <CustomButton @click="addNewInTheMiddle" :disabled="firstChapter">
                     <img src="../../svg/plus-lg.svg" />
                 </CustomButton>
-                <CustomButton @click="routeNextChapter()">
+                <CustomButton @click="routeNextChapter()" v-if="!storeChapter.has_multi_routes" :style="{'background-color': !storeChapter.has_next ? 'rgb(23 151 158 / 75%)': null}">
                     <img src="../../svg/arrow-right.svg" />
                 </CustomButton>
+                <div class="possible-routes" v-else>
+                    <CustomButton @click="setShowMultiRoutes()">
+                        <img src="../../svg/arrow-split.svg" :style="{transform: 'rotate(90deg)'}"/>
+                    </CustomButton>
+                    <ul class="route__options border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" :style="{display: showMultiRoutes ? 'flex' : 'none'}">
+                        <li
+                            v-for="option in storeChapter.possible_routes"
+                            :key="option.id"
+                            @click="changeChapter(this.storeRouteNext, option.id)"
+                        >
+                            {{option.title}}
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             <div class="single__button single__button--right">
@@ -48,6 +62,7 @@
 import TextInput from '@/Components/TextInput.vue';
 import CustomButton from '@/Atoms/CustomButton.vue';
 import { Link } from '@inertiajs/vue3';
+import SelectWithoutLabel from '@/Atoms/SelectWithoutLabel.vue'
 
 export default {
     name: 'Chapter',
@@ -55,13 +70,34 @@ export default {
     components: {
         TextInput,
         CustomButton,
-        Link
+        Link,
+        SelectWithoutLabel
     },
 
     data() {
         return {
             titleChapter: '',
-            textChapter: ''
+            textChapter: '',
+            selectedComponent: null,
+            showMultiRoutes: false,
+            options: [
+                {
+                    id: '1',
+                    title: 'teste1'
+                },
+                {
+                    id: '2',
+                    title: 'teste2'
+                },
+                {
+                    id: '3',
+                    title: 'teste3'
+                },
+                {
+                    id: '4',
+                    title: 'teste4'
+                }
+            ]
         }
     },
 
@@ -84,6 +120,10 @@ export default {
     },
 
     methods: {
+        setShowMultiRoutes: function() {
+            this.showMultiRoutes = !this.showMultiRoutes
+        },
+
         routeNextChapter: function() {
             return this.storeChapter.has_next ? this.changeChapter(this.storeRouteNext) : this.addNewAtTheEnd()
         },
@@ -151,13 +191,15 @@ export default {
             })
         },
 
-        changeChapter: function(route) {
+        changeChapter: function(route, nextId = null) {
             const data = {
                 current: {
                     id: this.storeChapter.id,
                     title: this.storeChapter.title,
                     text: this.storeChapter.text,
                 },
+
+                next_id: nextId
             }
 
             axios.post(route, data)
@@ -166,6 +208,9 @@ export default {
             })
             .catch((error) => {
                 console.error(error)
+            })
+            .finally(() => {
+                this.showMultiRoutes = false
             })
         },
 
@@ -258,5 +303,32 @@ export default {
 
 .single__button--right {
     justify-content: flex-end;
+}
+
+.possible-routes {
+    position: relative;
+}
+
+.route__options {
+    position: absolute;
+    left: 100%;
+    bottom: 0;
+    flex-direction: column;
+    background-color: #fff;
+    overflow: hidden;
+    border: 1px solid #bdbcbc;
+}
+
+li {
+    padding: 0 0.5rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 22rem;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+li:hover {
+    background: rgb(135 41 255 / 75%);
 }
 </style>

@@ -26,4 +26,8 @@ button {
 button:hover {
     background: rgb(135 41 255 / 75%);
 }
+
+button:disabled {
+    background-color: darkgrey;
+}
 </style>

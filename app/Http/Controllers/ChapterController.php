@@ -62,8 +62,10 @@ class ChapterController extends Controller
     public function nextChapter(Request $request)
     {
         $currentChapter = $request->input('current');
+        $nextId = $request->input('next_id');
+
         $chapter = $this->chapterService->editChapter($currentChapter);
-        $nextId = $this->chapterService->getNextChapterId($currentChapter);
+        $nextId = $this->chapterService->getNextChapterId($currentChapter, $nextId);
 
         return $this->historyService->getHistory($chapter->history_id, $nextId);
     }
