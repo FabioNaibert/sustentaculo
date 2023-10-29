@@ -5,6 +5,7 @@ namespace App\Http\Services;
 use App\Models\Chapter;
 use App\Models\Image;
 use App\Models\Weapon;
+use Illuminate\Support\Facades\Log;
 
 class ResourceService
 {
@@ -13,8 +14,9 @@ class ResourceService
         $chapter = Chapter::findOrFail($chapterId);
         $images = $this->getChapterImages($chapter);
         $weapons = $this->getWeapons($chapter->history_id);
+        $resources = [...$images, ...$weapons];
 
-        return $images->union($weapons);
+        return $resources;
     }
 
 

@@ -19,16 +19,27 @@
         </div>
 
         <div class="c-commands">
-            <CustomButton >
-                <img src="../../svg/arrow-left.svg" />
-            </CustomButton>
-            <CustomButton @click="addNewInTheMiddle" :disabled="firstChapter">
-                <img src="../../svg/plus-lg.svg" />
-            </CustomButton>
-            <CustomButton @click="addNewAtTheEnd">
-                <img src="../../svg/arrow-right.svg" />
-            </CustomButton>
+            <div class="single__button single__button--left">
+                <CustomButton @click="deleteChapter"><img src="../../svg/trash.svg" /></CustomButton>
+            </div>
 
+            <div class="commands">
+                <CustomButton @click="changeChapter(storeRoutePrevious)" :disabled="firstChapter">
+                    <img src="../../svg/arrow-left.svg" />
+                </CustomButton>
+                <CustomButton @click="addNewInTheMiddle" :disabled="firstChapter">
+                    <img src="../../svg/plus-lg.svg" />
+                </CustomButton>
+                <CustomButton @click="routeNextChapter()">
+                    <img src="../../svg/arrow-right.svg" />
+                </CustomButton>
+            </div>
+
+            <div class="single__button single__button--right">
+                <Link @click="endEdition" :href="route('dashboard')">
+                    <CustomButton>SAIR DA EDIÇÃO</CustomButton>
+                </Link>
+            </div>
         </div>
     </div>
 </template>
@@ -36,13 +47,15 @@
 <script>
 import TextInput from '@/Components/TextInput.vue';
 import CustomButton from '@/Atoms/CustomButton.vue';
+import { Link } from '@inertiajs/vue3';
 
 export default {
     name: 'Chapter',
 
     components: {
         TextInput,
-        CustomButton
+        CustomButton,
+        Link
     },
 
     data() {
@@ -59,10 +72,22 @@ export default {
 
         firstChapter: function() {
             return !this.storeChapter.previous_id
+        },
+
+        storeRouteNext: function() {
+            return route('chapter.next')
+        },
+
+        storeRoutePrevious: function() {
+            return route('chapter.previous')
         }
     },
 
     methods: {
+        routeNextChapter: function() {
+            return this.storeChapter.has_next ? this.changeChapter(this.storeRouteNext) : this.addNewAtTheEnd()
+        },
+
         addNewAtTheEnd: function() {
             const data = {
                 current: {
@@ -124,6 +149,58 @@ export default {
             .catch((error) => {
                 console.error(error)
             })
+        },
+
+        changeChapter: function(route) {
+            const data = {
+                current: {
+                    id: this.storeChapter.id,
+                    title: this.storeChapter.title,
+                    text: this.storeChapter.text,
+                },
+            }
+
+            axios.post(route, data)
+            .then((response) => {
+                this.$store.commit('setHistory', response.data.history)
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+        },
+
+        deleteChapter: function() {
+            const data = {
+                id: this.storeChapter.id,
+            }
+
+            axios.post(route('chapter.remove'), data)
+            .then((response) => {
+                this.$store.commit('setHistory', response.data.history)
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+        },
+
+        endEdition: function() {
+            const data = {
+                current: {
+                    id: this.storeChapter.id,
+                    title: this.storeChapter.title,
+                    text: this.storeChapter.text,
+                },
+            }
+
+            axios.post(route('chapter.edit'), data)
+            .then((response) => {
+                console.log('salvou')
+                // this.$store.commit('setHistory', response.data.history)
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+            axios.get(route('dashboard'))
         }
     }
 }
@@ -153,9 +230,33 @@ export default {
 
 .c-commands {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+.commands {
+    display: flex;
     justify-content: center;
     gap: 0.5rem;
     align-items: center;
     flex-wrap: nowrap;
+    width: 100%;
+}
+
+.single__button {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+.single__button--left {
+    justify-content: flex-start;
+}
+
+.single__button--right {
+    justify-content: flex-end;
 }
 </style>

@@ -55,6 +55,8 @@ Route::middleware('auth')->group(function () {
 
     Route::post('add-chapter', [ChapterController::class, 'addChapter'])->name('chapter.add');
     Route::post('edit-chapter', [ChapterController::class, 'editChapter'])->name('chapter.edit');
+    Route::post('previous-chapter', [ChapterController::class, 'previousChapter'])->name('chapter.previous');
+    Route::post('next-chapter', [ChapterController::class, 'nextChapter'])->name('chapter.next');
     Route::post('remove-chapter', [ChapterController::class, 'removeChapter'])->name('chapter.remove');
 });
 

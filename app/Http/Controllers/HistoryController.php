@@ -41,29 +41,6 @@ class HistoryController extends Controller
 
     public function getHistory($id)
     {
-        // $history = History::find($id);
-        // $chapter = $this->chapterService->getChapter($id, $chapter_id);
-        // $players = $this->playerController->getPlayers($history->id, $history->master_id);
-        // $enemies = $this->playerController->getEnemies($history->id, $history->master_id);
-        // $resources = $this->resourceService->getResources($chapter->id);
-
-        // $allHistory = [
-        //     'history' => [
-        //         'id' => $history->id,
-        //         'title' => $history->title,
-        //         'masterId' => $history->master_id,
-        //         'chapter' => $chapter,
-        //         'players' => $players,
-        //         'enemies' => $enemies,
-        //         'resources' => $resources
-        //     ],
-        //     'allAttributes' => Attribute::all(['id', 'name'])->map(fn ($attribute) => [
-        //         'id' => $attribute->id,
-        //         'name' => $attribute->name,
-        //         'totalPoints' => null
-        //     ])
-        // ];
-
         $allHistory = $this->historyService->getHistory($id);
 
         return Inertia::render('History', [
@@ -79,9 +56,11 @@ class HistoryController extends Controller
 
         $user = Auth::user();
 
-        History::create([
+        $history = History::create([
             'master_id' => $user->id,
             'title' => $request->input('title')
         ]);
+
+        $this->chapterService->addChapter(['history_id' => $history->id, 'previous_id' => null]);
     }
 }

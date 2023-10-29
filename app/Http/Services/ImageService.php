@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Models\Chapter;
 use App\Models\Image;
 
 class ImageService
@@ -39,5 +40,17 @@ class ImageService
         if ($chapter) {
             return $chapter->id;
         }
+    }
+
+
+    public function removeImages(Chapter $chapter)
+    {
+        $images = $chapter->images();
+
+        $images->each(function ($image) {
+            $url = storage_path('app') . $image->content;
+            unlink($url);
+            $image->delete();
+        });
     }
 }

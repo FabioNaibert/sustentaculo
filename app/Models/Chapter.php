@@ -15,6 +15,7 @@ class Chapter extends Model
 
     protected $table = 'chapters';
     protected $guarded = [];
+    // protected $appends = ['has_next', 'has_multi_routes', 'possible_routes'];
 
 
     public function history(): BelongsTo
@@ -29,7 +30,7 @@ class Chapter extends Model
 
     public function nextChapters(): HasMany
     {
-        return $this->hasMany(Chapter::class);
+        return $this->hasMany(Chapter::class, 'previous_id', 'id');
     }
 
     // public function image(): BelongsTo
@@ -40,5 +41,20 @@ class Chapter extends Model
     public function images(): BelongsToMany
     {
         return $this->belongsToMany(Image::class, 'chapters_images', 'chapter_id', 'image_id');
+    }
+
+    public function getHasNextAttribute()
+    {
+        return $this->nextChapters()->count() > 0;
+    }
+
+    public function getHasMultiRoutesAttribute()
+    {
+        return $this->nextChapters()->count() > 1;
+    }
+
+    public function getPossibleRoutesAttribute()
+    {
+        return $this->nextChapters()->get(['id', 'title']);
     }
 }

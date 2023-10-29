@@ -35,32 +35,36 @@ class ChapterController extends Controller
 
     public function editChapter(Request $request)
     {
-        $chapterId = $request->input('chapter_id');
-        $previousChapterId = $request->input('previous_chapter_id');
-        $title = $request->input('title');
-        $text = $request->input('text');
-
-        $chapter = Chapter::findOrFail($chapterId);
-        $chapter->title = $title;
-        $chapter->text = $text;
-        $chapter->previous_id = $previousChapterId;
-        $chapter->save();
-
-        return $this->chapterService->getChapter($chapter->history_id);
+        $currentChapter = $request->input('current');
+        $this->chapterService->editChapter($currentChapter);
     }
 
 
     public function removeChapter(Request $request)
     {
-        $chapterId = $request->input('chapter_id');
-        $currentChapter = Chapter::findOrFail($chapterId);
+        $chapterId = $request->input('id');
 
-        $next = Chapter::where('previous_id', $currentChapter->id)->first();
-        $next->previous_id = $currentChapter->previous_id;
-        $next->save();
+        [$historyId, $previousId] = $this->chapterService->removeChapter($chapterId);
 
-        $currentChapter->delete();
+        return $this->historyService->getHistory($historyId, $previousId);
+    }
 
-        return $this->chapterService->getChapter($next->history_id);
+
+    public function previousChapter(Request $request)
+    {
+        $currentChapter = $request->input('current');
+        $chapter = $this->chapterService->editChapter($currentChapter);
+
+        return $this->historyService->getHistory($chapter->history_id, $chapter->previous_id);
+    }
+
+
+    public function nextChapter(Request $request)
+    {
+        $currentChapter = $request->input('current');
+        $chapter = $this->chapterService->editChapter($currentChapter);
+        $nextId = $this->chapterService->getNextChapterId($currentChapter);
+
+        return $this->historyService->getHistory($chapter->history_id, $nextId);
     }
 }
