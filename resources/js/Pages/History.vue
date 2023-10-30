@@ -80,14 +80,14 @@
                                 Your browser does not support the audio element.
                             </audio> -->
                             <audio controls>
-                                <source src="/images/9/[EFEITO - EXPLOSÃO] Big Explosion Cut Off.mp3" type="audio/mpeg">
+                                <source src="/sounds/1_explosion.mp3" type="audio/mpeg">
                                 Your browser does not support the audio element.
                             </audio>
                         <!-- </div> -->
                     </div>
 
                     <div>
-                        <NewEnemy />
+                        <NewSound />
                     </div>
                 </div>
             </div>
@@ -108,6 +108,7 @@ import NewResource from '@/Molecules/NewResource.vue';
 import Resource from '@/Molecules/Resource.vue';
 import Chapter from '@/Organisms/Chapter.vue';
 import Sound from '@/Molecules/Sound.vue';
+import NewSound from '@/Molecules/NewSound.vue';
 
 export default {
     name: 'History',
@@ -126,7 +127,8 @@ export default {
         NewResource,
         Resource,
         Chapter,
-        Sound
+        Sound,
+        NewSound
     },
 
     created() {

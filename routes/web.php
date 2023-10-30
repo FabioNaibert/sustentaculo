@@ -58,6 +58,8 @@ Route::middleware('auth')->group(function () {
     Route::post('previous-chapter', [ChapterController::class, 'previousChapter'])->name('chapter.previous');
     Route::post('next-chapter', [ChapterController::class, 'nextChapter'])->name('chapter.next');
     Route::post('remove-chapter', [ChapterController::class, 'removeChapter'])->name('chapter.remove');
+
+    Route::post('sounds', [PlayerController::class, 'getSounds'])->name('sound.search');
 });
 
 require __DIR__.'/auth.php';

@@ -17,6 +17,19 @@ class SoundController extends Controller
     }
 
 
+    public function getSounds(Request $request)
+    {
+        $name = $request->input('name');
+        $chapterId = $request->input('chapter_id');
+
+        if (!$name) return [];
+
+        return Sound::join()
+            ->where('id', '!=', $masterId)
+            ->whereRaw("upper(name) like upper('$name%')")->get();
+    }
+
+
     public function addSound(Request $request)
     {
         $chapterId = $request->input('chapter_id');
