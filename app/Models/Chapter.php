@@ -43,6 +43,11 @@ class Chapter extends Model
         return $this->belongsToMany(Image::class, 'chapters_images', 'chapter_id', 'image_id');
     }
 
+    public function sounds(): BelongsToMany
+    {
+        return $this->belongsToMany(Image::class, 'chapters_sounds', 'chapter_id', 'sound_id');
+    }
+
     public function getHasNextAttribute()
     {
         return $this->nextChapters()->count() > 0;

@@ -11,13 +11,15 @@ class HistoryService
     private PlayerController $playerController;
     private ChapterService $chapterService;
     private ResourceService $resourceService;
+    private SoundService $soundService;
 
 
-    public function __construct(PlayerController $playerController, ChapterService $chapterService, ResourceService $resourceService)
+    public function __construct(PlayerController $playerController, ChapterService $chapterService, ResourceService $resourceService, SoundService $soundService)
     {
         $this->playerController = $playerController;
         $this->chapterService = $chapterService;
         $this->resourceService = $resourceService;
+        $this->soundService = $soundService;
     }
 
 
@@ -28,6 +30,7 @@ class HistoryService
         $players = $this->playerController->getPlayers($history->id, $history->master_id);
         $enemies = $this->playerController->getEnemies($history->id, $history->master_id);
         $resources = $this->resourceService->getResources($chapter->id);
+        $sounds = $this->soundService->getSounds($chapter);
 
         return [
             'history' => [
@@ -37,7 +40,8 @@ class HistoryService
                 'chapter' => $chapter,
                 'players' => $players,
                 'enemies' => $enemies,
-                'resources' => $resources
+                'resources' => $resources,
+                'sounds' => $sounds
             ],
             'allAttributes' => Attribute::all(['id', 'name'])->map(fn ($attribute) => [
                 'id' => $attribute->id,

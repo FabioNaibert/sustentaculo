@@ -39,6 +39,10 @@ const store = createStore({
 
         chapter (state) {
             return state.history.chapter
+        },
+
+        sounds (state) {
+            return state.history.sounds
         }
     },
 
@@ -69,6 +73,10 @@ const store = createStore({
 
         updateChapters (state, payload) {
             state.history.chapters = payload
+        },
+
+        updateSounds (state, payload) {
+            state.history.sounds = payload
         },
     },
 

@@ -67,7 +67,29 @@
                     </div>
                 </div>
                 <hr>
-                <div class="direita__2"></div>
+                <div class="direita__2">
+                    <div class="players">
+                        <!-- <div v-for="sound in storeSounds"
+                            :key="sound.id"
+                            class="player"
+                        > -->
+                            <!-- <Sound :sound="sound" /> -->
+                            <!-- <img src="/images/9/1698529702.png"> -->
+                            <!-- <audio controls>
+                                <source src="/images/9/audio1.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio> -->
+                            <audio controls>
+                                <source src="/images/9/[EFEITO - EXPLOSÃO] Big Explosion Cut Off.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        <!-- </div> -->
+                    </div>
+
+                    <div>
+                        <NewEnemy />
+                    </div>
+                </div>
             </div>
         </div>
     </AuthenticatedLayout>
@@ -85,6 +107,7 @@ import UserToPlay from '@/Molecules/UserToPlay.vue';
 import NewResource from '@/Molecules/NewResource.vue';
 import Resource from '@/Molecules/Resource.vue';
 import Chapter from '@/Organisms/Chapter.vue';
+import Sound from '@/Molecules/Sound.vue';
 
 export default {
     name: 'History',
@@ -102,7 +125,8 @@ export default {
         UserToPlay,
         NewResource,
         Resource,
-        Chapter
+        Chapter,
+        Sound
     },
 
     created() {
@@ -146,6 +170,10 @@ export default {
 
         storeChapter: function() {
             return this.$store.getters.chapter
+        },
+
+        storeSounds: function() {
+            return this.$store.getters.sounds
         },
     },
 
