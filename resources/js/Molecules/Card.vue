@@ -1,15 +1,22 @@
 <template>
-    <div @click="enterHistory" class="card bg-white shadow-sm sm:rounded-lg">
+    <div
+        @click="enterHistory"
+        @mouseover="() => showEditButton = true"
+        @mouseleave="() => showEditButton = false"
+        class="card bg-white shadow-sm sm:rounded-lg"
+    >
         <div class="c-text p-6 text-gray-900">
             <h3>{{ history.title }}</h3>
             <p>{{ firstChapter }}</p>
         </div>
+        <EditButton v-if="showEditButton" :style="{position: 'absolute'}"/>
     </div>
 </template>
 
 <script>
 import { Link } from '@inertiajs/vue3';
 import { useForm } from '@inertiajs/vue3';
+import EditButton from '@/Atoms/EditButton.vue';
 
 export default {
     name: 'Card',
@@ -18,6 +25,13 @@ export default {
 
     components: {
         Link,
+        EditButton,
+    },
+
+    data() {
+        return {
+            showEditButton: true,
+        }
     },
 
     computed: {
@@ -56,6 +70,7 @@ h3 {
     height: 16rem;
     overflow: hidden;
     cursor: pointer;
+    position: relative;
 }
 
 .c-text {

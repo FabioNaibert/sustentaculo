@@ -5,6 +5,7 @@ use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SoundController;
 use App\Http\Controllers\WeaponController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -59,7 +60,9 @@ Route::middleware('auth')->group(function () {
     Route::post('next-chapter', [ChapterController::class, 'nextChapter'])->name('chapter.next');
     Route::post('remove-chapter', [ChapterController::class, 'removeChapter'])->name('chapter.remove');
 
-    Route::post('sounds', [PlayerController::class, 'getSounds'])->name('sound.search');
+    Route::post('search-sound', [SoundController::class, 'getSounds'])->name('sound.search');
+    Route::post('add-sound', [SoundController::class, 'addSound'])->name('sound.add');
+    Route::post('remove-sound', [SoundController::class, 'removeSound'])->name('sound.remove');
 });
 
 require __DIR__.'/auth.php';

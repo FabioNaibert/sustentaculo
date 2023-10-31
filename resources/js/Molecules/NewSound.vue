@@ -18,12 +18,18 @@
                     <div v-if="sounds != null" class="c-users">
                         <div v-for="sound in sounds" :key="sound.id" class="option">
                             {{ sound.name }}
-                            <button class="add__user"
-                                title="Adicionar jogador"
-                                @click="addUser(sound.id)"
-                            >
-                                <img src="../../svg/plus-lg.svg" />
-                            </button>
+                            <div class="option__functions">
+                                <audio controls controlslist="nodownload">
+                                    <source :src="sound.content" type="audio/mpeg">
+                                    Seu navegador não suporta elementos de áudio
+                                </audio>
+                                <button class="add__user"
+                                    title="Adicionar jogador"
+                                    @click="add(sound.id)"
+                                >
+                                    <img src="../../svg/plus-lg.svg" />
+                                </button>
+                            </div>
                         </div>
                         <div v-if="sounds.length == 0" class="option--empty">
                             Nenhum áudio encontrado
@@ -113,14 +119,14 @@ export default {
             }, 800);
         },
 
-        addUser: function(userId) {
-            axios.post(route('player.add'), {
-                user_id: userId,
-                history_id: this.storeHistoryId,
-                points: this.defaultPoints,
+        add: function(id) {
+            axios.post(route('sound.add'), {
+                sound_id: id,
+                chapter_id: this.storeChapterId
             })
             .then((response) => {
                 this.sounds = null
+                this.name = ''
                 this.$store.commit('updateSounds', response.data)
                 nextTick(() => this.$refs["nameInput"].focus());
             })
@@ -164,6 +170,13 @@ export default {
     background-color: darkgray;
 }
 
+.option__functions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.3rem;
+}
+
 .add__user {
     background: linear-gradient(90deg, rgba(25,130,33,1) 33%, rgba(1,212,175,1) 100%);
     border-radius: 50%;
@@ -194,5 +207,9 @@ export default {
     display: flex;
     flex-direction: column;
     gap:1rem;
+}
+
+audio {
+    width: 15rem;
 }
 </style>

@@ -45,7 +45,7 @@ class Chapter extends Model
 
     public function sounds(): BelongsToMany
     {
-        return $this->belongsToMany(Image::class, 'chapters_sounds', 'chapter_id', 'sound_id');
+        return $this->belongsToMany(Sound::class, 'chapters_sounds', 'chapter_id', 'sound_id');
     }
 
     public function getHasNextAttribute()

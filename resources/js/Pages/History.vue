@@ -69,23 +69,13 @@
                 <hr>
                 <div class="direita__2">
                     <div class="players">
-                        <!-- <div v-for="sound in storeSounds"
+                        <div v-for="sound in storeSounds"
                             :key="sound.id"
                             class="player"
-                        > -->
-                            <!-- <Sound :sound="sound" /> -->
-                            <!-- <img src="/images/9/1698529702.png"> -->
-                            <!-- <audio controls>
-                                <source src="/images/9/audio1.mp3" type="audio/mpeg">
-                                Your browser does not support the audio element.
-                            </audio> -->
-                            <audio controls>
-                                <source src="/sounds/1_explosion.mp3" type="audio/mpeg">
-                                Your browser does not support the audio element.
-                            </audio>
-                        <!-- </div> -->
+                        >
+                            <Sound :sound="sound" />
+                        </div>
                     </div>
-
                     <div>
                         <NewSound />
                     </div>
@@ -206,7 +196,8 @@ hr {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 33%;
+    min-width: 22rem;
+    max-width: 25rem;
     height: 100%;
     box-shadow: inset 0 0 1.1rem #a7a7a7;
 }
