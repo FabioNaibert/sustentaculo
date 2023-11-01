@@ -6,9 +6,14 @@ const store = createStore({
         history: [],
         allAttributes: [],
         currentChapter: null,
+        editMode: false,
     },
 
     getters: { // this.$store.getters.doneTodosCount
+        editMode (state) {
+            return state.editMode
+        },
+
         historyId (state) {
             return state.history.id
         },
@@ -47,13 +52,13 @@ const store = createStore({
     },
 
     mutations:{ // store.commit('increment')
+        setEditMode (state, payload) {
+            state.editMode = payload
+        },
+
         setHistory (state, payload) {
             state.history = payload
         },
-
-        // setCurrentChapter (state, payload) {
-        //     state.history.chapters = payload
-        // },
 
         setAllAttributes (state, payload) {
             state.allAttributes = payload

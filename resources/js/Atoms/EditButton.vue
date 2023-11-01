@@ -18,6 +18,8 @@ button {
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 2rem;
+    height: 2rem;
 
     padding: 0.5rem;
     border-radius: 8px;

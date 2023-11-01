@@ -63,4 +63,17 @@ class HistoryController extends Controller
 
         $this->chapterService->addChapter(['history_id' => $history->id, 'previous_id' => null]);
     }
+
+
+    public function editHistoryTitle(Request $request)
+    {
+        $historyId = $request->input('history_id');
+        $title = $request->input('title');
+
+        $history = History::findOrFail($historyId);
+        $history->title = $title;
+        $history->save();
+
+        return $history->title;
+    }
 }

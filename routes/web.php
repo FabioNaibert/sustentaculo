@@ -40,6 +40,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/history', [HistoryController::class, 'store'])->name('history.store');
     Route::get('/history/{id?}', [HistoryController::class, 'getHistory'])->name('history.get');
+    Route::post('/history-edit-title', [HistoryController::class, 'editHistoryTitle'])->name('history.edit.title');
 
     Route::post('players', [PlayerController::class, 'getUsersToPlay'])->name('player.search');
     Route::post('add-player', [PlayerController::class, 'addPlayer'])->name('player.add');
