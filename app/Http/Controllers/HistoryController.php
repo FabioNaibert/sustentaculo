@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UpdateGameEvent;
 use App\Http\Services\ChapterService;
 use App\Http\Services\HistoryService;
 use App\Http\Services\ResourceService;
@@ -75,5 +76,11 @@ class HistoryController extends Controller
         $history->save();
 
         return $history->title;
+    }
+
+
+    public function socketiTeste()
+    {
+        UpdateGameEvent::dispatch();
     }
 }

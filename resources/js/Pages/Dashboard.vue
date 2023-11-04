@@ -18,6 +18,8 @@
                 <div class="p-6 text-gray-900">Mestre, crie seu primeiro mundo!</div>
             </div>
         </div>
+
+        <button @click="teste">Teste</button>
     </AuthenticatedLayout>
 </template>
 
@@ -46,6 +48,19 @@ export default {
             addTooltip: 'Criar nova história'
         }
     },
+
+    created() {
+        window.Pusher.channel('update-game')
+        .listen('UpdateGameEvent', (e) => {
+            console.log('socketiiiiii');
+        });
+    },
+
+    methods: {
+        teste: function() {
+            axios.post(route('socketi.teste'))
+        }
+    }
 }
 </script>
 

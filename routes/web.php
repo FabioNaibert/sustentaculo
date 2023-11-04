@@ -64,6 +64,8 @@ Route::middleware('auth')->group(function () {
     Route::post('search-sound', [SoundController::class, 'getSounds'])->name('sound.search');
     Route::post('add-sound', [SoundController::class, 'addSound'])->name('sound.add');
     Route::post('remove-sound', [SoundController::class, 'removeSound'])->name('sound.remove');
+
+    Route::post('socketi_teste', [HistoryController::class, 'socketiTeste'])->name('socketi.teste');
 });
 
 require __DIR__.'/auth.php';
