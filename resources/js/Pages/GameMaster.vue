@@ -13,10 +13,6 @@
                             <Player :player="enemy" />
                         </div>
                     </div>
-
-                    <div>
-                        <NewEnemy />
-                    </div>
                 </div>
                 <hr>
                 <div class="esquerda__2">
@@ -28,42 +24,23 @@
                             <Resource :resource="resource" />
                         </div>
                     </div>
-
-                    <div>
-                        <NewResource />
-                    </div>
                 </div>
             </div>
 
             <div class="c-meio">
-                <Chapter />
+                <GameChapter />
             </div>
 
             <div class="c-direita">
                 <div class="direita__1">
-                    <div class="input__default">
-                        <label class="label__default">PONTOS INICIAIS:</label>
-                        <IntInput tooltip="Valor padrão: 5"
-                            ref="intInput"
-                            type="number"
-                            class="mt-1 block"
-                            placeholder="Valor padrão: 5"
-                            v-model="defaultPoints"
-                            :minValue="1"
-                            @change="setValue"
-                        />
-                    </div>
                     <div class="players">
                         <div v-for="player in storePlayers"
                             :key="player.id"
                             class="player"
                         >
-                            <UserToPlay :player="player" />
+                            <!-- <UserToPlay :player="player" /> -->
+                            <Player :player="player" />
                         </div>
-                    </div>
-
-                    <div>
-                        <NewPlayer :default_points="defaultPoints" />
                     </div>
                 </div>
                 <hr>
@@ -75,9 +52,6 @@
                         >
                             <Sound :sound="sound" />
                         </div>
-                    </div>
-                    <div>
-                        <NewSound />
                     </div>
                 </div>
             </div>
@@ -96,12 +70,12 @@ import NewEnemy from '@/Molecules/NewEnemy.vue';
 import UserToPlay from '@/Molecules/UserToPlay.vue';
 import NewResource from '@/Molecules/NewResource.vue';
 import Resource from '@/Molecules/Resource.vue';
-import Chapter from '@/Organisms/Chapter.vue';
+import GameChapter from '@/Organisms/GameChapter.vue';
 import Sound from '@/Molecules/Sound.vue';
 import NewSound from '@/Molecules/NewSound.vue';
 
 export default {
-    name: 'History',
+    name: 'GameMaster',
 
     props: ['response'],
 
@@ -116,7 +90,7 @@ export default {
         UserToPlay,
         NewResource,
         Resource,
-        Chapter,
+        GameChapter,
         Sound,
         NewSound
     },
@@ -124,7 +98,7 @@ export default {
     created() {
         this.$store.commit('setHistory', this.response.history)
         this.$store.commit('setAllAttributes', this.response.allAttributes)
-        this.$store.commit('setEditMode', true)
+        this.$store.commit('setEditMode', false)
     },
 
     data() {
@@ -168,16 +142,6 @@ export default {
             return this.$store.getters.sounds
         },
     },
-
-    methods: {
-        setValue: function() {
-            if (this.defaultPoints < 1){
-                return this.defaultPoints = 5
-            }
-
-            return this.defaultPoints = parseInt(this.defaultPoints)
-        }
-    }
 }
 </script>
 

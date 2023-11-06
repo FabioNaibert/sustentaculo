@@ -50,4 +50,28 @@ class HistoryService
             ])
         ];
     }
+
+
+    public function getGame($id, $chapter_id = null)
+    {
+        $history = History::findOrFail($id);
+        $chapter = $this->chapterService->getGameChapter($id, $chapter_id);
+        $players = $this->playerController->getPlayers($history->id, $history->master_id);
+        $enemies = $this->playerController->getEnemies($history->id, $history->master_id);
+        $resources = $this->resourceService->getResources($chapter->id);
+        $sounds = $this->soundService->getSounds($chapter);
+
+        return [
+            'history' => [
+                'id' => $history->id,
+                'title' => $history->title,
+                'masterId' => $history->master_id,
+                'chapter' => $chapter,
+                'players' => $players,
+                'enemies' => $enemies,
+                'resources' => $resources,
+                'sounds' => $sounds
+            ],
+        ];
+    }
 }

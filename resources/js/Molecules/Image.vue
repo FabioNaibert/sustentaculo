@@ -7,6 +7,7 @@
                 </div>
                 <h3>{{ resource.name }}</h3>
                 <RemoveButton
+                    v-show="storeEditMode"
                     class="remove-button"
                     @click="remove"
                     :tooltip="'Remover imagem'"
@@ -37,6 +38,10 @@ export default {
 
         storeChapter: function() {
             return this.$store.getters.chapter
+        },
+
+        storeEditMode: function() {
+            return this.$store.getters.editMode
         },
     },
 

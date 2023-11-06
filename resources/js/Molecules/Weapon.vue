@@ -18,6 +18,7 @@
                     <img :src="resource.image.content">
                 </div>
                 <RemoveButton
+                    v-show="storeEditMode"
                     class="remove-button"
                     @click="remove"
                     :tooltip="'Remover arma'"
@@ -48,6 +49,10 @@ export default {
 
         storeChapter: function() {
             return this.$store.getters.chapter.id
+        },
+
+        storeEditMode: function() {
+            return this.$store.getters.editMode
         },
     },
 

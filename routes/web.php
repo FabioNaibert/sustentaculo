@@ -38,6 +38,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Route::get('/game/{id?}', [HistoryController::class, 'getGame'])->name('game.get');
+    Route::get('/game/{id?}/{chapter?}', [HistoryController::class, 'getGameByChapter'])->name('game.get');
+    Route::post('/game/previous', [ChapterController::class, 'previousGameChapter'])->name('game.previous.get');
+    Route::post('/game/next', [ChapterController::class, 'nextGameChapter'])->name('game.next.get');
+
     Route::post('/history', [HistoryController::class, 'store'])->name('history.store');
     Route::get('/history/{id?}', [HistoryController::class, 'getHistory'])->name('history.get');
     Route::post('/history-edit-title', [HistoryController::class, 'editHistoryTitle'])->name('history.edit.title');

@@ -1,5 +1,6 @@
 <template>
     <div
+        @click="enterGame"
         @mouseover="() => showEditHistory = true"
         @mouseleave="() => showEditHistory = false"
         class="card bg-white shadow-sm sm:rounded-lg"
@@ -119,6 +120,16 @@ export default {
             const form = useForm({});
 
             form.get(route('history.get') + '/' + this.history.id, {
+                // onSuccess: () => closeModal(),
+                onError: (error) => console.error(error),
+                onFinish: () => form.reset(),
+            });
+        },
+
+        enterGame: function() {
+            const form = useForm({});
+
+            form.get(route('game.get') + '/' + this.history.id, {
                 // onSuccess: () => closeModal(),
                 onError: (error) => console.error(error),
                 onFinish: () => form.reset(),

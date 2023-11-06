@@ -69,4 +69,25 @@ class ChapterController extends Controller
 
         return $this->historyService->getHistory($chapter->history_id, $nextId);
     }
+
+
+
+    public function previousGameChapter(Request $request)
+    {
+        $previousId = $request->input('previous_id');
+        $historyId = $request->input('history_id');
+
+        return $this->historyService->getGame($historyId, $previousId);
+    }
+
+
+    public function nextGameChapter(Request $request)
+    {
+        $historyId = $request->input('history_id');
+        $currentChapterId = $request->input('current_chapter_id');
+        $nextId = $request->input('next_id');
+        $nextId = $this->chapterService->getNextChapterId($currentChapterId, $nextId);
+
+        return $this->historyService->getGame($historyId, $nextId);
+    }
 }

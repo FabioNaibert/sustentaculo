@@ -19,7 +19,9 @@
                         </div>
                     </div>
                 </div>
-                <RemoveButton @click="removePlayer"
+                <RemoveButton
+                    v-show="storeEditMode"
+                    @click="removePlayer"
                     :tooltip="tooltip"
                 />
             </div>
@@ -60,6 +62,10 @@ export default {
 
         storeHistoryId: function() {
             return this.$store.getters.historyId
+        },
+
+        storeEditMode: function() {
+            return this.$store.getters.editMode
         },
     },
 

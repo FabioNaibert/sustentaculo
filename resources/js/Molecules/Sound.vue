@@ -2,12 +2,13 @@
     <div class="c-sound">
         <span>{{ sound.name }}</span>
         <div class="sound-panel">
-            <audio controls>
+            <audio controls controlslist="nodownload">
                 <source :src="sound.content" type="audio/mpeg">
                 Seu navegador não suporta elementos de áudio
             </audio>
         </div>
         <RemoveButton
+            v-show="storeEditMode"
             class="remove-button"
             @click="removePlayer"
             :tooltip="tooltip"
@@ -35,7 +36,11 @@ export default {
     computed: {
         storeChapterId: function() {
             return this.$store.getters.chapter.id
-        }
+        },
+
+        storeEditMode: function() {
+            return this.$store.getters.editMode
+        },
     },
 
     methods: {

@@ -49,6 +49,30 @@ class HistoryController extends Controller
         ]);
     }
 
+    public function getGame($id)
+    {
+        $allHistory = $this->historyService->getHistory($id);
+
+        return Inertia::render('GameMaster', [
+            'response' => $allHistory,
+        ]);
+    }
+
+    public function getGameByChapter($id, $chapter = null)
+    {
+        $allHistory = null;
+
+        if ($chapter) {
+            $allHistory = $this->historyService->getGame($id, $chapter);
+        } else {
+            $allHistory = $this->historyService->getGame($id);
+        }
+
+        return Inertia::render('GameMaster', [
+            'response' => $allHistory,
+        ]);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
