@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Services\ImageService;
 use App\Http\Services\ResourceService;
 use App\Models\Chapter;
+use App\Models\Player;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ImageController extends Controller
 {
@@ -43,5 +45,11 @@ class ImageController extends Controller
         $chapterId = $this->imageService->removeImage($imageId);
 
         return $this->resourceService->getResources($chapterId);
+    }
+
+
+    public function getImagesPlayer()
+    {
+        return Inertia::render('GameResources');
     }
 }

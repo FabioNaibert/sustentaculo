@@ -35,14 +35,16 @@ Route::get('/dashboard', function () {return Inertia::render('Dashboard');})->mi
 
 Route::middleware('auth')->group(function () {
     Route::get('/histories', [HistoryController::class, 'getHistoriesDesktop'])->name('histories.desktop.get');
+
     Route::get('/m-histories', [HistoryController::class, 'getHistoriesMobile'])->name('histories.mobile.get');
+    Route::get('/m-game/{player_id?}', [HistoryController::class, 'getGameMobile'])->name('game.mobile.get');
+    Route::get('/m-resources', [ImageController::class, 'getImagesPlayer'])->name('resources.mobile.get');
 
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/m-game/{player_id?}', [HistoryController::class, 'getGameMobile'])->name('game.mobile.get');
     Route::get('/game/{id?}/{chapter?}', [HistoryController::class, 'getGameByChapter'])->name('game.desktop.get');
     Route::post('/game/previous', [ChapterController::class, 'previousGameChapter'])->name('game.previous.get');
     Route::post('/game/next', [ChapterController::class, 'nextGameChapter'])->name('game.next.get');

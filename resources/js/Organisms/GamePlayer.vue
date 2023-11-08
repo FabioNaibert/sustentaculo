@@ -1,5 +1,4 @@
 <template>
-    <LayoutMobile :player_id="this.response.player.id">
         <div class="c-info">
             <h3><b>{{ storeGameMobile.player.name }}</b></h3>
 
@@ -22,39 +21,26 @@
         </div>
 
         <div class="c-options">
-            <NavLink
-                class="option__action"
-                :href="route('game.mobile.get')"
-                :class="{'bg-gray-100': route().current('game.mobile.get')}"
+            <CustomButton
+                class="custom-button"
             >
-                <CustomButton class="custom-button">
-                    DEFESA
-                </CustomButton>
-            </NavLink>
-            <NavLink
-                class="menu__option"
-                :href="route('history.get') + '/9'"
-                :class="{'bg-gray-100': route().current('history.get')}"
+                DEFESA
+            </CustomButton>
+            <CustomButton
+                class="custom-button"
+                @click="inventory()"
             >
-                <CustomButton class="custom-button">
-                    INVENTÁRIO
-                </CustomButton>
-            </NavLink>
-            <NavLink
-                class="menu__option"
-                :href="route('history.get') + '/9'"
+                INVENTÁRIO
+            </CustomButton>
+            <CustomButton
+                class="custom-button"
             >
-                <CustomButton class="custom-button">
-                    AÇÕES
-                </CustomButton>
-            </NavLink>
+                AÇÕES
+            </CustomButton>
         </div>
-
-    </LayoutMobile>
 </template>
 
 <script>
-import LayoutMobile from '@/Layouts/LayoutMobile.vue';
 import AttributeBar from '@/Atoms/AttributeBar.vue';
 import NavLink from '@/Components/NavLink.vue';
 import CustomButton from '@/Atoms/CustomButton.vue';
@@ -62,26 +48,12 @@ import CustomButton from '@/Atoms/CustomButton.vue';
 export default {
     name: 'GameMaster',
 
-    props: ['response'],
+    emits: ['inventory'],
 
     components: {
-        LayoutMobile,
         AttributeBar,
         NavLink,
-        CustomButton
-    },
-
-    created() {
-        console.log(this.response)
-        this.$store.commit('setGameMobile', this.response)
-    },
-
-    data() {
-        return {
-            addTooltip: 'Criar nova história',
-            defaultPoints: 5,
-            teste: null
-        }
+        CustomButton,
     },
 
     computed: {
@@ -98,6 +70,10 @@ export default {
         showAttributeBar: function(current) {
             return current !== null && current !== undefined
         },
+
+        inventory: function() {
+            this.$emit('inventory')
+        }
     }
 }
 </script>
@@ -137,6 +113,7 @@ p {
     display: flex;
     flex-direction: column;
     align-items: stretch;
+    gap: 0.3rem;
 
     position: absolute;
     bottom: 3.5rem;

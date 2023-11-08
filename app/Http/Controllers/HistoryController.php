@@ -97,7 +97,7 @@ class HistoryController extends Controller
     {
         $allHistory = $this->historyService->getHistoryMobile($player_id);
 
-        return Inertia::render('GamePlayer', [
+        return Inertia::render('LayoutMobile', [
             'response' => $allHistory,
         ]);
     }
