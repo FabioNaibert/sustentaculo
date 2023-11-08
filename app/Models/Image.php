@@ -24,13 +24,13 @@ class Image extends Model
         return $this->hasOne(History::class);
     }
 
-    // public function chapter(): HasOne
-    // {
-    //     return $this->hasOne(Chapter::class);
-    // }
-
     public function chapters(): BelongsToMany
     {
         return $this->belongsToMany(Chapter::class, 'chapters_images', 'image_id', 'chapter_id');
+    }
+
+    public function players(): BelongsToMany
+    {
+        return $this->belongsToMany(Chapter::class, 'players_images', 'image_id', 'player_id');
     }
 }

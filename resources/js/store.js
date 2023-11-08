@@ -7,6 +7,7 @@ const store = createStore({
         allAttributes: [],
         currentChapter: null,
         editMode: false,
+        gameMobile: [],
     },
 
     getters: { // this.$store.getters.doneTodosCount
@@ -16,6 +17,10 @@ const store = createStore({
 
         historyId (state) {
             return state.history.id
+        },
+
+        gameMobile (state) {
+            return state.gameMobile
         },
 
         historyTitle (state) {
@@ -58,6 +63,10 @@ const store = createStore({
 
         setHistory (state, payload) {
             state.history = payload
+        },
+
+        setGameMobile (state, payload) {
+            state.gameMobile = payload
         },
 
         setAllAttributes (state, payload) {

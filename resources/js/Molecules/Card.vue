@@ -7,35 +7,40 @@
         :class="{'element--hover': hoverHistory}"
     >
         <div class="c-text p-6 text-gray-900">
-            <h3 :class="{'element--hover': hoverTitle}" v-if="!editMode">
-                {{ history.title }}
-                <EditButton
-                    class="edit--title"
-                    v-if="showEditHistory"
-                    :style="{position: 'absolute'}"
-                    @click.stop="editTitle"
-                    @mouseover="() => hoverTitle = true"
-                    @mouseleave="() => hoverTitle = false"
-                    tooltip="Editar título"
+            <div class="text">
+                <h3 :class="{'element--hover': hoverTitle}" v-if="!editMode">
+                    {{ history.title }}
+                    <EditButton
+                        class="edit--title"
+                        v-if="showEditHistory && !userPlayer"
+                        :style="{position: 'absolute'}"
+                        @click.stop="editTitle"
+                        @mouseover="() => hoverTitle = true"
+                        @mouseleave="() => hoverTitle = false"
+                        tooltip="Editar título"
+                    />
+                </h3>
+                <TextInput
+                    v-if="editMode && !userPlayer"
+                    ref="nameInput"
+                    v-model="history.title"
+                    type="text"
+                    class="mt-1 block input__name"
+                    placeholder="Nome do inimigo"
+                    @keyup.enter="saveEdition"
+                    @keyup.esc="exitEdition"
+                    autofocus
+                    @focusout="exitEdition"
                 />
-            </h3>
-            <TextInput
-                v-if="editMode"
-                ref="nameInput"
-                v-model="history.title"
-                type="text"
-                class="mt-1 block input__name"
-                placeholder="Nome do inimigo"
-                @keyup.enter="saveEdition"
-                @keyup.esc="exitEdition"
-                autofocus
-                @focusout="exitEdition"
-            />
-            <p>{{ firstChapter }}</p>
+                <p>{{ firstChapter }}</p>
+            </div>
+            <span v-if="userPlayer">
+                <b>Mestre:</b>{{history.master.name}}
+            </span>
         </div>
         <EditButton
             class="edit--history"
-            v-if="showEditHistory"
+            v-if="showEditHistory && !userPlayer"
             :style="{position: 'absolute'}"
             @click.stop="enterHistory"
             @mouseover="() => hoverHistory = true"
@@ -85,6 +90,18 @@ export default {
 
             return 'Este mundo ainda está em construção...'
         },
+
+        userPlayer: function() {
+            return this.history.hasOwnProperty('master')
+        },
+
+        routeEnterGame: function() {
+            if (this.userPlayer) {
+                return route('game.mobile.get') + '/' + this.history.player.id
+            }
+
+            return route('game.desktop.get') + '/' + this.history.id
+        }
     },
 
     methods: {
@@ -129,7 +146,7 @@ export default {
         enterGame: function() {
             const form = useForm({});
 
-            form.get(route('game.get') + '/' + this.history.id, {
+            form.get(this.routeEnterGame, {
                 // onSuccess: () => closeModal(),
                 onError: (error) => console.error(error),
                 onFinish: () => form.reset(),
@@ -162,6 +179,14 @@ h3 {
 .c-text {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    gap: 0.5rem;
+    height: 100%;
+}
+
+.text {
+    display: flex;
+    flex-direction: column;
     justify-content: space-around;
     gap: 1rem;
 }
@@ -171,6 +196,12 @@ p {
     -webkit-line-clamp: 7;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+span {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.2rem;
 }
 
 .edit--title {

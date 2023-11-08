@@ -10,7 +10,9 @@ use App\Models\Attribute;
 use App\Models\History;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class HistoryController extends Controller
 {
@@ -29,16 +31,48 @@ class HistoryController extends Controller
     }
 
 
-    public function getHistories()
+    public function getHistoriesDesktop()
     {
         $user = Auth::user();
 
         $histories = History::with('firstChapter')->where('master_id', $user->id)->get();
 
-        return Inertia::render('Dashboard', [
-            'histories' => $histories
-        ]);
+        return $histories;
+
+        // return Inertia::render('Dashboard', [
+        //     'histories' => $histories
+        // ]);
     }
+
+
+    public function getHistoriesMobile()
+    {
+        $user = Auth::user();
+
+        $histories = History::with([
+            'firstChapter',
+            'master:id,name',
+            'players' => function (Builder $query) use ($user) {
+                $query->where('players.user_id', $user->id)->first();
+            }])
+            ->whereNot('master_id', $user->id)
+            ->whereRelation('players', 'user_id', $user->id)
+            ->get()
+            ->map(fn ($history) =>
+                [
+                    'id' => $history->id,
+                    'title' => $history->title,
+                    'first_chapter' => $history->first_chapter,
+                    'master' => $history->master,
+                    'player' => $history->players[0],
+                    'created_at' => $history->created_at,
+                    'updated_at' => $history->updated_at
+                ]
+            );
+
+        return $histories;
+    }
+
 
     public function getHistory($id)
     {
@@ -54,6 +88,16 @@ class HistoryController extends Controller
         $allHistory = $this->historyService->getHistory($id);
 
         return Inertia::render('GameMaster', [
+            'response' => $allHistory,
+        ]);
+    }
+
+
+    public function getGameMobile($player_id)
+    {
+        $allHistory = $this->historyService->getHistoryMobile($player_id);
+
+        return Inertia::render('GamePlayer', [
             'response' => $allHistory,
         ]);
     }

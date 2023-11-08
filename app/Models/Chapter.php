@@ -33,11 +33,6 @@ class Chapter extends Model
         return $this->hasMany(Chapter::class, 'previous_id', 'id');
     }
 
-    // public function image(): BelongsTo
-    // {
-    //     return $this->belongsTo(Image::class);
-    // }
-
     public function images(): BelongsToMany
     {
         return $this->belongsToMany(Image::class, 'chapters_images', 'chapter_id', 'image_id');

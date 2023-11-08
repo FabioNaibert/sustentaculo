@@ -5,6 +5,8 @@ namespace App\Http\Services;
 use App\Http\Controllers\PlayerController;
 use App\Models\Attribute;
 use App\Models\History;
+use App\Models\Player;
+use Illuminate\Support\Facades\Log;
 
 class HistoryService
 {
@@ -12,11 +14,13 @@ class HistoryService
     private ChapterService $chapterService;
     private ResourceService $resourceService;
     private SoundService $soundService;
+    private PlayerService $playerService;
 
 
-    public function __construct(PlayerController $playerController, ChapterService $chapterService, ResourceService $resourceService, SoundService $soundService)
+    public function __construct(PlayerController $playerController, ChapterService $chapterService, ResourceService $resourceService, SoundService $soundService, PlayerService $playerService)
     {
         $this->playerController = $playerController;
+        $this->playerService = $playerService;
         $this->chapterService = $chapterService;
         $this->resourceService = $resourceService;
         $this->soundService = $soundService;
@@ -72,6 +76,28 @@ class HistoryService
                 'resources' => $resources,
                 'sounds' => $sounds
             ],
+        ];
+    }
+
+
+    public function getHistoryMobile($player_id)
+    {
+        $player = Player::findOrFail($player_id);
+        $history = History::findOrFail($player->history_id);
+
+        $playerMap = $this->playerService->getPlayer($player_id);
+        $team = $this->playerService->getTeam($history->id, $history->master_id, $player_id);
+        $resoucers = $this->resourceService->getImagesPlayer($player);
+        $backpack = $this->resourceService->getWeaponsPlayer($player_id);
+
+        // Log::info($playerMap);
+
+        return [
+            'history' => $history,
+            'player' => $playerMap,
+            'team' => $team,
+            'resoucers' => $resoucers,
+            'backpack' => $backpack
         ];
     }
 }

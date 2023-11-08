@@ -34,4 +34,9 @@ class Player extends Model
     {
         return $this->belongsToMany(Attribute::class, 'attribute_points', 'player_id', 'attribute_id');
     }
+
+    public function images(): BelongsToMany
+    {
+        return $this->belongsToMany(Image::class, 'players_images', 'player_id', 'image_id');
+    }
 }
