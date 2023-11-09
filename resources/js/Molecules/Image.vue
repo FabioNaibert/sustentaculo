@@ -8,10 +8,13 @@
                 <h3>{{ resource.name }}</h3>
                 <RemoveButton
                     v-show="storeEditMode"
-                    class="remove-button"
+                    class="position-button"
                     @click="remove"
                     :tooltip="'Remover imagem'"
                 />
+                <div class="position-button">
+                    <ShareResources :image="resource" />
+                </div>
             </div>
         </div>
     </div>
@@ -19,12 +22,14 @@
 
 <script>
 import RemoveButton from "@/Atoms/RemoveButton.vue";
+import ShareResources from '@/Molecules/ShareResources.vue';
 
 export default {
     name: 'Image',
 
     components: {
         RemoveButton,
+        ShareResources,
     },
 
     props: [
@@ -103,7 +108,7 @@ p {
     width: 5rem;
 }
 
-.remove-button {
+.position-button {
     position: absolute;
     bottom: 0;
     right: 0;

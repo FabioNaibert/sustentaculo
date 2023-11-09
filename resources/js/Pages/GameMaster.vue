@@ -96,6 +96,7 @@ export default {
     },
 
     created() {
+        console.log(this.response.history)
         this.$store.commit('setHistory', this.response.history)
         this.$store.commit('setAllAttributes', this.response.allAttributes)
         this.$store.commit('setEditMode', false)

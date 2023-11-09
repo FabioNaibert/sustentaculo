@@ -13,6 +13,7 @@ class Image extends Model
 
     protected $table = 'images';
     protected $guarded = [];
+    protected $appends = ['share_players_ids'];
 
     public function weapon(): HasOne
     {
@@ -31,6 +32,11 @@ class Image extends Model
 
     public function players(): BelongsToMany
     {
-        return $this->belongsToMany(Chapter::class, 'players_images', 'image_id', 'player_id');
+        return $this->belongsToMany(Player::class, 'players_images', 'image_id', 'player_id');
+    }
+
+    public function getSharePlayersIdsAttribute()
+    {
+        return $this->players()->get(['players.id'])->pluck('id');
     }
 }

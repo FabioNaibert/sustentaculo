@@ -29,6 +29,7 @@ class ResourceService
                 'id' => $image->id,
                 'name' => $image->name,
                 'content' => $image->content,
+                'share_players_ids' => $image->share_players_ids,
             ]);
     }
 

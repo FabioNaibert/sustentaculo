@@ -73,6 +73,7 @@ export default {
     },
 
     created() {
+        console.log(this.response)
         this.$store.commit('setGameMobile', this.response)
     },
 

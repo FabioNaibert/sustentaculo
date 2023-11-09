@@ -65,6 +65,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('add-image', [ImageController::class, 'addImage'])->name('image.add');
     Route::post('remove-image', [ImageController::class, 'removeImage'])->name('image.remove');
+    Route::post('share-image', [ImageController::class, 'shareImage'])->name('image.share');
 
     Route::post('add-chapter', [ChapterController::class, 'addChapter'])->name('chapter.add');
     Route::post('edit-chapter', [ChapterController::class, 'editChapter'])->name('chapter.edit');

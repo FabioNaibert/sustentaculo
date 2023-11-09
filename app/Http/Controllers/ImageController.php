@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Services\ImageService;
 use App\Http\Services\ResourceService;
 use App\Models\Chapter;
+use App\Models\Image;
 use App\Models\Player;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -51,5 +52,19 @@ class ImageController extends Controller
     public function getImagesPlayer()
     {
         return Inertia::render('GameResources');
+    }
+
+
+    public function shareImage(Request $request)
+    {
+        $listShare = $request->input('list_share');
+        $imageId = $request->input('image_id');
+
+        $image = Image::findOrFail($imageId);
+        $image->players()->sync($listShare);
+
+        return $this->resourceService->getResources($image->chapters->first()->id);
+
+        // event socketi
     }
 }

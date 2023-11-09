@@ -23,11 +23,6 @@
         <div class="c-options">
             <CustomButton
                 class="custom-button"
-            >
-                DEFESA
-            </CustomButton>
-            <CustomButton
-                class="custom-button"
                 @click="inventory()"
             >
                 INVENTÁRIO
