@@ -98,4 +98,32 @@ class WeaponController extends Controller
         if ($weapon->image_id)
             $this->imageService->removeImage($weapon->image_id, $weapon->history_id);
     }
+
+
+    public function shareWeapon(Request $request)
+    {
+        $sharePlayerId = $request->input('share_player_id');
+        $weaponId = $request->input('weapon_id');
+        $chapterId = $request->input('chapter_id');
+
+        $weapon = Weapon::findOrFail($weaponId);
+        $weapon->player_id = $sharePlayerId;
+        $weapon->save();
+
+        return $this->resourceService->getResources($chapterId);
+    }
+
+
+    public function equipWeapon(Request $request)
+    {
+        $weaponId = $request->input('weapon_id');
+
+        $weapon = Weapon::findOrFail($weaponId);
+        Weapon::where('player_id', $weapon->player_id)->whereNot('id', $weapon->id)->update(['equiped' => false]);
+
+        $weapon->equiped = !$weapon->equiped;
+        $weapon->save();
+
+        // event socketi
+    }
 }

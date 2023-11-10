@@ -3,11 +3,9 @@
 namespace App\Http\Services;
 
 use App\Models\Chapter;
-use App\Models\Image;
 use App\Models\Player;
 use App\Models\Weapon;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
 
 class ResourceService
 {
@@ -41,6 +39,7 @@ class ResourceService
                 'id' => $image->id,
                 'name' => $image->name,
                 'content' => $image->content,
+                'updatedAt' => $image->updated_at,
             ]);
     }
 
@@ -70,6 +69,9 @@ class ResourceService
         return $weapons->map(fn ($weapon) => [
             'id' => $weapon->id,
             'name' => $weapon->name,
+            'playerId' => $weapon->player_id,
+            'updatedAt' => $weapon->updated_at,
+            'equiped' => $weapon->equiped,
             'image' => [
                 'id' => $weapon->image->id,
                 'name' => $weapon->image->name,

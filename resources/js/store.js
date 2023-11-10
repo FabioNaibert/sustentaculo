@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
 import { createStore } from 'vuex';
+import { orderBy } from 'lodash';
 
 const store = createStore({
     state: {
@@ -8,11 +9,16 @@ const store = createStore({
         currentChapter: null,
         editMode: false,
         gameMobile: [],
+        isPlayer: false,
     },
 
     getters: { // this.$store.getters.doneTodosCount
         editMode (state) {
             return state.editMode
+        },
+
+        isPlayer (state) {
+            return state.isPlayer
         },
 
         historyId (state) {
@@ -32,19 +38,19 @@ const store = createStore({
         },
 
         allAttributes (state) {
-            return state.allAttributes
+            return orderBy(state.allAttributes, ['id'])
         },
 
         resources (state) {
-            return state.history.resources
+            return orderBy(state.history.resources, ['name'])
         },
 
         enemies (state) {
-            return state.history.enemies
+            return orderBy(state.history.enemies, ['name'])
         },
 
         players (state) {
-            return state.history.players
+            return orderBy(state.history.players, ['name'])
         },
 
         chapter (state) {
@@ -52,7 +58,7 @@ const store = createStore({
         },
 
         sounds (state) {
-            return state.history.sounds
+            return orderBy(state.history.sounds, ['name'])
         }
     },
 
@@ -66,6 +72,7 @@ const store = createStore({
         },
 
         setGameMobile (state, payload) {
+            state.isPlayer = true
             state.gameMobile = payload
         },
 

@@ -142,8 +142,6 @@ export default {
                 }
             }
 
-            console.log(data)
-
             this.add(data)
         },
 
@@ -161,7 +159,6 @@ export default {
                 }
             }
 
-            console.log(data)
             this.add(data)
         },
 
@@ -239,7 +236,6 @@ export default {
 
             axios.post(route('chapter.edit'), data)
             .then((response) => {
-                console.log('salvou')
                 // this.$store.commit('setHistory', response.data.history)
             })
             .catch((error) => {

@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import { orderBy } from 'lodash';
 import Weapon from '@/Molecules/Weapon.vue';
 
 export default {
@@ -25,7 +26,7 @@ export default {
         },
 
         storeBackpack: function() {
-            return this.storeGameMobile.backpack
+            return orderBy(this.storeGameMobile.backpack, ['name'])
         },
     },
 }

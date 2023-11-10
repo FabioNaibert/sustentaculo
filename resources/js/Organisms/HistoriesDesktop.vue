@@ -39,7 +39,6 @@ export default {
     created() {
         axios.get(route('histories.desktop.get'))
         .then((response) => {
-            console.log('desktop')
             this.histories = response.data
         })
 

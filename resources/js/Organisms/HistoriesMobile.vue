@@ -28,7 +28,6 @@ export default {
     created() {
         axios.get(route('histories.mobile.get'))
         .then((response) => {
-            console.log('mobile', response.data)
             this.histories = response.data
         })
     },

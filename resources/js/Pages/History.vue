@@ -152,14 +152,6 @@ export default {
             return this.$store.getters.resources
         },
 
-        storeAllAttributes: function() {
-            return this.$store.getters.allAttributes
-        },
-
-        storeChapter: function() {
-            return this.$store.getters.chapter.id
-        },
-
         storeChapter: function() {
             return this.$store.getters.chapter
         },

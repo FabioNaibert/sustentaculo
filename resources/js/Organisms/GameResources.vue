@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import { orderBy } from 'lodash';
 import Resource from '@/Molecules/Resource.vue';
 
 export default {
@@ -25,7 +26,7 @@ export default {
         },
 
         storeResources: function() {
-            return this.storeGameMobile.resoucers
+            return orderBy(this.storeGameMobile.resoucers, ['name'])
         },
     },
 }

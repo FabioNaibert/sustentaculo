@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import { orderBy } from 'lodash';
 import Player from '@/Molecules/Player.vue';
 
 export default {
@@ -25,7 +26,7 @@ export default {
         },
 
         storeTeam: function() {
-            return this.storeGameMobile.team
+            return orderBy(this.storeGameMobile.team, ['name'])
         },
     },
 }

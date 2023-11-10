@@ -1,6 +1,6 @@
 <template>
     <div class="card bg-white shadow-sm sm:rounded-lg">
-        <div class="c-text text-gray-900">
+        <div class="c-text text-gray-900" @click="openModal">
             <h3>{{ player.name }}</h3>
             <div class="c-info">
                 <div class="info__attribute">
@@ -28,12 +28,44 @@
         </div>
         <AccordionButton @click="showAllAttributes()" :rotate="showAll" :identifier="player.id"/>
     </div>
+
+    <Modal :show="showModal" @close="closeModal">
+        <div class="p-6">
+            <div class="c-text text-gray-900" @click="openModal">
+                <h3>{{ player.name }}</h3>
+                <div class="c-info">
+                    <div class="info__attribute">
+                        <div
+                            v-for="attribute in storeAttributes"
+                            :key="attribute.id"
+                        >
+                            <div class="attribute">
+                                <p>{{ attribute.name }}</p>
+                                <AttributeBar v-if="showAttributeBar(attribute.currentPoints)"
+                                    :totalPoints="attribute.totalPoints"
+                                    :currentPoints="attribute.currentPoints"
+                                    :color="attribute.representationColor"
+                                />
+                                <div v-else class="attribute__points">{{attribute.totalPoints}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end">
+                <SecondaryButton @click="closeModal"> FECHAR </SecondaryButton>
+            </div>
+        </div>
+    </Modal>
 </template>
 
 <script>
+import { orderBy } from 'lodash'
 import AttributeBar from "@/Atoms/AttributeBar.vue";
 import RemoveButton from "@/Atoms/RemoveButton.vue";
 import AccordionButton from "@/Atoms/AccordionButton.vue";
+import Modal from '@/Components/Modal.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 export default {
     name: 'Player',
@@ -41,7 +73,9 @@ export default {
     components: {
         AttributeBar,
         RemoveButton,
-        AccordionButton
+        AccordionButton,
+        Modal,
+        SecondaryButton
     },
 
     props: [
@@ -52,12 +86,13 @@ export default {
         return {
             tooltip: 'Excluir inimigo',
             showAll: false,
+            showModal: false,
         }
     },
 
     computed: {
         storeAttributes: function() {
-            return this.player.attributes
+            return orderBy(this.player.attributes, ['id'])
         },
 
         storeHistoryId: function() {
@@ -86,7 +121,15 @@ export default {
 
         showAllAttributes: function() {
             this.showAll = !this.showAll
-        }
+        },
+
+        openModal: function() {
+            this.showModal = true
+        },
+
+        closeModal: function() {
+            this.showModal = false
+        },
     }
 
 }

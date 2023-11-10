@@ -62,6 +62,8 @@ Route::middleware('auth')->group(function () {
 
     Route::post('add-weapon', [WeaponController::class, 'addWeapon'])->name('weapon.add');
     Route::post('remove-weapon', [WeaponController::class, 'removeWeapon'])->name('weapon.remove');
+    Route::post('share-weapon', [WeaponController::class, 'shareWeapon'])->name('weapon.share');
+    Route::post('equip-weapon', [WeaponController::class, 'equipWeapon'])->name('weapon.equip');
 
     Route::post('add-image', [ImageController::class, 'addImage'])->name('image.add');
     Route::post('remove-image', [ImageController::class, 'removeImage'])->name('image.remove');

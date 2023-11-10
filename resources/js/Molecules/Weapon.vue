@@ -1,5 +1,5 @@
 <template>
-    <div class="card bg-white shadow-sm sm:rounded-lg">
+    <div class="card bg-white shadow-sm sm:rounded-lg" @click="equip">
         <div class="c-text text-gray-900">
             <h3>{{ resource.name }}</h3>
             <div class="c-info">
@@ -18,11 +18,17 @@
                     <img :src="resource.image.content">
                 </div>
                 <RemoveButton
-                    v-show="storeEditMode"
-                    class="remove-button"
+                    v-show="storeEditMode && !storeIsPlayer"
+                    class="position-button"
                     @click="remove"
                     :tooltip="'Remover arma'"
                 />
+                <div class="position-button" v-show="!storeEditMode && !storeIsPlayer">
+                    <ShareWeapon :weapon="resource" />
+                </div>
+                <div class="position-equiped" v-show="!storeEditMode && resource.equiped" title="Equipado">
+                    <img src="../../images/swords.png">
+                </div>
             </div>
         </div>
     </div>
@@ -30,12 +36,14 @@
 
 <script>
 import RemoveButton from "@/Atoms/RemoveButton.vue";
+import ShareWeapon from "@/Molecules/ShareWeapon.vue";
 
 export default {
     name: 'Weapon',
 
     components: {
         RemoveButton,
+        ShareWeapon
     },
 
     props: [
@@ -54,6 +62,10 @@ export default {
         storeEditMode: function() {
             return this.$store.getters.editMode
         },
+
+        storeIsPlayer: function() {
+            return this.$store.getters.isPlayer
+        },
     },
 
     methods: {
@@ -65,7 +77,23 @@ export default {
             .then((response) => {
                 this.$store.commit('updateResources', response.data)
             })
+            .catch((error) => {
+                console.error(error)
+            })
         },
+
+        equip: function() {
+            if (!this.storeIsPlayer) return
+
+            axios.post(route('weapon.equip'), {
+                weapon_id: this.resource.id
+            })
+            .then((response) => {
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+        }
     }
 }
 </script>
@@ -114,9 +142,17 @@ p {
     width: 5rem;
 }
 
-.remove-button {
+.position-button {
     position: absolute;
     bottom: 0;
     right: 0;
+}
+
+.position-equiped {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1.5rem;
+    margin: 0.4rem;
 }
 </style>
