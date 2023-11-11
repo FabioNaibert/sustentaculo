@@ -8,6 +8,7 @@ use App\Models\History;
 use App\Models\Player;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class PlayerController extends Controller
 {
@@ -84,7 +85,7 @@ class PlayerController extends Controller
             'history_id' => $historyId,
         ]);
 
-        $mapAttributes = $this->attributesService->mapAttributesPoints($allAttributes);
+        $mapAttributes = $this->attributesService->mapNewAttributesPoints($allAttributes);
         $enemy->attributes()->attach($mapAttributes);
 
         return $this->getEnemies($historyId, $masterId);
@@ -114,6 +115,7 @@ class PlayerController extends Controller
             ->map(fn ($player) => [
                 'id' => $player->id,
                 'name' => $player->name,
+                'pointsDistribution' => $player->points_distribution,
                 'attributes' => $player->attributesPoints->map(function ($attributesPoints) {
                     $attribute = $attributesPoints->attribute;
                     return [
@@ -156,5 +158,25 @@ class PlayerController extends Controller
     {
         $player = Player::find($playerId);
         $player->delete();
+    }
+
+    public function updatePlayer(Request $request)
+    {
+        $player = $request->input('player');
+
+        $playerOld = Player::findOrFail($player['id']);
+        $playerOld->name = $player['name'];
+        $playerOld->points_distribution = $player['pointsDistribution'];
+
+        if ($playerOld->created_at === $playerOld->updated_at) {
+            $mapAttributes = $this->attributesService->mapNewAttributesPoints($player['attributes']);
+        } else {
+            $mapAttributes = $this->attributesService->mapAttributesPoints($player['attributes']);
+        }
+
+        $playerOld->attributes()->sync($mapAttributes);
+        $playerOld->save();
+
+        // event socketi
     }
 }

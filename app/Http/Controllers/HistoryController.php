@@ -64,7 +64,23 @@ class HistoryController extends Controller
                     'title' => $history->title,
                     'first_chapter' => $history->first_chapter,
                     'master' => $history->master,
-                    'player' => $history->players[0],
+                    'player' => [
+                        'id' => $history->players[0]->id,
+                        'name' => $history->players[0]->name,
+                        'pointsDistribution' => $history->players[0]->points_distribution,
+                        'updated_at' => $history->players[0]->updated_at,
+                        'created_at' => $history->players[0]->created_at,
+                        'attributes' => $history->players[0]->attributesPoints->map(function ($attributesPoints) {
+                            $attribute = $attributesPoints->attribute;
+                            return [
+                                'totalPoints' => $attributesPoints->total_points,
+                                'currentPoints' => $attributesPoints->current_points,
+                                'id' => $attribute->id,
+                                'name' => $attribute->name,
+                                'representationColor' => $attribute->representation_color,
+                            ];
+                        })
+                    ],
                     'created_at' => $history->created_at,
                     'updated_at' => $history->updated_at
                 ]

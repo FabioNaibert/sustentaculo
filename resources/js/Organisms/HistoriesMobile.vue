@@ -4,7 +4,7 @@
             <Card v-for="history in histories" :key="history.id" :history="history" />
         </div>
         <div v-else class="c-cards max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="p-6 text-gray-900">Mestre, crie seu primeiro mundo!</div>
+            <div class="p-6 text-gray-900">Ainda não há convites para você.</div>
         </div>
     </div>
 </template>

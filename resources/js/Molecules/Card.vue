@@ -1,6 +1,6 @@
 <template>
     <div
-        @click="enterGame"
+        @click="clickGame"
         @mouseover="() => showEditHistory = true"
         @mouseleave="() => showEditHistory = false"
         class="card bg-white shadow-sm sm:rounded-lg"
@@ -48,13 +48,71 @@
             tooltip="Editar história"
         />
     </div>
+
+    <Modal :show="showModal && userPlayer" @close="closeModal">
+        <div class="p-6">
+            <div class="mt-6 c-new__player">
+                <div>
+                    <TextInput
+                        ref="nameInput"
+                        v-model="storePlayer.name"
+                        type="text"
+                        class="mt-1 block input__name"
+                        placeholder="Nome do personagem"
+                    />
+                </div>
+
+                <div>
+                    PONTOS INICIAIS: {{ storePlayer.pointsDistribution }}
+                </div>
+
+                <div v-for="attribute in storePlayer.attributes" :key="attribute.id" class="input__default">
+                    <label class="label__default">{{ attribute.name }}:</label>
+
+                    <input
+                        class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                        :value="attribute.totalPoints"
+                        ref="input"
+                        :title="'Valor mínimo: 0'"
+                        :min="minValue"
+                        disabled
+                        style="width: 6rem;"
+                    />
+
+                    <CustomButton @click="() => subPoint(attribute.totalPoints) ? attribute.totalPoints-=1 : null" class="custom-buttom">
+                        <img src="../../svg/minus.svg">
+                    </CustomButton>
+                    <CustomButton @click="() => sumPoint() ? attribute.totalPoints+=1 : null" class="custom-buttom">
+                        <img src="../../svg/plus.svg">
+                    </CustomButton>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <SecondaryButton @click="closeModal"> FECHAR </SecondaryButton>
+
+                <PrimaryButton
+                    class="ml-3"
+                    @click="updatePlayer"
+                >
+                    SALVAR
+                </PrimaryButton>
+            </div>
+        </div>
+    </Modal>
 </template>
 
 <script>
+import { sumBy } from 'lodash';
 import { Link } from '@inertiajs/vue3';
 import { useForm } from '@inertiajs/vue3';
 import EditButton from '@/Atoms/EditButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import Modal from '@/Components/Modal.vue';
+import IntInput from '@/Atoms/IntInput.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import CustomButton from '@/Atoms/CustomButton.vue';
 
 export default {
     name: 'Card',
@@ -65,6 +123,11 @@ export default {
         Link,
         EditButton,
         TextInput,
+        Modal,
+        IntInput,
+        PrimaryButton,
+        SecondaryButton,
+        CustomButton
     },
 
     data() {
@@ -75,11 +138,17 @@ export default {
             hoverHistory: false,
             defaultTitle: null,
             editMode: false,
+            showModal: false,
+            minValue: 0,
+            limitPointsDistribution: null
         }
     },
 
     created() {
         this.defaultTitle = this.history.title
+        if (this.userPlayer) {
+            this.limitPointsDistribution = this.storePlayer.pointsDistribution
+        }
     },
 
     computed: {
@@ -93,6 +162,10 @@ export default {
 
         userPlayer: function() {
             return this.history.hasOwnProperty('master')
+        },
+
+        storePlayer: function() {
+            return this.history.player
         },
 
         routeEnterGame: function() {
@@ -143,6 +216,22 @@ export default {
             });
         },
 
+        clickGame: function() {;
+            if (this.userPlayer) {
+                this.firstTimePlayer()
+            } else {
+                this.enterGame()
+            }
+        },
+
+        firstTimePlayer: function() {
+            if (this.storePlayer.created_at == this.storePlayer.updated_at) {
+                this.openModal()
+            } else {
+                this.enterGame()
+            }
+        },
+
         enterGame: function() {
             const form = useForm({});
 
@@ -151,6 +240,63 @@ export default {
                 onError: (error) => console.error(error),
                 onFinish: () => form.reset(),
             });
+        },
+
+        openModal: function() {
+            this.showModal = true
+        },
+
+        closeModal: function() {
+            this.showModal = false
+        },
+
+        setValue: function() {
+            if (this.defaultPoints < this.minValue){
+                return this.defaultPoints = this.minValue
+            }
+
+            if (isNaN(parseInt(this.defaultPoints))) {
+                return this.defaultPoints = this.minValue
+            }
+
+            return this.defaultPoints = parseInt(this.defaultPoints)
+        },
+
+        sumPoint: function() {
+            if (this.storePlayer.pointsDistribution > 0) {
+                this.storePlayer.pointsDistribution -= 1
+                return true
+            }
+
+            return false
+        },
+
+        subPoint: function(totalPoints) {
+            if (this.limitPointsDistribution <= this.sumAttributes() && totalPoints > 0) {
+                this.storePlayer.pointsDistribution += 1
+                return true
+            }
+
+            return false
+        },
+
+        sumAttributes: function() {
+            return sumBy(this.storePlayer.attributes, function(attribute) {
+                return attribute.totalPoints
+            })
+        },
+
+        updatePlayer: function() {
+            axios.post(route('player.update'), {player: this.storePlayer})
+            .then(() => {
+                this.enterGame()
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+            .finally(() => {
+                this.closeModal()
+            })
         }
     }
 }
@@ -221,6 +367,77 @@ span {
     background-color: #8080803b;
     color: #fff;
     border-radius: 8px;
+}
+
+
+
+
+
+
+
+.input__name {
+    width: 100%;
+    z-index: 99;
+    position: relative;
+}
+
+.c-users {
+    width: 90%;
+    margin: auto;
+    max-height: 15rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    background-color: floralwhite;
+}
+
+.option, .option--empty {
+    padding: 0.3rem 0.6rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.option:hover {
+    background-color: darkgray;
+}
+
+.add__user {
+    background: linear-gradient(90deg, rgba(25,130,33,1) 33%, rgba(1,212,175,1) 100%);
+    border-radius: 50%;
+    width: 1.2rem;
+    height: 1.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.add__user:hover {
+    background: linear-gradient(187deg, rgba(1,212,175,1) 33%, rgba(168,255,240,1) 100%);
+}
+
+.input__default {
+    display: flex;
+    align-content: center;
+    gap: 0.5rem;
+}
+
+.label__default {
+    white-space: nowrap;
+    display: flex;
+    align-self: center;
+    flex-grow: 2;
+}
+
+.c-new__player {
+    display: flex;
+    flex-direction: column;
+    gap:1rem;
+}
+
+.custom-buttom {
+    width: 2.5rem;
 }
 
 </style>

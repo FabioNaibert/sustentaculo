@@ -32,6 +32,7 @@ export default {
     box-sizing: border-box;
     overflow: hidden;
     position: relative;
+    background-color: #b9b9b9f0;
 }
 
 .current {

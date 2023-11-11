@@ -1,5 +1,5 @@
 <template>
-    <ShareButton @click="openModal" />
+    <ShareButton @click.stop="openModal" />
 
     <Modal :show="showModal" @close="closeModal">
         <div class="p-6">

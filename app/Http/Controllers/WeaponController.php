@@ -71,7 +71,7 @@ class WeaponController extends Controller
             'image_id' => $imageId
         ]);
 
-        $mapAttributes = $this->attributesService->mapAttributesPoints($allAttributes);
+        $mapAttributes = $this->attributesService->mapNewAttributesPoints($allAttributes);
         $weapon->attributes()->attach($mapAttributes);
 
         // return $this->getWeapons($historyId);
