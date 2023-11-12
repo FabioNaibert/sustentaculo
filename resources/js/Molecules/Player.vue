@@ -24,6 +24,10 @@
                     @click="removePlayer"
                     :tooltip="tooltip"
                 />
+                <Toggle
+                    :player="player"
+                    @click.stop
+                />
             </div>
         </div>
         <AccordionButton @click="showAllAttributes()" :rotate="showAll" :identifier="player.id"/>
@@ -98,6 +102,7 @@ import Modal from '@/Components/Modal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import IntInput from '@/Atoms/IntInput.vue';
+import Toggle from '@/Atoms/Toggle.vue';
 
 export default {
     name: 'Player',
@@ -109,7 +114,8 @@ export default {
         Modal,
         PrimaryButton,
         SecondaryButton,
-        IntInput
+        IntInput,
+        Toggle
     },
 
     props: [
@@ -250,6 +256,7 @@ p {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
+    align-items: center;
 }
 
 .info__attribute {

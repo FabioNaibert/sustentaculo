@@ -84,6 +84,7 @@ class PlayerController extends Controller
             'user_id' => $masterId,
             'history_id' => $historyId,
             'first_access' => false,
+            'active' => false,
         ]);
 
         $mapAttributes = $this->attributesService->mapNewAttributesPoints($allAttributes);
@@ -118,6 +119,7 @@ class PlayerController extends Controller
                 'name' => $player->name,
                 'pointsDistribution' => $player->points_distribution,
                 'userId' => $player->user_id,
+                'active' => $player->active,
                 'attributes' => $player->attributesPoints->map(function ($attributesPoints) {
                     $attribute = $attributesPoints->attribute;
                     return [
@@ -183,5 +185,16 @@ class PlayerController extends Controller
         $playerOld->save();
 
         // event socketi
+    }
+
+
+    public function blockPlayer(Request $request)
+    {
+        $playerId = $request->input('player_id');
+        $active = $request->input('active');
+
+        $player = Player::findOrFail($playerId);
+        $player->active = $active;
+        $player->save();
     }
 }

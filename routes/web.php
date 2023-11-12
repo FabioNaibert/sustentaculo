@@ -57,6 +57,7 @@ Route::middleware('auth')->group(function () {
     Route::post('add-player', [PlayerController::class, 'addPlayer'])->name('player.add');
     Route::post('remove-player', [PlayerController::class, 'removePlayer'])->name('player.remove');
     Route::post('update-player', [PlayerController::class, 'updatePlayer'])->name('player.update');
+    Route::post('block-player', [PlayerController::class, 'blockPlayer'])->name('player.block');
 
     Route::post('add-enemy', [PlayerController::class, 'addEnemy'])->name('enemy.add');
     Route::post('remove-enemy', [PlayerController::class, 'removeEnemy'])->name('enemy.remove');
