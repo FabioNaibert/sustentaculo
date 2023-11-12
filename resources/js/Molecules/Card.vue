@@ -26,11 +26,12 @@
                     v-model="history.title"
                     type="text"
                     class="mt-1 block input__name"
-                    placeholder="Nome do inimigo"
+                    placeholder="Título da história"
                     @keyup.enter="saveEdition"
                     @keyup.esc="exitEdition"
                     autofocus
                     @focusout="exitEdition"
+                    @click.stop
                 />
                 <p>{{ firstChapter }}</p>
             </div>

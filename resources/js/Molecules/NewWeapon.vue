@@ -10,7 +10,7 @@
                     v-model="name"
                     type="text"
                     class="mt-1 block input__name"
-                    placeholder="Nome do inimigo"
+                    placeholder="Nome da arma"
                 />
             </div>
 
@@ -239,12 +239,14 @@ export default {
     display: flex;
     align-content: center;
     gap: 0.5rem;
+    width: 50%;
 }
 
 .label__default {
     white-space: nowrap;
     display: flex;
     align-self: center;
+    flex-grow: 2;
 }
 
 .c-new__player {

@@ -5,9 +5,10 @@
         <div class="p-6">
             <h1>Novo Inimigo</h1>
             <div class="mt-6 c-new__player">
-                <p>Aqui você poderá criar um inimigo para desafiar seus jogadores.</p>
+                <p>Aqui você poderá criar um inimigo para desafiar seus jogadores. Durante a partida, você poderá <em>"ressuscitar"</em> os inimigos e jogar com eles novamente.</p>
                 <em>Ao trocar de capítulo, a lista de inimigos permanecerá a mesma.</em>
-                <div>
+                <div class="input__default">
+                    <label class="label__default">NOME:</label>
                     <TextInput
                         ref="nameInput"
                         v-model="name"
@@ -196,12 +197,14 @@ h1 {
     display: flex;
     align-content: center;
     gap: 0.5rem;
+    width: 50%;
 }
 
 .label__default {
     white-space: nowrap;
     display: flex;
     align-self: center;
+    flex-grow: 2;
 }
 
 .c-new__player {

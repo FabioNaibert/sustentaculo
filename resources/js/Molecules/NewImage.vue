@@ -10,7 +10,7 @@
                     v-model="name"
                     type="text"
                     class="mt-1 block input__name"
-                    placeholder="Nome do inimigo"
+                    placeholder="Nome da imagem"
                 />
             </div>
 

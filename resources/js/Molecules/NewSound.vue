@@ -14,7 +14,7 @@
                         v-model="name"
                         type="text"
                         class="mt-1 block input__name"
-                        placeholder="Nome do usuário"
+                        placeholder="Nome do áudio ou palavra-chave"
                         @keyup.enter="search"
                         @keyup="search"
                     />
