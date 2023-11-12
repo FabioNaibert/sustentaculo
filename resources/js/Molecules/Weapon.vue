@@ -21,7 +21,7 @@
                     v-show="storeEditMode && !storeIsPlayer"
                     class="position-button"
                     @click="remove"
-                    :tooltip="'Remover arma'"
+                    :tooltip="'Excluir arma'"
                 />
                 <div class="position-button" v-show="!storeEditMode && !storeIsPlayer">
                     <ShareWeapon :weapon="resource" />

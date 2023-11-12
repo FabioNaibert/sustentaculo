@@ -1,6 +1,8 @@
 <template>
     <div>
         <div class="mt-6 c-new__player">
+            <p>As imagens estão ligadas ao capítulo. Através delas, você pode adicionar pistas, mapas entre outros recursos para ajudar durante a narrativa do capítulo.</p>
+            <em>Ao trocar de capítulo, a lista de imagens atualizará.</em>
             <div class="input__default">
                 <label class="label__default">NOME:</label>
                 <TextInput

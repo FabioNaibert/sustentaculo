@@ -6,7 +6,6 @@ use App\Http\Controllers\PlayerController;
 use App\Models\Attribute;
 use App\Models\History;
 use App\Models\Player;
-use Illuminate\Support\Facades\Log;
 
 class HistoryService
 {

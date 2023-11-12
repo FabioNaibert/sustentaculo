@@ -1,6 +1,8 @@
 <template>
     <div>
         <div class="mt-6 c-new__player">
+            <p>As armas estão ligadas a história, ou seja, elas sempre estarão disponíveis independente do capítulo. Assim, você poderá disponibilizar a arma a qualquer momento para o seu jogador.</p>
+            <em>Ao trocar de capítulo, a lista de armas permanecerá a mesma.</em>
             <div class="input__default">
                 <label class="label__default">NOME:</label>
                 <TextInput

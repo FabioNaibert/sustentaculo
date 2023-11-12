@@ -20,21 +20,21 @@
 
         <div class="c-commands">
             <div class="single__button single__button--left">
-                <CustomButton @click="deleteChapter" :disabled="firstChapter"><img src="../../svg/trash.svg" /></CustomButton>
+                <CustomButton @click="deleteChapter" :disabled="firstChapter" tooltip="Excluir capítulo"><img src="../../svg/trash.svg" /></CustomButton>
             </div>
 
             <div class="commands">
-                <CustomButton @click="changeChapter(storeRoutePrevious)" :disabled="firstChapter">
+                <CustomButton @click="changeChapter(storeRoutePrevious)" :disabled="firstChapter" tooltip="Capítulo anterior">
                     <img src="../../svg/arrow-left.svg" />
                 </CustomButton>
-                <CustomButton @click="addNewInTheMiddle" :disabled="firstChapter">
+                <CustomButton @click="addNewInTheMiddle" :disabled="firstChapter" tooltip="Adicionar ramificação na história. Assim, a história poderá ter vários caminhos.">
                     <img src="../../svg/plus-lg.svg" />
                 </CustomButton>
-                <CustomButton @click="routeNextChapter()" v-if="!storeChapter.has_multi_routes" :style="{'background-color': !storeChapter.has_next ? 'rgb(23 151 158 / 75%)': null}">
+                <CustomButton @click="routeNextChapter()" v-if="!storeChapter.has_multi_routes" :style="{'background-color': !storeChapter.has_next ? 'rgb(23 151 158 / 75%)': null}" tooltip="Próximo capítulo">
                     <img src="../../svg/arrow-right.svg" />
                 </CustomButton>
                 <div class="possible-routes" v-else>
-                    <CustomButton @click="setShowMultiRoutes()">
+                    <CustomButton @click="setShowMultiRoutes()" tooltip="Escolha o próximo capítulo">
                         <img src="../../svg/arrow-split.svg" :style="{transform: 'rotate(90deg)'}"/>
                     </CustomButton>
                     <ul class="route__options border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" :style="{display: showMultiRoutes ? 'flex' : 'none'}">
@@ -51,7 +51,7 @@
 
             <div class="single__button single__button--right">
                 <Link @click="endEdition" :href="route('dashboard')">
-                    <CustomButton>SAIR DA EDIÇÃO</CustomButton>
+                    <CustomButton tooltip="Sair e salvar história">SAIR DA EDIÇÃO</CustomButton>
                 </Link>
             </div>
         </div>

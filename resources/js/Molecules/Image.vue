@@ -10,7 +10,7 @@
                     v-show="storeEditMode && !storeIsPlayer"
                     class="position-button"
                     @click="remove"
-                    :tooltip="'Remover imagem'"
+                    :tooltip="'Excluir imagem'"
                 />
                 <div class="position-button" v-show="!storeEditMode && !storeIsPlayer">
                     <ShareResources :image="resource" />

@@ -1,8 +1,9 @@
 <template>
-    <AddButton @click="openModal" />
+    <AddButton @click="openModal" tooltip="Adicionar recurso"/>
 
     <Modal :show="showModal" @close="closeModal">
         <div class="p-6">
+            <h1>Novo Recurso</h1>
             <div class="mt-6 c-new__player">
                 <div class="input__default">
                     <label class="label__default">TIPO:</label>
@@ -82,6 +83,11 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+    text-align: center;
+    font-size: 2rem;
+}
+
 .input__default {
     display: flex;
     align-content: center;

@@ -83,6 +83,7 @@ class PlayerController extends Controller
             'name' => $name,
             'user_id' => $masterId,
             'history_id' => $historyId,
+            'first_access' => false,
         ]);
 
         $mapAttributes = $this->attributesService->mapNewAttributesPoints($allAttributes);
@@ -116,6 +117,7 @@ class PlayerController extends Controller
                 'id' => $player->id,
                 'name' => $player->name,
                 'pointsDistribution' => $player->points_distribution,
+                'userId' => $player->user_id,
                 'attributes' => $player->attributesPoints->map(function ($attributesPoints) {
                     $attribute = $attributesPoints->attribute;
                     return [
@@ -164,12 +166,13 @@ class PlayerController extends Controller
     {
         $player = $request->input('player');
         $playerOld = Player::findOrFail($player['id']);
+        $userId = Auth::user()->id;
 
-        if ($playerOld->first_access && Auth::user()->id === $playerOld->user_id) {
+        if ($playerOld->first_access && $userId === $playerOld->user_id) {
             $mapAttributes = $this->attributesService->mapNewAttributesPoints($player['attributes']);
             $playerOld->name = $player['name'];
             $playerOld->first_access = false;
-        } else if (Auth::user()->id === $playerOld->user_id) {
+        } else if ($userId === $playerOld->user_id && $playerOld->master_id !== $userId) {
             $mapAttributes = $this->attributesService->mapAttributesTotalPoints($player['attributes']);
         } else {
             $mapAttributes = $this->attributesService->mapAttributesCurrentPoints($player['attributes']);

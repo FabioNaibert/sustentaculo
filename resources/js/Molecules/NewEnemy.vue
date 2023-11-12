@@ -1,9 +1,12 @@
 <template>
-    <AddButton @click="openModal" />
+    <AddButton @click="openModal" tooltip="Adicionar inimigo"/>
 
     <Modal :show="showModal" @close="closeModal">
         <div class="p-6">
+            <h1>Novo Inimigo</h1>
             <div class="mt-6 c-new__player">
+                <p>Aqui você poderá criar um inimigo para desafiar seus jogadores.</p>
+                <em>Ao trocar de capítulo, a lista de inimigos permanecerá a mesma.</em>
                 <div>
                     <TextInput
                         ref="nameInput"
@@ -142,6 +145,11 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+    text-align: center;
+    font-size: 2rem;
+}
+
 .input__name {
     width: 100%;
     z-index: 99;

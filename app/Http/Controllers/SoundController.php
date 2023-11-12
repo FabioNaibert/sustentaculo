@@ -6,7 +6,6 @@ use App\Http\Services\SoundService;
 use App\Models\Chapter;
 use App\Models\Sound;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class SoundController extends Controller
 {

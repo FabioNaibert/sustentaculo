@@ -6,11 +6,8 @@ use App\Http\Services\AttributesService;
 use App\Http\Services\ImageService;
 use App\Http\Services\ResourceService;
 use App\Models\Chapter;
-use App\Models\Image;
 use App\Models\Weapon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 class WeaponController extends Controller
 {

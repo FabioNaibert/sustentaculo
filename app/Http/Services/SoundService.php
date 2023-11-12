@@ -2,9 +2,7 @@
 
 namespace App\Http\Services;
 
-use App\Models\Attribute;
 use App\Models\Chapter;
-use Illuminate\Support\Facades\Log;
 
 class SoundService
 {

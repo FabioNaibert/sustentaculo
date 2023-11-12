@@ -22,14 +22,14 @@
 
         <div class="c-commands">
             <div class="commands">
-                <CustomButton @click="previousChapter()" :disabled="firstChapter">
+                <CustomButton @click="previousChapter()" :disabled="firstChapter" tooltip="Capítulo anterior">
                     <img src="../../svg/arrow-left.svg" />
                 </CustomButton>
-                <CustomButton @click="nextChapter()" v-if="!storeChapter.has_multi_routes" :disabled="hasNextChapter">
+                <CustomButton @click="nextChapter()" v-if="!storeChapter.has_multi_routes" :disabled="hasNextChapter" tooltip="Próximo capítulo">
                     <img src="../../svg/arrow-right.svg" />
                 </CustomButton>
                 <div class="possible-routes" v-else>
-                    <CustomButton @click="setShowMultiRoutes()">
+                    <CustomButton @click="setShowMultiRoutes()" tooltip="Escolha o próximo capítulo">
                         <img src="../../svg/arrow-split.svg" :style="{transform: 'rotate(90deg)'}"/>
                     </CustomButton>
                     <ul class="route__options border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" :style="{display: showMultiRoutes ? 'flex' : 'none'}">

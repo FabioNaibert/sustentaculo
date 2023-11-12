@@ -1,8 +1,11 @@
 <template>
-    <AddButton @click="openModal" />
+    <AddButton @click="openModal" tooltip="Adicionar jogador"/>
 
     <Modal :show="showModal" @close="closeModal">
         <div class="p-6">
+            <h1>Novo Jogador</h1>
+            <p style="margin: 1rem 0;">Aqui você pode personalizar a quantidade de pontos inicias que o jogador terá para começar a jogar. Caso queira que todos comecem com a mesma quantidade, altere a quantidade de  pontos iniciais na <b>área de jogadores</b>.</p>
+            <em>Para pesquisar, insira o nome do usuário que você quer adicionar.</em>
             <div class="mt-6 c-new__player">
                 <div class="input__default">
                     <label class="label__default">PONTOS INICIAIS:</label>
@@ -161,6 +164,11 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+    text-align: center;
+    font-size: 2rem;
+}
+
 .input__name {
     width: 100%;
     z-index: 99;

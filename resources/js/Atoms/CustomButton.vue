@@ -1,5 +1,5 @@
 <template>
-    <button>
+    <button :title="tooltip">
         <slot></slot>
     </button>
 </template>
@@ -9,6 +9,7 @@
 export default {
     name: 'CustomButton',
 
+    props: ['tooltip']
 }
 </script>
 

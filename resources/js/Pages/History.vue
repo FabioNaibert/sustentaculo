@@ -5,6 +5,7 @@
         <div class="container__history">
             <div class="c-esquerda">
                 <div class="esquerda__1">
+                    <h3><img src="../../svg/skull.svg">INIMIGOS<img src="../../svg/skull.svg"></h3>
                     <div class="players">
                         <div v-for="enemy in storeEnemies"
                             :key="enemy.id"
@@ -20,6 +21,7 @@
                 </div>
                 <hr>
                 <div class="esquerda__2">
+                    <h3><img src="../../svg/image.svg">RECURSOS<img src="../../svg/fire.svg"></h3>
                     <div class="players">
                         <div v-for="resource in storeResources"
                             :key="resource.id"
@@ -41,6 +43,7 @@
 
             <div class="c-direita">
                 <div class="direita__1">
+                    <h3><img src="../../svg/dragon.svg">JOGADORES<img style="transform: scaleX(-1);" src="../../svg/dragon.svg"></h3>
                     <div class="input__default">
                         <label class="label__default">PONTOS INICIAIS:</label>
                         <IntInput tooltip="Valor padrão: 5"
@@ -68,6 +71,7 @@
                 </div>
                 <hr>
                 <div class="direita__2">
+                    <h3><img src="../../svg/music.svg">ÁUDIOS<img style="transform: rotate(180deg);" src="../../svg/music.svg"></h3>
                     <div class="players">
                         <div v-for="sound in storeSounds"
                             :key="sound.id"
@@ -174,6 +178,12 @@ export default {
 </script>
 
 <style scoped>
+h3 {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+}
+
 hr {
     width: 90%;
 }

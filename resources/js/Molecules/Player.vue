@@ -29,11 +29,11 @@
         <AccordionButton @click="showAllAttributes()" :rotate="showAll" :identifier="player.id"/>
     </div>
 
-    <Modal :show="showModal" @close="closeModal">
+    <Modal :show="showModal" @close="cancelModal">
         <div class="p-6">
-            <div class="c-text--modal text-gray-900" @click="openModal">
+            <div class="c-text--modal text-gray-900">
                 <h3 style="margin-bottom: 1rem;">{{ player.name }}</h3>
-                <p><b>Diminua</b> ou <b>aumente</b> os pontos atuais dos atributos do jogador.</p>
+                <p><b>Diminua</b> ou <b>aumente</b> os pontos atuais dos atributos do personagem.</p>
                 <p v-if="allCurrentPointsNull">Entretando o jogador ainda não usou os pontos iniciais. Peça para o jogador distribuir os seus pontos de atributo.</p>
                 <div class="c-info">
                     <div class="info__attribute" style="margin: 1rem 0;" v-if="!allCurrentPointsNull">
@@ -61,8 +61,8 @@
                         </div>
                     </div>
                 </div>
-                <p style="margin: 2.5rem 0 0.5rem;">Aumente o <b>nível</b> do jogador dando mais pontos de atributos para ele usar.</p>
-                <div class="input__default">
+                <p v-if="!isEnemy" style="margin: 2.5rem 0 0.5rem;">Aumente o <b>nível</b> do jogador dando mais pontos de atributos para ele usar.</p>
+                <div class="input__default" v-if="!isEnemy">
                     <label class="label__default">PONTOS PARA ATRIBUTOS:</label>
                     <IntInput tooltip="Valor padrão: 0"
                         ref="intInput"
@@ -76,7 +76,7 @@
                 </div>
             </div>
             <div class="mt-6 flex justify-end">
-                <SecondaryButton @click="closeModal"> FECHAR </SecondaryButton>
+                <SecondaryButton @click="cancelModal"> FECHAR </SecondaryButton>
 
                 <PrimaryButton
                     class="ml-3"
@@ -90,7 +90,7 @@
 </template>
 
 <script>
-import { orderBy, every } from 'lodash'
+import { orderBy, every, cloneDeep } from 'lodash'
 import AttributeBar from "@/Atoms/AttributeBar.vue";
 import RemoveButton from "@/Atoms/RemoveButton.vue";
 import AccordionButton from "@/Atoms/AccordionButton.vue";
@@ -121,6 +121,7 @@ export default {
             tooltip: 'Excluir inimigo',
             showAll: false,
             showModal: false,
+            oldAttributes: null,
         }
     },
 
@@ -135,6 +136,14 @@ export default {
 
         storeEditMode: function() {
             return this.$store.getters.editMode
+        },
+
+        storeMasterId: function() {
+            return this.$store.getters.historyMasterId
+        },
+
+        isEnemy: function() {
+            return this.storeMasterId === this.player.userId
         },
 
         allCurrentPointsNull: function() {
@@ -164,7 +173,15 @@ export default {
         },
 
         openModal: function() {
+            this.oldAttributes = cloneDeep(this.storeAttributes)
+
             this.showModal = true
+        },
+
+        cancelModal: function() {
+            this.player.attributes = this.oldAttributes
+
+            this.closeModal()
         },
 
         closeModal: function() {
@@ -184,12 +201,12 @@ export default {
         },
 
         updatePlayer: function() {
-            console.log(this.player)
             axios.post(route('player.update'), {player: this.player})
             .then(() => {
             })
             .catch((error) => {
                 console.error(error)
+                this.cancelModal()
             })
             .finally(() => {
                 this.closeModal()

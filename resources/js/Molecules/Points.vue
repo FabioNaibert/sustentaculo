@@ -39,8 +39,6 @@
         </div>
 
         <div class="mt-6 flex justify-end">
-            <!-- <SecondaryButton @click="closeModal"> FECHAR </SecondaryButton> -->
-
             <PrimaryButton
                 class="ml-3"
                 @click="updatePlayer"
@@ -81,7 +79,6 @@ export default {
     },
 
     created() {
-        console.log('mounted')
         this.limitPointsDistribution = this.storePlayer.pointsDistribution
         this.attributes = mapKeys(cloneDeep(this.storePlayer.attributes), function(attribute, key) {
             return attribute.id
@@ -91,9 +88,6 @@ export default {
     computed: {
         storePlayer: function() {
             return this.player
-
-
-            // return this.$store.getters.gameMobile.player
         }
     },
 

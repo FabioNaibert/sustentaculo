@@ -6,11 +6,9 @@ use App\Events\UpdateGameEvent;
 use App\Http\Services\ChapterService;
 use App\Http\Services\HistoryService;
 use App\Http\Services\ResourceService;
-use App\Models\Attribute;
 use App\Models\History;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 

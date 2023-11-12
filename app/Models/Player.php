@@ -17,7 +17,7 @@ class Player extends Model
 
     public function history(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(History::class);
     }
 
     public function user(): BelongsTo
@@ -38,5 +38,10 @@ class Player extends Model
     public function images(): BelongsToMany
     {
         return $this->belongsToMany(Image::class, 'players_images', 'player_id', 'image_id');
+    }
+
+    public function getMasterIdAttribute()
+    {
+        return $this->history()->get(['master_id'])->first()->master_id;
     }
 }

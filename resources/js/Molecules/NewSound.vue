@@ -1,8 +1,12 @@
 <template>
-    <AddButton @click="openModal" />
+    <AddButton @click="openModal" tooltip="Adicionar áudio" />
 
     <Modal :show="showModal" @close="closeModal">
         <div class="p-6">
+            <h1>Novo Áudio</h1>
+            <p style="margin: 1rem 0;">Os áudios estão ligados ao capítulo. Aqui você pode pesquisar por trilhas, sons de ambientes ou sons de animais para reproduzir durante capítulo.</p>
+            <p><em>Ao trocar de capítulo, a lista de áudios atualizará.</em></p>
+            <em>Para pesquisar, insira alguma palavra-chave para encontrar o áudio.</em>
             <div class="mt-6 c-new__player">
                 <div>
                     <TextInput
@@ -142,6 +146,11 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+    text-align: center;
+    font-size: 2rem;
+}
+
 .input__name {
     width: 100%;
     z-index: 99;
