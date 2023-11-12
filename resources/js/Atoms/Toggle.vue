@@ -1,6 +1,6 @@
 <template>
     <label class="switch" :title="tooltip">
-        <input type="checkbox" @change="changeTooltip()" v-model="check">
+        <input type="checkbox" @change="changeTooltip()" v-model="player.active">
         <span class="slider round"></span>
     </label>
 </template>
@@ -18,13 +18,9 @@ export default {
         }
     },
 
-    mounted() {
-        this.check = this.player.active
-    },
-
     methods: {
         changeTooltip: function() {
-            this.tooltip = this.check ? 'Em combate' : 'Fora de combate'
+            this.tooltip = this.player.active ? 'Em combate' : 'Fora de combate'
 
             this.toggleCombatActivity()
         },
@@ -32,7 +28,7 @@ export default {
         toggleCombatActivity: function() {
             const data = {
                 player_id: this.player.id,
-                active: this.check
+                active: this.player.active
             }
 
             axios.post(route('player.block'), data)

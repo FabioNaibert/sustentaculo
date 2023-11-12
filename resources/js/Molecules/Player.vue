@@ -1,7 +1,7 @@
 <template>
     <div class="card bg-white shadow-sm sm:rounded-lg">
         <div class="c-text text-gray-900" @click="openModal">
-            <h3>{{ player.name }}</h3>
+            <h3>{{ storePlayer.name }}</h3>
             <div class="c-info">
                 <div class="info__attribute">
                     <div
@@ -24,19 +24,24 @@
                     @click="removePlayer"
                     :tooltip="tooltip"
                 />
-                <Toggle
-                    :player="player"
-                    @click.stop
-                />
+                <div class="c-actions">
+                    <Toggle
+                        :player="storePlayer"
+                        @click.stop
+                    />
+                    <div v-show="storePlayer.active && isEnemy">
+                        <Combat />
+                    </div>
+                </div>
             </div>
         </div>
-        <AccordionButton @click="showAllAttributes()" :rotate="showAll" :identifier="player.id"/>
+        <AccordionButton @click="showAllAttributes()" :rotate="showAll" :identifier="storePlayer.id"/>
     </div>
 
     <Modal :show="showModal" @close="cancelModal">
         <div class="p-6">
             <div class="c-text--modal text-gray-900">
-                <h3 style="margin-bottom: 1rem;">{{ player.name }}</h3>
+                <h3 style="margin-bottom: 1rem;">{{ storePlayer.name }}</h3>
                 <p><b>Diminua</b> ou <b>aumente</b> os pontos atuais dos atributos do personagem.</p>
                 <p v-if="allCurrentPointsNull">Entretando o jogador ainda não usou os pontos iniciais. Peça para o jogador distribuir os seus pontos de atributo.</p>
                 <div class="c-info">
@@ -73,7 +78,7 @@
                         type="number"
                         class="mt-1 block"
                         placeholder="Valor padrão: 0"
-                        v-model="player.pointsDistribution"
+                        v-model="storePlayer.pointsDistribution"
                         :minValue="0"
                         @change="setValue"
                     />
@@ -103,6 +108,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import IntInput from '@/Atoms/IntInput.vue';
 import Toggle from '@/Atoms/Toggle.vue';
+import Combat from '@/Molecules/Combat.vue';
 
 export default {
     name: 'Player',
@@ -115,7 +121,8 @@ export default {
         PrimaryButton,
         SecondaryButton,
         IntInput,
-        Toggle
+        Toggle,
+        Combat
     },
 
     props: [
@@ -132,6 +139,10 @@ export default {
     },
 
     computed: {
+        storePlayer: function() {
+            return this.player
+        },
+
         storeAttributes: function() {
             return orderBy(this.player.attributes, ['id'])
         },
@@ -277,5 +288,13 @@ p {
     white-space: nowrap;
     display: flex;
     align-self: center;
+}
+
+.c-actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.1rem;
 }
 </style>
