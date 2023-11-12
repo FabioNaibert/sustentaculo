@@ -8,7 +8,7 @@ use App\Models\History;
 use App\Models\Player;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class PlayerController extends Controller
 {
@@ -163,17 +163,19 @@ class PlayerController extends Controller
     public function updatePlayer(Request $request)
     {
         $player = $request->input('player');
-
         $playerOld = Player::findOrFail($player['id']);
-        $playerOld->name = $player['name'];
-        $playerOld->points_distribution = $player['pointsDistribution'];
 
-        if ($playerOld->created_at === $playerOld->updated_at) {
+        if ($playerOld->first_access && Auth::user()->id === $playerOld->user_id) {
             $mapAttributes = $this->attributesService->mapNewAttributesPoints($player['attributes']);
+            $playerOld->name = $player['name'];
+            $playerOld->first_access = false;
+        } else if (Auth::user()->id === $playerOld->user_id) {
+            $mapAttributes = $this->attributesService->mapAttributesTotalPoints($player['attributes']);
         } else {
-            $mapAttributes = $this->attributesService->mapAttributesPoints($player['attributes']);
+            $mapAttributes = $this->attributesService->mapAttributesCurrentPoints($player['attributes']);
         }
 
+        $playerOld->points_distribution = $player['pointsDistribution'];
         $playerOld->attributes()->sync($mapAttributes);
         $playerOld->save();
 

@@ -1,6 +1,11 @@
 <template>
         <div class="c-info">
-            <h3><b>{{ storeGameMobile.player.name }}</b></h3>
+            <h3>
+                <b class="name">
+                    {{ storeGameMobile.player.name }}
+                    <img src="../../svg/exclamation.svg" class="exclamation" v-if="storeGameMobile.player.pointsDistribution > 0">
+                </b>
+            </h3>
 
             <div class="info__attribute">
                 <div
@@ -22,6 +27,13 @@
 
         <div class="c-options">
             <CustomButton
+                v-if="storeGameMobile.player.pointsDistribution > 0"
+                class="custom-button"
+                @click="openModal()"
+            >
+                PONTOS
+            </CustomButton>
+            <CustomButton
                 class="custom-button"
                 @click="inventory()"
             >
@@ -33,12 +45,18 @@
                 AÇÕES
             </CustomButton>
         </div>
+
+        <Modal :show="showModal" @close="closeModal">
+            <Points :player="storePlayer" @close_modal="closeModal"/>
+        </Modal>
 </template>
 
 <script>
 import AttributeBar from '@/Atoms/AttributeBar.vue';
 import NavLink from '@/Components/NavLink.vue';
 import CustomButton from '@/Atoms/CustomButton.vue';
+import Modal from '@/Components/Modal.vue';
+import Points from '@/Molecules/Points.vue';
 
 export default {
     name: 'GameMaster',
@@ -49,6 +67,14 @@ export default {
         AttributeBar,
         NavLink,
         CustomButton,
+        Modal,
+        Points
+    },
+
+    data() {
+        return {
+            showModal: false,
+        }
     },
 
     computed: {
@@ -68,7 +94,15 @@ export default {
 
         inventory: function() {
             this.$emit('inventory')
-        }
+        },
+
+        openModal: function() {
+            this.showModal = true
+        },
+
+        closeModal: function() {
+            this.showModal = false
+        },
     }
 }
 </script>
@@ -118,5 +152,17 @@ p {
 
 .custom-button {
     flex-grow: 2;
+}
+
+.name {
+    position: relative;
+    display: flex;
+    width: fit-content;
+}
+
+.exclamation {
+    position: absolute;
+    left: 100%;
+    top: 0;
 }
 </style>

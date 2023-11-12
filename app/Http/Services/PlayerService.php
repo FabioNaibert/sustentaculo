@@ -33,6 +33,7 @@ class PlayerService
         return $players->map(fn ($player) => [
             'id' => $player->id,
             'name' => $player->name,
+            'pointsDistribution' => $player->points_distribution,
             'attributes' => $this->mapAttributes($player->attributesPoints)
         ]);
     }

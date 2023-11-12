@@ -59,7 +59,7 @@ export default {
         GameResources,
         GameTeam,
         GameBackpack,
-        MobileMenuButton
+        MobileMenuButton,
     },
 
     data() {

@@ -113,6 +113,7 @@ import IntInput from '@/Atoms/IntInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import CustomButton from '@/Atoms/CustomButton.vue';
+import Points from '@/Molecules/Points.vue';
 
 export default {
     name: 'Card',
@@ -127,7 +128,8 @@ export default {
         IntInput,
         PrimaryButton,
         SecondaryButton,
-        CustomButton
+        CustomButton,
+        Points
     },
 
     data() {
@@ -225,7 +227,8 @@ export default {
         },
 
         firstTimePlayer: function() {
-            if (this.storePlayer.created_at == this.storePlayer.updated_at) {
+            console.log(this.storePlayer)
+            if (this.storePlayer.firstAccess) {
                 this.openModal()
             } else {
                 this.enterGame()
@@ -250,18 +253,6 @@ export default {
             this.showModal = false
         },
 
-        setValue: function() {
-            if (this.defaultPoints < this.minValue){
-                return this.defaultPoints = this.minValue
-            }
-
-            if (isNaN(parseInt(this.defaultPoints))) {
-                return this.defaultPoints = this.minValue
-            }
-
-            return this.defaultPoints = parseInt(this.defaultPoints)
-        },
-
         sumPoint: function() {
             if (this.storePlayer.pointsDistribution > 0) {
                 this.storePlayer.pointsDistribution -= 1
@@ -272,7 +263,7 @@ export default {
         },
 
         subPoint: function(totalPoints) {
-            if (this.limitPointsDistribution <= this.sumAttributes() && totalPoints > 0) {
+            if (this.limitPointsDistribution >= this.sumAttributes() && totalPoints > 0) {
                 this.storePlayer.pointsDistribution += 1
                 return true
             }

@@ -90,8 +90,6 @@ class HistoryService
         $resoucers = $this->resourceService->getImagesPlayer($player);
         $backpack = $this->resourceService->getWeaponsPlayer($player_id);
 
-        // Log::info($playerMap);
-
         return [
             'history' => $history,
             'player' => $playerMap,

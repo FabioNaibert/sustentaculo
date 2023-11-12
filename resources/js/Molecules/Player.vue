@@ -31,7 +31,7 @@
 
     <Modal :show="showModal" @close="closeModal">
         <div class="p-6">
-            <div class="c-text text-gray-900" @click="openModal">
+            <div class="c-text--modal text-gray-900" @click="openModal">
                 <h3 style="margin-bottom: 1rem;">{{ player.name }}</h3>
                 <p><b>Diminua</b> ou <b>aumente</b> os pontos atuais dos atributos do jogador.</p>
                 <p v-if="allCurrentPointsNull">Entretando o jogador ainda não usou os pontos iniciais. Peça para o jogador distribuir os seus pontos de atributo.</p>
@@ -214,8 +214,12 @@ p {
     overflow: hidden;
 }
 
-.c-text {
+.c-text, .c-text--modal{
     padding: 0.2rem 1.5rem;
+}
+
+.c-text {
+    cursor: pointer;
 }
 
 .attribute {
