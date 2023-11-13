@@ -30,7 +30,7 @@
                         @click.stop
                     />
                     <div v-show="storePlayer.active && isEnemy">
-                        <Combat />
+                        <Combat :player="storePlayer" />
                     </div>
                 </div>
             </div>

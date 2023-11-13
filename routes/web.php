@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ChapterController;
+use App\Http\Controllers\CombatController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\PlayerController;
@@ -34,6 +35,8 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {return Inertia::render('Dashboard');})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    Route::post('/combat/attack', [CombatController::class, 'attack'])->name('combat.attack');
+
     Route::get('/histories', [HistoryController::class, 'getHistoriesDesktop'])->name('histories.desktop.get');
 
     Route::get('/m-histories', [HistoryController::class, 'getHistoriesMobile'])->name('histories.mobile.get');

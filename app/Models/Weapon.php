@@ -20,9 +20,9 @@ class Weapon extends Model
         return $this->belongsTo(Image::class);
     }
 
-    public function user(): BelongsTo
+    public function player(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Player::class);
     }
 
     public function history(): BelongsTo

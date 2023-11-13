@@ -53,6 +53,14 @@ const store = createStore({
             return orderBy(state.history.players, ['name'])
         },
 
+        opponents (state) {
+            return orderBy(state.history.opponents, ['name'])
+        },
+
+        opponentsMobile (state) {
+            return orderBy(state.gameMobile.opponents, ['name'])
+        },
+
         chapter (state) {
             return state.history.chapter
         },

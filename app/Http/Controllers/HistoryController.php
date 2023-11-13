@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Events\UpdateGameEvent;
 use App\Http\Services\ChapterService;
 use App\Http\Services\HistoryService;
-use App\Http\Services\ResourceService;
 use App\Models\History;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -14,17 +13,13 @@ use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class HistoryController extends Controller
 {
-    private PlayerController $playerController;
     private ChapterService $chapterService;
-    private ResourceService $resourceService;
     private HistoryService $historyService;
 
 
-    public function __construct(PlayerController $playerController, ChapterService $chapterService, ResourceService $resourceService, HistoryService $historyService)
+    public function __construct( ChapterService $chapterService, HistoryService $historyService)
     {
-        $this->playerController = $playerController;
         $this->chapterService = $chapterService;
-        $this->resourceService = $resourceService;
         $this->historyService = $historyService;
     }
 
@@ -36,10 +31,6 @@ class HistoryController extends Controller
         $histories = History::with('firstChapter')->where('master_id', $user->id)->get();
 
         return $histories;
-
-        // return Inertia::render('Dashboard', [
-        //     'histories' => $histories
-        // ]);
     }
 
 
@@ -51,7 +42,7 @@ class HistoryController extends Controller
             'firstChapter',
             'master:id,name',
             'players' => function (Builder $query) use ($user) {
-                $query->where('players.user_id', $user->id)->first();
+                $query->where('players.user_id', $user->id);
             }])
             ->whereNot('master_id', $user->id)
             ->whereRelation('players', 'user_id', $user->id)
@@ -63,11 +54,11 @@ class HistoryController extends Controller
                     'first_chapter' => $history->first_chapter,
                     'master' => $history->master,
                     'player' => [
-                        'id' => $history->players[0]->id,
-                        'name' => $history->players[0]->name,
-                        'pointsDistribution' => $history->players[0]->points_distribution,
-                        'firstAccess' => $history->players[0]->first_access,
-                        'attributes' => $history->players[0]->attributesPoints->map(function ($attributesPoints) {
+                        'id' => $history->players->first()->id,
+                        'name' => $history->players->first()->name,
+                        'pointsDistribution' => $history->players->first()->points_distribution,
+                        'firstAccess' => $history->players->first()->first_access,
+                        'attributes' => $history->players->first()->attributesPoints->map(function ($attributesPoints) {
                             $attribute = $attributesPoints->attribute;
                             return [
                                 'totalPoints' => $attributesPoints->total_points,
@@ -108,7 +99,7 @@ class HistoryController extends Controller
 
     public function getGameMobile($player_id)
     {
-        $allHistory = $this->historyService->getHistoryMobile($player_id);
+        $allHistory = $this->historyService->getGameMobile($player_id);
 
         return Inertia::render('LayoutMobile', [
             'response' => $allHistory,

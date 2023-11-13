@@ -15,6 +15,11 @@ class Player extends Model
     protected $table = 'players';
     protected $guarded = [];
 
+    public const VIDA = 1;
+    public const MANA = 2;
+    public const ATAQUE = 3;
+    public const DEFESA = 4;
+
     public function history(): BelongsTo
     {
         return $this->belongsTo(History::class);
@@ -30,6 +35,11 @@ class Player extends Model
         return $this->hasMany(AttributePoint::class);
     }
 
+    public function weapons(): HasMany
+    {
+        return $this->hasMany(Weapon::class);
+    }
+
     public function attributes(): BelongsToMany
     {
         return $this->belongsToMany(Attribute::class, 'attribute_points', 'player_id', 'attribute_id');
@@ -43,5 +53,15 @@ class Player extends Model
     public function getMasterIdAttribute()
     {
         return $this->history()->get(['master_id'])->first()->master_id;
+    }
+
+    public function getWeaponEquipedAttribute()
+    {
+        return $this->weapons()->where('equiped', true)->first();
+    }
+
+    public function getAttributesCalcAttribute()
+    {
+        return $this->attributesPoints()->get();
     }
 }

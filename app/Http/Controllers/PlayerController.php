@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Services\AttributesService;
+use App\Http\Services\PlayerService;
 use App\Models\Attribute;
 use App\Models\History;
 use App\Models\Player;
@@ -13,10 +14,12 @@ use Illuminate\Support\Facades\Auth;
 class PlayerController extends Controller
 {
     private AttributesService $attributesService;
+    private PlayerService $playerService;
 
-    public function __construct(AttributesService $attributesService)
+    public function __construct(AttributesService $attributesService, PlayerService $playerService)
     {
         $this->attributesService = $attributesService;
+        $this->playerService = $playerService;
     }
 
 
@@ -68,7 +71,7 @@ class PlayerController extends Controller
 
         $player->attributes()->attach($attributes);
 
-        return $this->getPlayers($history->id, $history->master_id);
+        return $this->playerService->getPlayers($history->id, $history->master_id);
     }
 
 
@@ -90,47 +93,7 @@ class PlayerController extends Controller
         $mapAttributes = $this->attributesService->mapNewAttributesPoints($allAttributes);
         $enemy->attributes()->attach($mapAttributes);
 
-        return $this->getEnemies($historyId, $masterId);
-    }
-
-
-    public function getPlayers($historyId, $masterId)
-    {
-        $userIsNotMaster = '!=';
-        return $this->mapPlayers($historyId, $masterId, $userIsNotMaster);
-    }
-
-    public function getEnemies($historyId, $masterId)
-    {
-        $userIsMaster = '=';
-        return $this->mapPlayers($historyId, $masterId, $userIsMaster);
-    }
-
-
-    public function mapPlayers($historyId, $masterId, $condition)
-    {
-        return Player::where([
-                ['history_id', $historyId],
-                ['user_id', $condition, $masterId]
-            ])
-            ->get()
-            ->map(fn ($player) => [
-                'id' => $player->id,
-                'name' => $player->name,
-                'pointsDistribution' => $player->points_distribution,
-                'userId' => $player->user_id,
-                'active' => $player->active,
-                'attributes' => $player->attributesPoints->map(function ($attributesPoints) {
-                    $attribute = $attributesPoints->attribute;
-                    return [
-                        'totalPoints' => $attributesPoints->total_points,
-                        'currentPoints' => $attributesPoints->current_points,
-                        'id' => $attribute->id,
-                        'name' => $attribute->name,
-                        'representationColor' => $attribute->representation_color,
-                    ];
-                })
-            ]);
+        return $this->playerService->getEnemies($historyId, $masterId);
     }
 
 
@@ -142,7 +105,7 @@ class PlayerController extends Controller
 
         $this->removeUser($playerId);
 
-        return $this->getPlayers($history->id, $history->master_id);
+        return $this->playerService->getPlayers($history->id, $history->master_id);
     }
 
 
@@ -154,7 +117,7 @@ class PlayerController extends Controller
 
         $this->removeUser($playerId);
 
-        return $this->getEnemies($history->id, $history->master_id);
+        return $this->playerService->getEnemies($history->id, $history->master_id);
     }
 
 
@@ -163,6 +126,7 @@ class PlayerController extends Controller
         $player = Player::find($playerId);
         $player->delete();
     }
+
 
     public function updatePlayer(Request $request)
     {
@@ -196,5 +160,7 @@ class PlayerController extends Controller
         $player = Player::findOrFail($playerId);
         $player->active = $active;
         $player->save();
+
+        // event soketi
     }
 }

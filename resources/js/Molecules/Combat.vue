@@ -3,15 +3,13 @@
 
     <Arena
         :showModal="storeShowModal"
-        :opponents="[]"
-        :player="null"
+        :player="storePlayer"
         @close_modal="closeModal"
     />
 </template>
 
 <script>
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import axios from 'axios';
 import CombatButton from '@/Atoms/CombatButton.vue';
 import Arena from '@/Molecules/Arena.vue';
 
@@ -19,7 +17,7 @@ import Arena from '@/Molecules/Arena.vue';
 export default {
     name: 'Combat',
 
-    // props: ['image'],
+    props: ['player'],
 
     components: {
         PrimaryButton,
@@ -37,37 +35,24 @@ export default {
     computed: {
         storeShowModal: function() {
             return this.showModal
-        }
+        },
+
+        storePlayer: function() {
+            return this.player
+        },
+
+        storeMasterId: function() {
+            return this.$store.getters.historyMasterId
+        },
     },
 
     methods: {
         openModal: function() {
             this.showModal = true;
-            this.listShare = []
         },
 
         closeModal: function() {
             this.showModal = false
-        },
-
-        setOpponents: function() {
-
-        },
-
-        shareResource: function() {
-            axios.post(route('image.share'), {
-                list_share: this.listShare,
-                image_id: this.image.id
-            })
-            .then((response) => {
-                this.$store.commit('updateResources', response.data)
-            })
-            .catch((error) => {
-                console.error(error)
-            })
-            .finally(() => {
-                this.closeModal()
-            })
         },
     }
 }

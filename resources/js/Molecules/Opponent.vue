@@ -1,5 +1,5 @@
 <template>
-    <div class="card bg-white shadow-sm sm:rounded-lg">
+    <div class="card bg-white shadow-sm sm:rounded-lg border border-gray-300">
         <div class="c-text text-gray-900">
             <h3>{{ storePlayer.name }}</h3>
             <div class="c-info">

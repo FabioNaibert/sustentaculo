@@ -41,6 +41,7 @@
             </CustomButton>
             <CustomButton
                 class="custom-button"
+                @click="openArenaModal()"
             >
                 AÇÕES
             </CustomButton>
@@ -49,6 +50,11 @@
         <Modal :show="showModal" @close="closeModal">
             <Points :player="storePlayer" @close_modal="closeModal"/>
         </Modal>
+        <Arena
+            :showModal="storeShowArenaModal"
+            :player="storePlayer"
+            @close_modal="closeArenaModal"
+        />
 </template>
 
 <script>
@@ -57,6 +63,7 @@ import NavLink from '@/Components/NavLink.vue';
 import CustomButton from '@/Atoms/CustomButton.vue';
 import Modal from '@/Components/Modal.vue';
 import Points from '@/Molecules/Points.vue';
+import Arena from '@/Molecules/Arena.vue';
 
 export default {
     name: 'GameMaster',
@@ -68,12 +75,14 @@ export default {
         NavLink,
         CustomButton,
         Modal,
-        Points
+        Points,
+        Arena
     },
 
     data() {
         return {
             showModal: false,
+            showArenaModal: false
         }
     },
 
@@ -84,6 +93,10 @@ export default {
 
         storePlayer: function() {
             return this.storeGameMobile.player
+        },
+
+        storeShowArenaModal: function() {
+            return this.showArenaModal
         },
     },
 
@@ -102,6 +115,14 @@ export default {
 
         closeModal: function() {
             this.showModal = false
+        },
+
+        openArenaModal: function() {
+            this.showArenaModal = true;
+        },
+
+        closeArenaModal: function() {
+            this.showArenaModal = false
         },
     }
 }

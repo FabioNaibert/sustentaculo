@@ -9,7 +9,7 @@
 export default {
     name: 'CustomButton',
 
-    props: ['tooltip']
+    props: ['tooltip'],
 }
 </script>
 
