@@ -40,6 +40,10 @@
                     </div>
                 </div>
             </div>
+            <!-- <Dice /> -->
+            <PrimaryButton class="ml-3 attack c-dice" >
+                <img src="../../svg/dice.svg">{{ storeResultDice }}<img src="../../svg/dice.svg" style="transform: scaleX(-1);">
+            </PrimaryButton>
 
             <div class="mt-6 flex justify-end">
                 <SecondaryButton @click="closeModal"> FECHAR </SecondaryButton>
@@ -64,6 +68,7 @@ import axios from 'axios';
 import CombatButton from '@/Atoms/CombatButton.vue';
 import AttackButton from '@/Atoms/AttackButton.vue';
 import Opponent from '@/Molecules/Opponent.vue';
+import Dice from '@/Molecules/Dice.vue';
 
 
 export default {
@@ -82,7 +87,8 @@ export default {
         PrimaryButton,
         CombatButton,
         AttackButton,
-        Opponent
+        Opponent,
+        Dice
     },
 
     data() {
@@ -93,6 +99,7 @@ export default {
             magicAttack: 3,
             targetOpponent: [],
             targetAllOpponent: false,
+            resultDice: null,
         }
     },
 
@@ -118,6 +125,10 @@ export default {
         singleTarget: function() {
             return this.normalAttack === this.selectedAttack || this.magicAttack === this.selectedAttack
         },
+
+        storeResultDice: function() {
+            return this.resultDice ? this.resultDice : "?"
+        }
     },
 
     watch: {
@@ -183,6 +194,8 @@ export default {
                 this.targetOpponent = [this.targetOpponent]
             }
 
+            this.resultDice = resultDice
+
             axios.post(route('combat.attack'), {
                 opponents_ids: this.targetOpponent,
                 hit: resultDice,
@@ -245,5 +258,10 @@ h1 {
     justify-content: space-between;
     gap: 0.5rem;
     align-items: center;
+}
+
+.c-dice {
+    margin: 1rem auto;
+    font-size: 1.5rem;
 }
 </style>

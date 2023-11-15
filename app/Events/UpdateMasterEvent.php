@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Http\Services\HistoryService;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -11,11 +12,12 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class UpdateGameEvent implements ShouldBroadcast
+class UpdateMasterEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $historyId;
+    private $historyId;
+    private $historyService;
 
     public function __construct($historyId)
     {
@@ -25,15 +27,13 @@ class UpdateGameEvent implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        return ['t' => 'testeeee'];
+        $this->historyService = app()->make(HistoryService::class);
+        return ['response' => $this->historyService->getHistory($this->historyId)];
     }
 
 
     public function broadcastOn()
     {
-        return [
-            new Channel('update-game-master.'.$this->historyId),
-            new Channel('update-game-player.'.$this->historyId),
-        ];
+        return new Channel('update-game-master.'.$this->historyId);
     }
 }

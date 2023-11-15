@@ -24,7 +24,7 @@
                     @click="removePlayer"
                     :tooltip="tooltip"
                 />
-                <div class="c-actions">
+                <div class="c-actions" v-show="!storeEditMode && !storeIsPlayer">
                     <Toggle
                         :player="storePlayer"
                         @click.stop
@@ -167,7 +167,11 @@ export default {
             return every(this.storeAttributes, function(attribute) {
                 return attribute.currentPoints == null || attribute.currentPoints == undefined
             })
-        }
+        },
+
+        storeIsPlayer: function() {
+            return this.$store.getters.isPlayer
+        },
     },
 
     methods: {
@@ -190,6 +194,8 @@ export default {
         },
 
         openModal: function() {
+            if (this.storeIsPlayer) return
+
             this.oldAttributes = cloneDeep(this.storeAttributes)
 
             this.showModal = true

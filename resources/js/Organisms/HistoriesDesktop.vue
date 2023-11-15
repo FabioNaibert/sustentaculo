@@ -41,12 +41,6 @@ export default {
         .then((response) => {
             this.histories = response.data
         })
-
-
-        window.Pusher.channel('update-game')
-        .listen('UpdateGameEvent', (e) => {
-            console.log('socketiiiiii');
-        });
     },
 
     methods: {

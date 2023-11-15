@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Services\AttributesService;
 use App\Http\Services\PlayerService;
+use App\Http\Services\SocketiService;
 use App\Models\Attribute;
 use App\Models\History;
 use App\Models\Player;
@@ -15,11 +16,13 @@ class PlayerController extends Controller
 {
     private AttributesService $attributesService;
     private PlayerService $playerService;
+    private SocketiService $socketiService;
 
-    public function __construct(AttributesService $attributesService, PlayerService $playerService)
+    public function __construct(AttributesService $attributesService, PlayerService $playerService, SocketiService $socketiService)
     {
         $this->attributesService = $attributesService;
         $this->playerService = $playerService;
+        $this->socketiService = $socketiService;
     }
 
 
@@ -149,6 +152,7 @@ class PlayerController extends Controller
         $playerOld->save();
 
         // event socketi
+        $this->socketiService->updateAll($playerOld->history_id);
     }
 
 
@@ -162,5 +166,6 @@ class PlayerController extends Controller
         $player->save();
 
         // event soketi
+        $this->socketiService->updateAll($player->history_id);
     }
 }

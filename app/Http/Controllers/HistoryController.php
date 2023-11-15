@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\UpdateGameEvent;
+use App\Events\UpdateMasterEvent;
 use App\Http\Services\ChapterService;
 use App\Http\Services\HistoryService;
 use App\Models\History;
@@ -153,6 +154,6 @@ class HistoryController extends Controller
 
     public function socketiTeste()
     {
-        UpdateGameEvent::dispatch();
+        UpdateMasterEvent::dispatch(9);
     }
 }

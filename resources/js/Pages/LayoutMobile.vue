@@ -75,6 +75,11 @@ export default {
     created() {
         console.log(this.response)
         this.$store.commit('setGameMobile', this.response)
+
+        window.Pusher.channel('update-game-player.' + this.storeGameMobile.player.id)
+            .listen('UpdatePlayerEvent', (e) => {
+                this.$store.commit('setGameMobile', e.response)
+            });
     },
 
     computed: {

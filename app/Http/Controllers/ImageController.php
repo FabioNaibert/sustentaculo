@@ -4,21 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Http\Services\ImageService;
 use App\Http\Services\ResourceService;
+use App\Http\Services\SocketiService;
 use App\Models\Chapter;
 use App\Models\Image;
 use App\Models\Player;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class ImageController extends Controller
 {
     private ImageService $imageService;
     private ResourceService $resourceService;
+    private SocketiService $socketiService;
 
-    public function __construct(ImageService $imageService, ResourceService $resourceService)
+    public function __construct(ImageService $imageService, ResourceService $resourceService, SocketiService $socketiService)
     {
         $this->imageService = $imageService;
         $this->resourceService = $resourceService;
+        $this->socketiService = $socketiService;
     }
 
 
@@ -63,8 +67,9 @@ class ImageController extends Controller
         $image = Image::findOrFail($imageId);
         $image->players()->sync($listShare);
 
-        return $this->resourceService->getResources($image->chapters->first()->id);
-
         // event socketi
+        $this->socketiService->updateAll($image->chapters->first()->history_id);
+
+        return $this->resourceService->getResources($image->chapters->first()->id);
     }
 }

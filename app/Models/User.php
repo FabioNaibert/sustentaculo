@@ -38,4 +38,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(History::class);
     }
+
+    public function isLinkedToHistory($idHistory)
+    {
+        return $this->players()->where('history_id', $idHistory)->isNotEmpty();
+    }
 }

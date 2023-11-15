@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Services\AttributesService;
 use App\Http\Services\ImageService;
 use App\Http\Services\ResourceService;
+use App\Http\Services\SocketiService;
 use App\Models\Chapter;
 use App\Models\Weapon;
 use Illuminate\Http\Request;
@@ -14,13 +15,15 @@ class WeaponController extends Controller
     private AttributesService $attributesService;
     private ImageService $imageService;
     private ResourceService $resourceService;
+    private SocketiService $socketiService;
 
 
-    public function __construct(AttributesService $attributesService, ImageService $imageService, ResourceService $resourceService)
+    public function __construct(AttributesService $attributesService, ImageService $imageService, ResourceService $resourceService, SocketiService $socketiService)
     {
         $this->attributesService = $attributesService;
         $this->imageService = $imageService;
         $this->resourceService = $resourceService;
+        $this->socketiService = $socketiService;
     }
 
 
@@ -107,6 +110,9 @@ class WeaponController extends Controller
         $weapon->player_id = $sharePlayerId;
         $weapon->save();
 
+        // event socketi
+        $this->socketiService->updateAll($weapon->history_id);
+
         return $this->resourceService->getResources($chapterId);
     }
 
@@ -122,5 +128,6 @@ class WeaponController extends Controller
         $weapon->save();
 
         // event socketi
+        $this->socketiService->updateAll($weapon->history_id);
     }
 }
