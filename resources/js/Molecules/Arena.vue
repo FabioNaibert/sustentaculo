@@ -40,7 +40,7 @@
                     </div>
                 </div>
             </div>
-            <!-- <Dice /> -->
+
             <PrimaryButton class="ml-3 attack c-dice" >
                 <img src="../../svg/dice.svg">{{ storeResultDice }}<img src="../../svg/dice.svg" style="transform: scaleX(-1);">
             </PrimaryButton>
@@ -68,7 +68,6 @@ import axios from 'axios';
 import CombatButton from '@/Atoms/CombatButton.vue';
 import AttackButton from '@/Atoms/AttackButton.vue';
 import Opponent from '@/Molecules/Opponent.vue';
-import Dice from '@/Molecules/Dice.vue';
 
 
 export default {
@@ -88,7 +87,6 @@ export default {
         CombatButton,
         AttackButton,
         Opponent,
-        Dice
     },
 
     data() {
@@ -179,19 +177,34 @@ export default {
             return Math.floor(Math.random() * attack) + 1;
         },
 
+        enableMagicAttack: function() {
+            const attributeManaId = 2;
+            const attribute = findLast(this.player.attributes, function(attribute) {
+                return attribute.id === attributeManaId
+            })
+
+            return attribute.currentPoints >= ceil(attribute.totalPoints * 0.2)
+        },
+
         attack: function() {
             let resultDice
 
             if (this.magicAttack === this.selectedAttack) {
-                resultDice = this.calcMagicAttack()
+                if (this.enableMagicAttack()){
+                    resultDice = this.calcMagicAttack()
+                } else {
+                    alert('Mana insuficiente')
+                }
             } else {
                 resultDice = this.calcNormalAttack()
             }
 
-            console.log(resultDice)
-
             if (isNumber(this.targetOpponent)){
                 this.targetOpponent = [this.targetOpponent]
+            }
+
+            if (this.targetOpponent.length == 0) {
+                return alert('Selecione um oponente')
             }
 
             this.resultDice = resultDice

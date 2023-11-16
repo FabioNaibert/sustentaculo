@@ -57,7 +57,7 @@ class PlayerService
         $players = Player::where([
             ['history_id', $historyId],
             ['user_id', '!=', $masterId],
-            ['user_id', '!=', $playerId],
+            ['id', '!=', $playerId],
         ])->get();
 
         return $this->mapPlayers($players);

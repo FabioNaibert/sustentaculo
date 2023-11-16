@@ -28,7 +28,7 @@ class UpdateMasterEvent implements ShouldBroadcast
     public function broadcastWith()
     {
         $this->historyService = app()->make(HistoryService::class);
-        return ['response' => $this->historyService->getHistory($this->historyId)];
+        return ['response' => $this->historyService->getGame($this->historyId)];
     }
 
 

@@ -134,13 +134,17 @@ class AttributesService
 
         $attributes[self::VIDA]['currentPoints'] -= $hit;
 
-        if ($attributes[self::VIDA]['currentPoints'] < 0) {
+        if ($attributes[self::VIDA]['currentPoints'] <= 0) {
             $attributes[self::VIDA]['currentPoints'] = 0;
+            $attributes[self::MANA]['currentPoints'] = 0;
         }
 
         return [
             self::VIDA => [
                 'current_points' => $attributes[self::VIDA]['currentPoints']
+            ],
+            self::MANA => [
+                'current_points' => $attributes[self::MANA]['currentPoints']
             ]
         ];
     }

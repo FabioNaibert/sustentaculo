@@ -12,13 +12,13 @@ export default {
     props: [
         'totalPoints',
         'currentPoints',
-        'color'
+        'color',
     ],
 
     computed: {
         calcCurrentPoints: function() {
             return (this.currentPoints / this.totalPoints * 100) + '%';
-        }
+        },
     }
 }
 </script>

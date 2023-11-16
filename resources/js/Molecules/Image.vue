@@ -3,9 +3,9 @@
         <div class="c-text text-gray-900">
             <div class="c-info">
                 <div class="c-image">
-                    <img :src="resource.content">
+                    <img :src="storeResource.content">
                 </div>
-                <h3>{{ resource.name }}</h3>
+                <h3>{{ storeResource.name }}</h3>
                 <RemoveButton
                     v-show="storeEditMode && !storeIsPlayer"
                     class="position-button"
@@ -13,7 +13,7 @@
                     :tooltip="'Excluir imagem'"
                 />
                 <div class="position-button" v-show="!storeEditMode && !storeIsPlayer">
-                    <ShareResources :image="resource" />
+                    <ShareResources :image="storeResource" />
                 </div>
             </div>
         </div>
@@ -21,7 +21,7 @@
 
     <Modal :show="showModal" @close="closeModal">
         <div class="p-6">
-            <img :src="resource.content" class="modal-img">
+            <img :src="storeResource.content" class="modal-img">
 
             <div class="mt-6 flex justify-end">
                 <SecondaryButton @click="closeModal"> FECHAR </SecondaryButton>
@@ -57,8 +57,8 @@ export default {
     },
 
     computed: {
-        storeAttributes: function() {
-            return this.resource.attributes
+        storeResource: function() {
+            return this.resource
         },
 
         storeChapter: function() {
@@ -77,7 +77,7 @@ export default {
     methods: {
         remove: function() {
             axios.post(route('image.remove'), {
-                image_id: this.resource.id,
+                image_id: this.storeResource.id,
                 chapter_id: this.storeChapter.id,
             })
             .then((response) => {

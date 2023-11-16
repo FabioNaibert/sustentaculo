@@ -4,7 +4,7 @@
     <Modal :show="showModal" @close="closeModal">
         <div class="p-6">
             <h1 class="text-gray-500">Compartilhar Recurso</h1>
-            <p class="mt-6 text-gray-500">Selecione o jogador que você quer disponibilizar a arma <b>"{{ weapon.name }}"</b>.</p>
+            <p class="mt-6 text-gray-500">Selecione o jogador que você quer disponibilizar a arma <b>"{{ storeWeapon.name }}"</b>.</p>
             <div class="mt-6 c-options">
                 <ul>
                     <li
@@ -61,6 +61,10 @@ export default {
     },
 
     computed: {
+        storeWeapon: function() {
+            return this.weapon
+        },
+
         storePlayers: function() {
             return this.$store.getters.players
         },
@@ -72,6 +76,7 @@ export default {
 
     methods: {
         openModal: function() {
+            this.sharePlayer = this.storeWeapon.playerId
             this.showModal = true;
         },
 
@@ -82,7 +87,7 @@ export default {
         shareResource: function() {
             axios.post(route('weapon.share'), {
                 share_player_id: this.sharePlayer,
-                weapon_id: this.weapon.id,
+                weapon_id: this.storeWeapon.id,
                 chapter_id: this.storeChapter.id
             })
             .then((response) => {

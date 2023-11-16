@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Services\AttributesService;
 use App\Http\Services\PlayerService;
 use App\Http\Services\SocketiService;
+use App\Http\Services\WeaponService;
 use App\Models\Attribute;
 use App\Models\History;
 use App\Models\Player;
@@ -17,12 +18,14 @@ class PlayerController extends Controller
     private AttributesService $attributesService;
     private PlayerService $playerService;
     private SocketiService $socketiService;
+    private WeaponService $weaponService;
 
-    public function __construct(AttributesService $attributesService, PlayerService $playerService, SocketiService $socketiService)
+    public function __construct(AttributesService $attributesService, PlayerService $playerService, SocketiService $socketiService, WeaponService $weaponService)
     {
         $this->attributesService = $attributesService;
         $this->playerService = $playerService;
         $this->socketiService = $socketiService;
+        $this->weaponService = $weaponService;
     }
 
 
@@ -106,6 +109,7 @@ class PlayerController extends Controller
         $historyId = $request->input('history_id');
         $history = History::find($historyId);
 
+        $this->weaponService->takeWeaponsFromPlayer($playerId);
         $this->removeUser($playerId);
 
         return $this->playerService->getPlayers($history->id, $history->master_id);

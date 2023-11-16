@@ -26,6 +26,7 @@
         </div>
 
         <div class="c-options">
+            <Dice />
             <CustomButton
                 v-if="storeGameMobile.player.pointsDistribution > 0"
                 class="custom-button"
@@ -42,6 +43,7 @@
             <CustomButton
                 class="custom-button"
                 @click="openArenaModal()"
+                :disabled="!storePlayer.active || storeIsDead"
             >
                 AÇÕES
             </CustomButton>
@@ -58,12 +60,14 @@
 </template>
 
 <script>
+import { findLast } from 'lodash';
 import AttributeBar from '@/Atoms/AttributeBar.vue';
 import NavLink from '@/Components/NavLink.vue';
 import CustomButton from '@/Atoms/CustomButton.vue';
 import Modal from '@/Components/Modal.vue';
 import Points from '@/Molecules/Points.vue';
 import Arena from '@/Molecules/Arena.vue';
+import Dice from '@/Molecules/Dice.vue';
 
 export default {
     name: 'GameMaster',
@@ -76,7 +80,8 @@ export default {
         CustomButton,
         Modal,
         Points,
-        Arena
+        Arena,
+        Dice
     },
 
     data() {
@@ -97,6 +102,15 @@ export default {
 
         storeShowArenaModal: function() {
             return this.showArenaModal
+        },
+
+        storeIsDead: function() {
+            const attributeLifeId = 1;
+            const attribute = findLast(this.storePlayer.attributes, function(attribute) {
+                return attribute.id === attributeLifeId
+            })
+
+            return attribute.currentPoints <= 0
         },
     },
 
@@ -162,17 +176,18 @@ p {
 .c-options {
     display: flex;
     flex-direction: column;
-    align-items: stretch;
     gap: 0.3rem;
 
     position: absolute;
     bottom: 3.5rem;
     right: 0;
     margin-right: 1.5rem;
+    align-items: flex-end;
 }
 
 .custom-button {
     flex-grow: 2;
+    width: 100%;
 }
 
 .name {

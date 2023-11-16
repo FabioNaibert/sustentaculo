@@ -34,7 +34,7 @@
                     </CustomButton>
                     <ul class="route__options border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" :style="{display: showMultiRoutes ? 'flex' : 'none'}">
                         <li
-                            v-for="option in storeChapter.possible_routes"
+                            v-for="option in storePossibleRoutes"
                             :key="option.id"
                             @click="nextChapter(option.id)"
                         >
@@ -43,13 +43,18 @@
                     </ul>
                 </div>
             </div>
+            <div class="dice">
+                <Dice />
+            </div>
         </div>
     </div>
 </template>
 
 <script>
+import { orderBy } from 'lodash';
 import TextInput from '@/Components/TextInput.vue';
 import CustomButton from '@/Atoms/CustomButton.vue';
+import Dice from '@/Molecules/Dice.vue';
 
 export default {
     name: 'GameChapter',
@@ -57,6 +62,7 @@ export default {
     components: {
         TextInput,
         CustomButton,
+        Dice,
     },
 
     data() {
@@ -68,6 +74,10 @@ export default {
     computed: {
         storeChapter: function() {
             return this.$store.getters.chapter
+        },
+
+        storePossibleRoutes: function() {
+            return orderBy(this.$store.getters.chapter.possible_routes, ['id'])
         },
 
         firstChapter: function() {
@@ -152,6 +162,7 @@ export default {
     align-items: center;
     flex-wrap: nowrap;
     width: 100%;
+    position: relative;
 }
 
 .commands {
@@ -203,5 +214,10 @@ li {
 
 li:hover {
     background: rgb(135 41 255 / 75%);
+}
+
+.dice {
+    position: absolute;
+    right: 0;
 }
 </style>

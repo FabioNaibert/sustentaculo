@@ -4,7 +4,7 @@
     <Modal :show="showModal" @close="closeModal">
         <div class="p-6">
             <h1 class="text-gray-500">Compartilhar Recurso</h1>
-            <p class="mt-6 text-gray-500">Selecione os jogadores que você quer que vejam a imagem <b>"{{ image.name }}"</b>.</p>
+            <p class="mt-6 text-gray-500">Selecione os jogadores que você quer que vejam a imagem <b>"{{ storeImage.name }}"</b>.</p>
             <div class="mt-6 c-options">
                 <ul>
                     <li class="option">
@@ -65,12 +65,11 @@ export default {
         }
     },
 
-    created() {
-        this.defaultPoints = this.minValue
-        this.placeHolder = `Valor padrão: ${this.minValue}`
-    },
-
     computed: {
+        storeImage: function() {
+            return this.image
+        },
+
         storePlayers: function() {
             return this.$store.getters.players
         },
@@ -85,7 +84,7 @@ export default {
     methods: {
         openModal: function() {
             this.showModal = true;
-            this.listShare = []
+            this.listShare = this.storeImage.share_players_ids
         },
 
         closeModal: function() {
@@ -103,7 +102,7 @@ export default {
         shareResource: function() {
             axios.post(route('image.share'), {
                 list_share: this.listShare,
-                image_id: this.image.id
+                image_id: this.storeImage.id
             })
             .then((response) => {
                 this.$store.commit('updateResources', response.data)

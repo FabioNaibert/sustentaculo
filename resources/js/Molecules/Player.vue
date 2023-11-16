@@ -1,5 +1,5 @@
 <template>
-    <div class="card bg-white shadow-sm sm:rounded-lg">
+    <div class="card bg-white shadow-sm sm:rounded-lg" :class="{death: storeIsDead}">
         <div class="c-text text-gray-900" @click="openModal">
             <h3>{{ storePlayer.name }}</h3>
             <div class="c-info">
@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import { orderBy, every, cloneDeep } from 'lodash'
+import { orderBy, every, cloneDeep, findLast } from 'lodash'
 import AttributeBar from "@/Atoms/AttributeBar.vue";
 import RemoveButton from "@/Atoms/RemoveButton.vue";
 import AccordionButton from "@/Atoms/AccordionButton.vue";
@@ -171,6 +171,15 @@ export default {
 
         storeIsPlayer: function() {
             return this.$store.getters.isPlayer
+        },
+
+        storeIsDead: function() {
+            const attributeLifeId = 1;
+            const attribute = findLast(this.player.attributes, function(attribute) {
+                return attribute.id === attributeLifeId
+            })
+
+            return attribute.currentPoints <= 0
         },
     },
 
@@ -252,6 +261,7 @@ p {
 .card {
     width: 100%;
     overflow: hidden;
+    position: relative;
 }
 
 .c-text, .c-text--modal{
@@ -302,5 +312,9 @@ p {
     justify-content: center;
     align-items: center;
     gap: 0.1rem;
+}
+
+.death {
+    background-color: #b9b9b9f0;
 }
 </style>

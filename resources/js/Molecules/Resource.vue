@@ -2,7 +2,7 @@
     <div>
         <component
             :is="componentCuston"
-            v-bind="properties"
+            v-bind="storeResource"
         ></component>
     </div>
 </template>
@@ -28,9 +28,9 @@ export default {
         return {
             weponComponent: shallowRef(Weapon),
             imageComponent: shallowRef(Image),
-            properties: {
-                resource: this.resource,
-            }
+            // properties: {
+            //     resource: this.resource,
+            // }
         }
     },
 
@@ -41,6 +41,12 @@ export default {
             }
 
             return this.imageComponent
+        },
+
+        storeResource: function() {
+            return {
+                resource: this.resource,
+            }
         }
     },
 }

@@ -1,7 +1,7 @@
 <template>
     <div class="card bg-white shadow-sm sm:rounded-lg" @click="equip">
         <div class="c-text text-gray-900">
-            <h3>{{ resource.name }}</h3>
+            <h3>{{ storeResource.name }}</h3>
             <div class="c-info">
                 <div class="info__attribute">
                     <div
@@ -15,7 +15,7 @@
                     </div>
                 </div>
                 <div class="c-image">
-                    <img :src="resource.image.content">
+                    <img :src="storeResource.image.content">
                 </div>
                 <RemoveButton
                     v-show="storeEditMode && !storeIsPlayer"
@@ -24,9 +24,9 @@
                     :tooltip="'Excluir arma'"
                 />
                 <div class="position-button" v-show="!storeEditMode && !storeIsPlayer">
-                    <ShareWeapon :weapon="resource" />
+                    <ShareWeapon :weapon="storeResource" />
                 </div>
-                <div class="position-equiped" v-show="!storeEditMode && resource.equiped" title="Equipado">
+                <div class="position-equiped" v-show="!storeEditMode && storeResource.equiped" title="Equipado">
                     <img src="../../images/swords.png">
                 </div>
             </div>
@@ -51,6 +51,10 @@ export default {
     ],
 
     computed: {
+        storeResource: function() {
+            return this.resource
+        },
+
         storeAttributes: function() {
             return this.resource.attributes
         },
@@ -71,7 +75,7 @@ export default {
     methods: {
         remove: function() {
             axios.post(route('weapon.remove'), {
-                weapon_id: this.resource.id,
+                weapon_id: this.storeResource.id,
                 chapter_id: this.storeChapter.id,
             })
             .then((response) => {
@@ -86,7 +90,7 @@ export default {
             if (!this.storeIsPlayer) return
 
             axios.post(route('weapon.equip'), {
-                weapon_id: this.resource.id
+                weapon_id: this.storeResource.id
             })
             .then((response) => {
             })
