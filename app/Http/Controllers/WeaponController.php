@@ -9,6 +9,7 @@ use App\Http\Services\SocketiService;
 use App\Models\Chapter;
 use App\Models\Weapon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class WeaponController extends Controller
 {
@@ -84,11 +85,10 @@ class WeaponController extends Controller
         $weaponId = $request->input('weapon_id');
         $chapterId = $request->input('chapter_id');
 
-        $weapon = Weapon::find($weaponId);
+        $weapon = Weapon::findOrFail($weaponId);
         $this->deleteWeaponImage($weapon);
         $weapon->delete();
 
-        // return $this->getWeapons($historyId);
         return $this->resourceService->getResources($chapterId);
     }
 

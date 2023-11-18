@@ -170,6 +170,9 @@ hr {
     display: flex;
     width: 100%;
     height: calc(calc(100vh - 4rem) - 1px);
+    /* background-image: url('../../images/fumaca.jpg');
+    background-repeat: no-repeat;
+    background-size: cover; */
 }
 .c-esquerda, .c-direita {
     display: flex;

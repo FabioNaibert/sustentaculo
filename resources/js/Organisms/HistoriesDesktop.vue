@@ -1,21 +1,20 @@
 <template>
         <div class="c-button">
-            <NewHistory />
+            <NewHistory @new_histories="(newHistories) => histories = newHistories"/>
         </div>
 
         <div class="py-12">
             <div v-if="histories.length > 0" class="c-cards max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <Card v-for="history in histories" :key="history.id" :history="history" />
+                <Card v-for="history in storeHistories" :key="history.id" :history="history" />
             </div>
             <div v-else class="c-cards max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="p-6 text-gray-900">Mestre, crie seu primeiro mundo!</div>
             </div>
         </div>
-
-        <button @click="teste">Teste</button>
 </template>
 
 <script>
+import { orderBy } from 'lodash';
 import Card from '@/Molecules/Card.vue';
 import AddButton from '@/Atoms/AddButton.vue';
 import NewHistory from '@/Molecules/NewHistory.vue';
@@ -43,9 +42,9 @@ export default {
         })
     },
 
-    methods: {
-        teste: function() {
-            axios.post(route('socketi.teste'))
+    computed: {
+        storeHistories: function() {
+            return orderBy(this.histories, ['updated_at'], ['desc'])
         }
     }
 }

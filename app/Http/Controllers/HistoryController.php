@@ -136,6 +136,8 @@ class HistoryController extends Controller
         ]);
 
         $this->chapterService->addChapter(['history_id' => $history->id, 'previous_id' => null]);
+
+        return $this->getHistoriesDesktop();
     }
 
 
@@ -149,11 +151,5 @@ class HistoryController extends Controller
         $history->save();
 
         return $history->title;
-    }
-
-
-    public function socketiTeste()
-    {
-        UpdateMasterEvent::dispatch(9);
     }
 }

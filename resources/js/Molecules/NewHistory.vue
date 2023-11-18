@@ -12,6 +12,11 @@ import { nextTick, ref } from 'vue';
 
 const confirmingNewHistory = ref(false);
 const titleInput = ref(null);
+const emit = defineEmits(['new_histories'])
+
+function newHistories() {
+    emit('new_histories', )
+}
 
 const form = useForm({
     title: '',
@@ -24,12 +29,19 @@ const confirmNewHistory = () => {
 };
 
 const newHistory = () => {
-    form.post(route('history.store'), {
-        preserveScroll: true,
-        onSuccess: () => closeModal(),
-        onError: () => titleInput.value.focus(),
-        onFinish: () => form.reset(),
-    });
+    axios.post(route('history.store'), {
+        title: form.title
+    })
+    .then((response) => {
+        emit('new_histories', response.data)
+    })
+    .catch((error) => {
+        console.error(error)
+    })
+    .finally(() => {
+        closeModal()
+        form.reset()
+    })
 };
 
 const closeModal = () => {
@@ -64,8 +76,6 @@ const closeModal = () => {
                     placeholder="Título"
                     @keyup.enter="newHistory"
                 />
-
-                <!-- <InputError :message="form.errors.password" class="mt-2" /> -->
             </div>
 
             <div class="mt-6 flex justify-end">

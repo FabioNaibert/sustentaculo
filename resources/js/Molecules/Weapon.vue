@@ -60,7 +60,7 @@ export default {
         },
 
         storeChapter: function() {
-            return this.$store.getters.chapter.id
+            return this.$store.getters.chapter
         },
 
         storeEditMode: function() {

@@ -1,5 +1,5 @@
 <template>
-    <Head title="Dashboard" />
+    <Head title="Edição" />
 
     <AuthenticatedLayout>
         <div class="container__history">
@@ -135,7 +135,6 @@ export default {
         return {
             addTooltip: 'Criar nova história',
             defaultPoints: 5,
-            teste: null
         }
     },
 

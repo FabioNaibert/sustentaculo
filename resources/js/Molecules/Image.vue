@@ -9,7 +9,7 @@
                 <RemoveButton
                     v-show="storeEditMode && !storeIsPlayer"
                     class="position-button"
-                    @click="remove"
+                    @click.stop="remove"
                     :tooltip="'Excluir imagem'"
                 />
                 <div class="position-button" v-show="!storeEditMode && !storeIsPlayer">
@@ -113,6 +113,7 @@ p {
     width: 100%;
     overflow: hidden;
     position: relative;
+    cursor: pointer;
 }
 
 .c-text {

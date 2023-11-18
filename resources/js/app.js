@@ -8,7 +8,7 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import Vuex from 'vuex';
 import store from './store'
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'Sustentáculo';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
