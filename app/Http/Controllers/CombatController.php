@@ -11,6 +11,11 @@ use Illuminate\Http\Request;
 
 class CombatController extends Controller
 {
+    public const VIDA = 1;
+    public const MANA = 2;
+    public const ATAQUE = 3;
+    public const DEFESA = 4;
+
     private AttributesService $attributesService;
     private PlayerService $playerService;
     private SocketiService $socketiService;
@@ -48,6 +53,11 @@ class CombatController extends Controller
 
                 $calcHit = $this->attributesService->calcHit($attributes, $hit);
                 $player->attributes()->syncWithoutDetaching($calcHit);
+
+                if ($calcHit[self::VIDA]['current_points'] === 0) {
+                    $player->active = false;
+                    $player->save();
+                }
             });
 
         // event socketi

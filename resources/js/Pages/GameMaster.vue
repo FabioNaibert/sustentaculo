@@ -1,5 +1,5 @@
 <template>
-    <Head title="Dashboard" />
+    <Head :title="storeHistoryTitle" />
 
     <AuthenticatedLayout>
         <div class="container__history">
@@ -122,6 +122,10 @@ export default {
     computed: {
         storeHistoryId: function() {
             return this.$store.getters.historyId
+        },
+
+        storeHistoryTitle: function() {
+            return this.$store.getters.historyTitle
         },
 
         storePlayers: function() {

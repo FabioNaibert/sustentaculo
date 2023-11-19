@@ -126,6 +126,13 @@ export default {
 
         storeResultDice: function() {
             return this.resultDice ? this.resultDice : "?"
+        },
+
+        life: function() {
+            const attributeAttackId = 1;
+            return findLast(this.player.attributes, function(attribute) {
+                return attribute.id === attributeAttackId
+            })
         }
     },
 
@@ -136,6 +143,12 @@ export default {
             }
 
             this.targetAllOpponent = this.storeOpponents.every((opponent) => this.targetOpponent.includes(opponent.id))
+        },
+
+        life(newValue) {
+            if (newValue.currentPoints <= 0) {
+                return this.closeModal()
+            }
         }
     },
 
@@ -193,7 +206,7 @@ export default {
                 if (this.enableMagicAttack()){
                     resultDice = this.calcMagicAttack()
                 } else {
-                    alert('Mana insuficiente')
+                    return alert('Mana insuficiente')
                 }
             } else {
                 resultDice = this.calcNormalAttack()

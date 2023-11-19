@@ -29,7 +29,12 @@ class ChapterService
     public function getGameChapter($historyId, $chapterId = null)
     {
         if (!$chapterId) {
-            $chapter = Chapter::where('current', true)->first();
+            $chapter = Chapter::where([
+                    ['current', true],
+                    ['history_id', $historyId],
+                ])
+                ->first();
+
             if ($chapter) {
                 return $chapter->setAppends(['has_next', 'has_multi_routes', 'possible_routes']);
             }
@@ -77,7 +82,7 @@ class ChapterService
     public function editChapter($newData)
     {
         $chapter = Chapter::findOrFail($newData['id']);
-        $chapter->title = $newData['title'];
+        $chapter->title = $newData['title'] ? $newData['title'] : 'Sem título';
         $chapter->text = $newData['text'];
         $chapter->save();
 

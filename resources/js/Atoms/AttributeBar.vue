@@ -17,6 +17,10 @@ export default {
 
     computed: {
         calcCurrentPoints: function() {
+            if (this.currentPoints === 0) {
+                return '0%'
+            }
+
             return (this.currentPoints / this.totalPoints * 100) + '%';
         },
     }
