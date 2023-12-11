@@ -31,7 +31,7 @@ export default {
         },
 
         storeBackpack: function() {
-            return orderBy(this.storeGameMobile.backpack, ['name'])
+            return orderBy(this.storeGameMobile.backpack, ['equiped'], ['desc'])
         },
     },
 }

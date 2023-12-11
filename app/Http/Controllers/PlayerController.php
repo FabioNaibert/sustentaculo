@@ -175,7 +175,7 @@ class PlayerController extends Controller
             DB::beginTransaction();
                 if ($playerOld->first_access && $userId === $playerOld->user_id) {
                     $mapAttributes = $this->attributesService->mapNewAttributesPoints($player['attributes']);
-                    $playerOld->name = $player['name'];
+                    $playerOld->name = $player['name'] ? $player['name'] : $playerOld->name;
                     $playerOld->first_access = false;
                 } else if ($userId === $playerOld->user_id && $playerOld->master_id !== $userId) {
                     $mapAttributes = $this->attributesService->mapAttributesTotalPoints($player['attributes']);

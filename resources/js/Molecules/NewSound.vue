@@ -121,12 +121,20 @@ export default {
             }
 
             this.timer = setTimeout(() => {
+                this.load = true
+
                 axios.post(route('sound.search'), {
                     name: this.name,
                     chapter_id: this.storeChapterId
                 })
                 .then((response) => {
                     this.sounds = response.data
+                })
+                .catch((error) => {
+                    console.error(error)
+                })
+                .finally(() => {
+                    this.load = false
                 })
             }, 800);
         },

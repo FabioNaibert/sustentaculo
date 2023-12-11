@@ -1,5 +1,5 @@
 <template>
-    <CombatButton @click.stop="openModal" />
+    <CombatButton @click.stop="openModal" title="Batalhar" />
 
     <Arena
         :showModal="storeShowModal"

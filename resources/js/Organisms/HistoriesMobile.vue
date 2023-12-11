@@ -1,7 +1,7 @@
 <template>
     <div class="py-12">
         <div v-if="histories.length > 0" class="c-cards max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <Card v-for="history in histories" :key="history.id" :history="history" />
+            <Card v-for="history in storeHistories" :key="history.id" :history="history" />
         </div>
         <div v-else class="c-cards max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="p-6 text-gray-900">Ainda não há convites para você.</div>
@@ -11,6 +11,7 @@
 
 <script>
 import Card from '@/Molecules/Card.vue';
+import { orderBy } from 'lodash';
 
 export default {
     name: 'HistoriesMobile',
@@ -31,6 +32,12 @@ export default {
             this.histories = response.data
         })
     },
+
+    computed: {
+        storeHistories: function() {
+            return orderBy(this.histories, ['updated_at'], ['desc'])
+        }
+    }
 }
 </script>
 

@@ -48,6 +48,10 @@
                 </div>
             </div>
 
+            <div class="loader" v-if="load">
+                <Loader />
+            </div>
+
             <div class="mt-6 flex justify-end">
                 <SecondaryButton @click="closeModal"> FECHAR </SecondaryButton>
             </div>
@@ -61,8 +65,9 @@ import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import AddButton from '@/Atoms/AddButton.vue';
-import { nextTick, ref } from 'vue';
+import { nextTick } from 'vue';
 import axios from 'axios';
+import Loader from '@/Atoms/Loader.vue';
 
 
 export default {
@@ -74,6 +79,7 @@ export default {
         TextInput,
         AddButton,
         IntInput,
+        Loader
     },
 
     props: [
@@ -87,7 +93,8 @@ export default {
             timer: null,
             users: null,
             defaultPoints: this.default_points,
-            placeHolder: `Valor padrão: ${this.default_points}`
+            placeHolder: `Valor padrão: ${this.default_points}`,
+            load: false,
         }
     },
 
@@ -123,17 +130,26 @@ export default {
             }
 
             this.timer = setTimeout(() => {
+                this.load = true
+
                 axios.post(route('player.search'), {
                     name: this.name,
                     history_id: this.storeHistoryId
                 })
                 .then((response) => {
+                    this.load = false
                     this.users = response.data
+                }).catch((error) => {
+                    console.error(error)
+                })
+                .finally(() => {
+                    this.load = false
                 })
             }, 800);
         },
 
         addUser: function(userId) {
+            this.load = true
             axios.post(route('player.add'), {
                 user_id: userId,
                 history_id: this.storeHistoryId,
@@ -143,6 +159,12 @@ export default {
                 this.users = null
                 this.$store.commit('updatePlayers', response.data)
                 nextTick(() => this.$refs["nameInput"].focus());
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+            .finally(() => {
+                this.load = false
             })
         },
 
@@ -227,5 +249,11 @@ h1 {
     display: flex;
     flex-direction: column;
     gap:1rem;
+}
+
+.loader {
+    padding: 0.3rem 0.6rem;
+    display: flex;
+    justify-content: center;
 }
 </style>
