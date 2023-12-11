@@ -20,10 +20,19 @@ class SoundController extends Controller
     public function getSounds(Request $request)
     {
         $name = $request->input('name');
+        $chapter_id = $request->input('chapter_id');
 
         if (!$name) return [];
 
-        return Sound::whereRaw("upper(name) like upper('%$name%')")->get();
+        $existingSounds = Sound::whereRelation('chapters', 'chapter_id', $chapter_id)->get()->pluck('id');
+
+        $query = Sound::whereRaw("upper(name) like upper('%$name%')");
+
+        if ($existingSounds->isNotEmpty()) {
+            $query->whereNotIn('id', $existingSounds);
+        }
+
+        return $query->get();
     }
 
 

@@ -32,6 +32,10 @@
                 </div>
             </div>
 
+            <div v-if="error" class="c-error">
+                <p>{{ error }}</p>
+            </div>
+
             <div class="mt-6 flex justify-end">
                 <SecondaryButton @click="closeModal"> FECHAR </SecondaryButton>
 
@@ -76,7 +80,8 @@ export default {
             name: '',
             minValue: 0,
             defaultPoints: null,
-            placeHolder: null
+            placeHolder: null,
+            error: null,
         }
     },
 
@@ -115,6 +120,8 @@ export default {
         },
 
         addEnemy: function() {
+            if (this.name.length === 0) this.name = '?'
+
             const data = {
                 name: this.name,
                 all_attributes: this.storeAllAttributes,
@@ -125,7 +132,9 @@ export default {
             .then((response) => {
                 this.closeModal()
                 this.$store.commit('updateEnemies', response.data)
-
+            })
+            .catch((error) => {
+                this.error = error.response.data.message
             })
         },
 
@@ -211,5 +220,16 @@ h1 {
     display: flex;
     flex-direction: column;
     gap:1rem;
+}
+
+.c-error {
+    background-color: rgb(255 222 222);
+    color: red;
+    font-size: 0.8rem;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    border: 1px solid red;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 </style>

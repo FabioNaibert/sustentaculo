@@ -1,10 +1,15 @@
 <template>
     <div class="players">
-        <div v-for="player in storeTeam"
-            :key="player.id"
-            class="player"
-        >
-            <Player :player="player" />
+        <div v-if="storeTeam.length > 0" class="player">
+            <div v-for="player in storeTeam"
+                :key="player.id"
+                class="player"
+            >
+                <Player :player="player" />
+            </div>
+        </div>
+        <div v-else>
+            <div class="p-6 text-gray-900">Nenhum companheiro por perto.</div>
         </div>
     </div>
 </template>

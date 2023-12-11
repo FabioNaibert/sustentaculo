@@ -45,12 +45,29 @@
                 <img src="../../svg/dice.svg">{{ storeResultDice }}<img src="../../svg/dice.svg" style="transform: scaleX(-1);">
             </PrimaryButton>
 
+            <div v-if="error" class="c-error">
+                <p>{{ error }}</p>
+            </div>
+
+            <div class="c-info-attack">
+                <div v-for="result in results" :key="result.text">
+                    <div class="c-info c-hit" v-if="result.hit">
+                        <img src="../../svg/explosion.svg">{{ result.text }}<img src="../../svg/explosion.svg" style="transform: scaleX(-1);">
+                    </div>
+                    <div class="c-info c-defense" v-else>
+                        <img src="../../svg/shield.svg">{{ result.text }}<img src="../../svg/shield.svg" style="transform: scaleX(-1);">
+                    </div>
+                </div>
+            </div>
+
             <div class="mt-6 flex justify-end">
                 <SecondaryButton @click="closeModal"> FECHAR </SecondaryButton>
 
                 <PrimaryButton
                     class="ml-3 attack"
                     @click="attack"
+                    :disabled="results.length > 0"
+                    :style="{'background-color': results.length > 0 ? 'gray' : null}"
                 >
                     <img src="../../svg/dice.svg">ROLAR DADO E ATACAR
                 </PrimaryButton>
@@ -60,7 +77,7 @@
 </template>
 
 <script>
-import { findLast, isNumber, ceil } from 'lodash';
+import { findLast, isNumber, ceil, filter } from 'lodash';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -98,6 +115,8 @@ export default {
             targetOpponent: [],
             targetAllOpponent: false,
             resultDice: null,
+            results: [],
+            error: null,
         }
     },
 
@@ -160,6 +179,9 @@ export default {
 
         setTypeAttack: function(typeAttack) {
             this.targetOpponent = []
+            this.error = null
+            this.results = []
+            this.resultDice = null
             this.selectedAttack = typeAttack
         },
 
@@ -196,17 +218,48 @@ export default {
                 return attribute.id === attributeManaId
             })
 
-            return attribute.currentPoints >= ceil(attribute.totalPoints * 0.2)
+            return attribute.currentPoints >= ceil(attribute.totalPoints * 0.2) && attribute.currentPoints > 0
+        },
+
+        effectAttack: function() {
+            const attributeDefenseId = 4;
+            let targets = filter(this.storeOpponents, (oponnent) => {
+                return this.targetOpponent.includes(oponnent.id)
+            })
+
+            targets.forEach((target) => {
+                const attribute = findLast(target.attributes, function(attribute) {
+                    return attribute.id === attributeDefenseId
+                }).totalPoints
+
+                if (attribute >= this.resultDice) {
+                    this.results.push({
+                        'hit': false,
+                        'text': target.name + ' defendeu seu ataque'
+                    })
+                } else {
+                    this.results.push({
+                        'hit': true,
+                        'text': target.name + ' recebeu ' + (this.resultDice - attribute) + ' de dano'
+                    })
+                }
+            })
+
+            setTimeout(() => {
+                this.results = []
+                this.resultDice = null
+            }, 3500)
         },
 
         attack: function() {
             let resultDice
+            this.error = null
 
             if (this.magicAttack === this.selectedAttack) {
                 if (this.enableMagicAttack()){
                     resultDice = this.calcMagicAttack()
                 } else {
-                    return alert('Mana insuficiente')
+                    return this.error = 'Mana insuficiente'
                 }
             } else {
                 resultDice = this.calcNormalAttack()
@@ -217,10 +270,12 @@ export default {
             }
 
             if (this.targetOpponent.length == 0) {
-                return alert('Selecione um oponente')
+                return this.error = 'Selecione um oponente'
             }
 
             this.resultDice = resultDice
+
+            this.effectAttack()
 
             axios.post(route('combat.attack'), {
                 opponents_ids: this.targetOpponent,
@@ -236,6 +291,7 @@ export default {
             })
             .finally(() => {
                 // this.closeModal()
+                this.targetOpponent = []
             })
         },
     }
@@ -289,5 +345,38 @@ h1 {
 .c-dice {
     margin: 1rem auto;
     font-size: 1.5rem;
+}
+
+.c-info-attack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.c-info {
+    display: flex;
+    border-radius: 0.375rem;
+    padding: 0.5rem;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.c-defense {
+    background-color: #a0a0fb;
+}
+
+.c-hit {
+    background-color: #df5050;
+}
+
+.c-error {
+    background-color: rgb(255 222 222);
+    color: red;
+    font-size: 0.8rem;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    border: 1px solid red;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 </style>

@@ -19,14 +19,15 @@ class AttributesService
     public function mapNewAttributesPoints($allAttributes)
     {
         return collect($allAttributes)->mapWithKeys(function ($attribute) {
+            $totalPoints = $attribute['totalPoints'] ? $attribute['totalPoints'] : 0;
             if (Attribute::hasCurrentPoints($attribute['id'])) {
                 $data = [
-                    'total_points' => $attribute['totalPoints'],
-                    'current_points' => $attribute['totalPoints']
+                    'total_points' => $totalPoints,
+                    'current_points' => $totalPoints
                 ];
             } else {
                 $data = [
-                    'total_points' => $attribute['totalPoints'],
+                    'total_points' => $totalPoints,
                     'current_points' => null
                 ];
             }

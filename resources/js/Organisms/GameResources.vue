@@ -1,10 +1,15 @@
 <template>
     <div class="players">
-        <div v-for="resource in storeResources"
-            :key="resource.id"
-            class="player"
-        >
-            <Resource :resource="resource" />
+        <div v-if="storeResources.length > 0" class="player">
+            <div v-for="resource in storeResources"
+                :key="resource.id"
+                class="player"
+            >
+                <Resource :resource="resource" />
+            </div>
+        </div>
+        <div v-else>
+            <div class="p-6 text-gray-900">Nenhum item encontrado.</div>
         </div>
     </div>
 </template>

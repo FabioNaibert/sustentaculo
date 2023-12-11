@@ -17,6 +17,7 @@
                         placeholder="Nome do áudio ou palavra-chave"
                         @keyup.enter="search"
                         @keyup="search"
+                        :disabled="load"
                     />
 
                     <div v-if="sounds != null" class="c-users">
@@ -42,6 +43,10 @@
                 </div>
             </div>
 
+            <div class="loader" v-if="load">
+                <Loader />
+            </div>
+
             <div class="mt-6 flex justify-end">
                 <SecondaryButton @click="closeModal"> FECHAR </SecondaryButton>
             </div>
@@ -57,6 +62,7 @@ import TextInput from '@/Components/TextInput.vue';
 import AddButton from '@/Atoms/AddButton.vue';
 import { nextTick, ref } from 'vue';
 import axios from 'axios';
+import Loader from '@/Atoms/Loader.vue';
 
 
 export default {
@@ -68,6 +74,7 @@ export default {
         TextInput,
         AddButton,
         IntInput,
+        Loader
     },
 
     props: [
@@ -81,7 +88,8 @@ export default {
             timer: null,
             sounds: null,
             defaultPoints: this.default_points,
-            placeHolder: `Valor padrão: ${this.default_points}`
+            placeHolder: `Valor padrão: ${this.default_points}`,
+            load: false,
         }
     },
 
@@ -124,15 +132,23 @@ export default {
         },
 
         add: function(id) {
+            this.load = true
+            this.sounds = null
+
             axios.post(route('sound.add'), {
                 sound_id: id,
                 chapter_id: this.storeChapterId
             })
             .then((response) => {
-                this.sounds = null
                 this.name = ''
                 this.$store.commit('updateSounds', response.data)
                 nextTick(() => this.$refs["nameInput"].focus());
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+            .finally(() => {
+                this.load = false
             })
         },
 
@@ -220,5 +236,11 @@ h1 {
 
 audio {
     width: 15rem;
+}
+
+.loader {
+    padding: 0.3rem 0.6rem;
+    display: flex;
+    justify-content: center;
 }
 </style>

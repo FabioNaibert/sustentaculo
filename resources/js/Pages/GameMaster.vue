@@ -100,14 +100,12 @@ export default {
     },
 
     created() {
-        console.log(this.response.history)
         this.$store.commit('setHistory', this.response.history)
         this.$store.commit('setAllAttributes', this.response.allAttributes)
         this.$store.commit('setEditMode', false)
 
         window.Pusher.channel('update-game-master.' + this.storeHistoryId)
             .listen('UpdateMasterEvent', (e) => {
-                console.log(e.response.history)
                 this.$store.commit('setHistory', e.response.history)
             });
     },

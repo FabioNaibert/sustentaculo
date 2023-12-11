@@ -8,7 +8,9 @@ use App\Http\Services\ResourceService;
 use App\Http\Services\SocketiService;
 use App\Models\Chapter;
 use App\Models\Weapon;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class WeaponController extends Controller
@@ -60,23 +62,29 @@ class WeaponController extends Controller
             'image' => 'required|image|mimes:png,jpg,jpeg'
         ]);
 
-        $chapter = Chapter::findOrFail($chapterId);
-        $imageId = $this->imageService->addImage($request->image, $chapter->history_id);
+        try {
+            DB::beginTransaction();
+                $chapter = Chapter::findOrFail($chapterId);
+                $imageId = $this->imageService->addImage($request->image, $chapter->history_id);
 
-        $allAttributes = $request->input('all_attributes');
-        $name = $request->input('name');
+                $allAttributes = $request->input('all_attributes');
+                $name = $request->input('name');
 
-        $weapon = Weapon::create([
-            'name' => $name,
-            'history_id' => $chapter->history_id,
-            'image_id' => $imageId
-        ]);
+                $weapon = Weapon::create([
+                    'name' => $name,
+                    'history_id' => $chapter->history_id,
+                    'image_id' => $imageId
+                ]);
 
-        $mapAttributes = $this->attributesService->mapNewAttributesPoints($allAttributes);
-        $weapon->attributes()->attach($mapAttributes);
+                $mapAttributes = $this->attributesService->mapNewAttributesPoints($allAttributes);
+                $weapon->attributes()->attach($mapAttributes);
+            DB::commit();
 
-        // return $this->getWeapons($historyId);
-        return $this->resourceService->getResources($chapterId);
+            return $this->resourceService->getResources($chapterId);
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw new Exception('Ocorreu um erro! Tente novamente.');
+        }
     }
 
 
@@ -86,10 +94,18 @@ class WeaponController extends Controller
         $chapterId = $request->input('chapter_id');
 
         $weapon = Weapon::findOrFail($weaponId);
-        $this->deleteWeaponImage($weapon);
-        $weapon->delete();
 
-        return $this->resourceService->getResources($chapterId);
+        try {
+            DB::beginTransaction();
+                $this->deleteWeaponImage($weapon);
+                $weapon->delete();
+            DB::commit();
+
+            return $this->resourceService->getResources($chapterId);
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw new Exception('Ocorreu um erro! Tente novamente.');
+        }
     }
 
 
@@ -107,13 +123,21 @@ class WeaponController extends Controller
         $chapterId = $request->input('chapter_id');
 
         $weapon = Weapon::findOrFail($weaponId);
-        $weapon->player_id = $sharePlayerId;
-        $weapon->save();
 
-        // event socketi
-        $this->socketiService->updateAll($weapon->history_id);
+        try {
+            DB::beginTransaction();
+                $weapon->player_id = $sharePlayerId;
+                $weapon->save();
+            DB::commit();
 
-        return $this->resourceService->getResources($chapterId);
+            // event socketi
+            $this->socketiService->updateAll($weapon->history_id);
+
+            return $this->resourceService->getResources($chapterId);
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw new Exception('Ocorreu um erro! Tente novamente.');
+        }
     }
 
 
@@ -122,12 +146,20 @@ class WeaponController extends Controller
         $weaponId = $request->input('weapon_id');
 
         $weapon = Weapon::findOrFail($weaponId);
-        Weapon::where('player_id', $weapon->player_id)->whereNot('id', $weapon->id)->update(['equiped' => false]);
 
-        $weapon->equiped = !$weapon->equiped;
-        $weapon->save();
+        try {
+            DB::beginTransaction();
+                Weapon::where('player_id', $weapon->player_id)->whereNot('id', $weapon->id)->update(['equiped' => false]);
 
-        // event socketi
-        $this->socketiService->updateAll($weapon->history_id);
+                $weapon->equiped = !$weapon->equiped;
+                $weapon->save();
+            DB::commit();
+
+            // event socketi
+            $this->socketiService->updateAll($weapon->history_id);
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw new Exception('Ocorreu um erro! Tente novamente.');
+        }
     }
 }

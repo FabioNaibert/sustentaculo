@@ -10,8 +10,10 @@ use App\Models\Attribute;
 use App\Models\History;
 use App\Models\Player;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PlayerController extends Controller
 {
@@ -63,21 +65,28 @@ class PlayerController extends Controller
         $historyId = $request->input('history_id');
         $points = $request->input('points');
 
-        $user = User::find($userId);
-        $history = History::find($historyId);
+        try {
+            DB::beginTransaction();
+                $user = User::find($userId);
+                $history = History::find($historyId);
 
-        $player = Player::create([
-            'name' => $user->name,
-            'user_id' => $user->id,
-            'history_id' => $historyId,
-            'points_distribution' => $points,
-        ]);
+                $player = Player::create([
+                    'name' => $user->name,
+                    'user_id' => $user->id,
+                    'history_id' => $historyId,
+                    'points_distribution' => $points,
+                ]);
 
-        $attributes = Attribute::all()->pluck('id');
+                $attributes = Attribute::all()->pluck('id');
 
-        $player->attributes()->attach($attributes);
+                $player->attributes()->attach($attributes);
+            DB::commit();
 
-        return $this->playerService->getPlayers($history->id, $history->master_id);
+            return $this->playerService->getPlayers($history->id, $history->master_id);
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw new Exception('Ocorreu um erro! Tente novamente.');
+        }
     }
 
 
@@ -88,18 +97,25 @@ class PlayerController extends Controller
         $name = $request->input('name');
         $masterId = auth()->user()->id;
 
-        $enemy = Player::create([
-            'name' => $name,
-            'user_id' => $masterId,
-            'history_id' => $historyId,
-            'first_access' => false,
-            'active' => false,
-        ]);
+        try {
+            DB::beginTransaction();
+                $enemy = Player::create([
+                    'name' => $name,
+                    'user_id' => $masterId,
+                    'history_id' => $historyId,
+                    'first_access' => false,
+                    'active' => false,
+                ]);
 
-        $mapAttributes = $this->attributesService->mapNewAttributesPoints($allAttributes);
-        $enemy->attributes()->attach($mapAttributes);
+                $mapAttributes = $this->attributesService->mapNewAttributesPoints($allAttributes);
+                $enemy->attributes()->attach($mapAttributes);
+            DB::commit();
 
-        return $this->playerService->getEnemies($historyId, $masterId);
+            return $this->playerService->getEnemies($historyId, $masterId);
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw new Exception('Ocorreu um erro! Tente novamente.');
+        }
     }
 
 
@@ -109,10 +125,17 @@ class PlayerController extends Controller
         $historyId = $request->input('history_id');
         $history = History::find($historyId);
 
-        $this->weaponService->takeWeaponsFromPlayer($playerId);
-        $this->removeUser($playerId);
+        try {
+            DB::beginTransaction();
+                $this->weaponService->takeWeaponsFromPlayer($playerId);
+                $this->removeUser($playerId);
+            DB::commit();
 
-        return $this->playerService->getPlayers($history->id, $history->master_id);
+            return $this->playerService->getPlayers($history->id, $history->master_id);
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw new Exception('Ocorreu um erro! Tente novamente.');
+        }
     }
 
 
@@ -122,9 +145,16 @@ class PlayerController extends Controller
         $historyId = $request->input('history_id');
         $history = History::find($historyId);
 
-        $this->removeUser($playerId);
+        try {
+            DB::beginTransaction();
+                $this->removeUser($playerId);
+            DB::commit();
 
-        return $this->playerService->getEnemies($history->id, $history->master_id);
+            return $this->playerService->getEnemies($history->id, $history->master_id);
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw new Exception('Ocorreu um erro! Tente novamente.');
+        }
     }
 
 
@@ -141,22 +171,29 @@ class PlayerController extends Controller
         $playerOld = Player::findOrFail($player['id']);
         $userId = Auth::user()->id;
 
-        if ($playerOld->first_access && $userId === $playerOld->user_id) {
-            $mapAttributes = $this->attributesService->mapNewAttributesPoints($player['attributes']);
-            $playerOld->name = $player['name'];
-            $playerOld->first_access = false;
-        } else if ($userId === $playerOld->user_id && $playerOld->master_id !== $userId) {
-            $mapAttributes = $this->attributesService->mapAttributesTotalPoints($player['attributes']);
-        } else {
-            $mapAttributes = $this->attributesService->mapAttributesCurrentPoints($player['attributes']);
+        try {
+            DB::beginTransaction();
+                if ($playerOld->first_access && $userId === $playerOld->user_id) {
+                    $mapAttributes = $this->attributesService->mapNewAttributesPoints($player['attributes']);
+                    $playerOld->name = $player['name'];
+                    $playerOld->first_access = false;
+                } else if ($userId === $playerOld->user_id && $playerOld->master_id !== $userId) {
+                    $mapAttributes = $this->attributesService->mapAttributesTotalPoints($player['attributes']);
+                } else {
+                    $mapAttributes = $this->attributesService->mapAttributesCurrentPoints($player['attributes']);
+                }
+
+                $playerOld->points_distribution = $player['pointsDistribution'];
+                $playerOld->attributes()->sync($mapAttributes);
+                $playerOld->save();
+            DB::commit();
+
+                // event socketi
+            $this->socketiService->updateAll($playerOld->history_id);
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw new Exception('Ocorreu um erro! Tente novamente.');
         }
-
-        $playerOld->points_distribution = $player['pointsDistribution'];
-        $playerOld->attributes()->sync($mapAttributes);
-        $playerOld->save();
-
-        // event socketi
-        $this->socketiService->updateAll($playerOld->history_id);
     }
 
 
@@ -165,11 +202,18 @@ class PlayerController extends Controller
         $playerId = $request->input('player_id');
         $active = $request->input('active');
 
-        $player = Player::findOrFail($playerId);
-        $player->active = $active;
-        $player->save();
+        try {
+            DB::beginTransaction();
+                $player = Player::findOrFail($playerId);
+                $player->active = $active;
+                $player->save();
 
-        // event soketi
-        $this->socketiService->updateAll($player->history_id);
+                // event soketi
+                $this->socketiService->updateAll($player->history_id);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw new Exception('Ocorreu um erro! Tente novamente.');
+        }
     }
 }

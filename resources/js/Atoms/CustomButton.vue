@@ -21,11 +21,11 @@ button {
 
     padding: 0.5rem;
     border-radius: 8px;
-    background-color: rgb(135 41 255 / 45%);
+    background-color: rgb(184 132 249);
 }
 
 button:hover {
-    background: rgb(135 41 255 / 75%);
+    background: rgb(127, 64, 209)
 }
 
 button:disabled {

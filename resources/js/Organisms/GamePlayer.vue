@@ -1,4 +1,6 @@
 <template>
+    <div class="c-mobile-player">
+        <!-- <img src="../../images/warrior.png"> -->
         <div class="c-info">
             <h3>
                 <b class="name">
@@ -48,6 +50,7 @@
                 AÇÕES
             </CustomButton>
         </div>
+    </div>
 
         <Modal :show="showModal" @close="closeModal">
             <Points :player="storePlayer" @close_modal="closeModal"/>
@@ -143,6 +146,15 @@ export default {
 </script>
 
 <style scoped>
+.c-mobile-player {
+    background-image: url('../../images/warrior.png');
+    background-repeat: no-repeat;
+    height: 100%;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+}
+
 .attribute {
     display: flex;
     align-items: center;

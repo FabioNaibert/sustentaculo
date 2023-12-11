@@ -228,7 +228,6 @@ export default {
         },
 
         firstTimePlayer: function() {
-            console.log(this.storePlayer)
             if (this.storePlayer.firstAccess) {
                 this.openModal()
             } else {

@@ -1,10 +1,15 @@
 <template>
     <div class="players">
-        <div v-for="weapon in storeBackpack"
-            :key="weapon.id"
-            class="player"
-        >
-            <Weapon :resource="weapon" />
+        <div v-if="storeBackpack.length > 0" class="player">
+            <div v-for="weapon in storeBackpack"
+                :key="weapon.id"
+                class="player"
+            >
+                <Weapon :resource="weapon" />
+            </div>
+        </div>
+        <div v-else>
+            <div class="p-6 text-gray-900">Sua mochila está vazia.</div>
         </div>
     </div>
 </template>

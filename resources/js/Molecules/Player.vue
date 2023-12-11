@@ -21,7 +21,7 @@
                 </div>
                 <RemoveButton
                     v-show="storeEditMode"
-                    @click="removePlayer"
+                    @click.stop="removePlayer"
                     :tooltip="tooltip"
                 />
                 <div class="c-actions" v-show="!storeEditMode && !storeIsPlayer">
@@ -29,7 +29,7 @@
                         :player="storePlayer"
                         @click.stop
                     />
-                    <div v-show="storePlayer.active && isEnemy">
+                    <div v-show="storePlayer.active && isEnemy && !storeIsDead">
                         <Combat :player="storePlayer" />
                     </div>
                 </div>

@@ -25,8 +25,13 @@
                     id="input-image"
                     type="file"
                     @input="image = $event.target.files[0]"
+                    accept="image/png, image/jpeg"
                 >
             </div>
+        </div>
+
+        <div v-if="error" class="c-error">
+            <p>{{ error }}</p>
         </div>
 
         <div class="mt-6 flex justify-end">
@@ -36,7 +41,7 @@
                 class="ml-3"
                 :class="{ 'opacity-25': form.processing }"
                 :disabled="form.processing"
-                @click="addImage"
+                @click="save"
             >
                 SALVAR
             </PrimaryButton>
@@ -57,7 +62,6 @@ import AddButton from '@/Atoms/AddButton.vue';
 import Select from '@/Atoms/Select.vue';
 import ImageInput from '@/Atoms/ImageInput.vue';
 import { useForm } from '@inertiajs/vue3';
-import { nextTick, ref } from 'vue';
 import axios from 'axios';
 
 
@@ -99,6 +103,8 @@ export default {
             defaultPoints: null,
             placeHolder: null,
             image: null,
+            error: null,
+            acceptTypes: ['image/png', 'image/jpeg'],
         }
     },
 
@@ -107,13 +113,26 @@ export default {
             this.showModal = true;
         },
 
-        verify: function() {
-            if (this.name.length === 0) this.name = 'ARMA'
+        save: function() {
+            if (this.name.length === 0) this.name = '-'
+
+            this.verifyImage()
+        },
+
+        verifyImage: function() {
+            if (!this.image) {
+                return this.error = 'Adicione uma imagem'
+            }
+
+            if (!this.acceptTypes.includes(this.image.type)) {
+                return this.error = 'São aceitas somente imagens JPEG ou PNG'
+            }
+
+            this.error = null
+            this.addImage()
         },
 
         addImage: function() {
-            this.verify()
-
             const data = {
                 name: this.name,
                 chapter_id: this.storeChapter.id,
@@ -141,6 +160,7 @@ export default {
         closeModal: function() {
             this.$emit('closeModal')
             this.name = ''
+            this.image = null
         },
     }
 }
@@ -234,5 +254,16 @@ input::file-selector-button {
 
 input:focus {
     outline: none;
+}
+
+.c-error {
+    background-color: rgb(255 222 222);
+    color: red;
+    font-size: 0.8rem;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    border: 1px solid red;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 </style>

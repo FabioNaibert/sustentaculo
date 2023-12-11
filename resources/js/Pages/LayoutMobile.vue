@@ -73,7 +73,6 @@ export default {
     },
 
     created() {
-        console.log(this.response)
         this.$store.commit('setGameMobile', this.response)
 
         window.Pusher.channel('update-game-player.' + this.storeGameMobile.player.id)
@@ -119,7 +118,7 @@ export default {
     bottom: 0;
     height: 4rem;
     width: 100%;
-    background-color: rgb(0 0 0 / 0.1);
+    background-color: rgb(193 193 193);
 
     display: flex;
     justify-content: space-between;
